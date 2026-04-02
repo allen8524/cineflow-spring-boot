@@ -2137,3 +2137,348 @@ body {
         min-height: 44px;
     }
 }
+
+/* booking payment page */
+.payment-summary-bar {
+    margin-bottom: 14px;
+}
+
+.payment-summary-grid {
+    grid-template-columns: minmax(190px, 1.15fr) repeat(4, minmax(0, 1fr));
+}
+
+.booking-payment-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 18px;
+    align-items: start;
+}
+
+.booking-payment-main {
+    display: grid;
+    gap: 14px;
+}
+
+.payment-block h3 {
+    margin: 0 0 10px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.payment-inline-link {
+    color: #d7e1fb;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-size: 13px;
+}
+
+.input-help {
+    margin: 0;
+    color: #91a2cb;
+    font-size: 12px;
+}
+
+.payment-benefit-list {
+    display: grid;
+    gap: 8px;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #101a33;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 11px 12px;
+}
+
+.benefit-main strong {
+    color: #fff;
+}
+
+.benefit-main p {
+    margin: 4px 0 0;
+    color: #92a3cc;
+    font-size: 12px;
+}
+
+.status-chip {
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #c8d4f1;
+    white-space: nowrap;
+}
+
+.benefit-item.is-applied {
+    border-color: rgba(220, 248, 54, 0.5);
+    background: #14203d;
+}
+
+.benefit-item.is-applied .status-chip {
+    border-color: #dcf836;
+    background: #dcf836;
+    color: #101a33;
+}
+
+.benefit-item.is-checking .status-chip {
+    border-style: dashed;
+}
+
+.payment-input-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.payment-input-card {
+    background: #101a33;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.inline-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.inline-field label {
+    color: #93a3c8;
+    font-size: 12px;
+    margin-bottom: 2px;
+    display: block;
+}
+
+.inline-field input,
+.inline-field select {
+    width: 100%;
+    min-height: 42px;
+    border-radius: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: #0e1730;
+    color: #fff;
+    padding: 0 12px;
+}
+
+.inline-field button {
+    min-height: 42px;
+    border-radius: 9px;
+    border: 1px solid rgba(220, 248, 54, 0.35);
+    background: #1d2b4e;
+    color: #e6eefe;
+    padding: 0 14px;
+    font-weight: 700;
+}
+
+.field-note {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #8ea0cb;
+}
+
+.payment-method-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.method-card {
+    border-radius: 10px;
+    min-height: 46px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: #101a33;
+    color: #dce6ff;
+    font-weight: 700;
+    text-align: left;
+    padding: 0 13px;
+}
+
+.method-card.is-active {
+    border-color: #dcf836;
+    box-shadow: inset 0 0 0 1px rgba(220, 248, 54, 0.45);
+    background: #182746;
+}
+
+.payment-method-detail {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.payment-method-detail .inline-field {
+    grid-template-columns: 1fr;
+}
+
+.quickpay-choice {
+    grid-column: 1 / -1;
+}
+
+.quickpay-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.quickpay-buttons button {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #162241;
+    color: #d9e4fe;
+    border-radius: 999px;
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.agreement-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+}
+
+.agreement-list label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #d1dcf6;
+    font-weight: 600;
+}
+
+.payment-summary-panel {
+    position: sticky;
+    top: 112px;
+}
+
+.payment-summary-card {
+    margin-bottom: 14px;
+}
+
+.amount-breakdown {
+    background: #101a33;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.amount-breakdown h3 {
+    margin: 0 0 10px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.amount-breakdown ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+}
+
+.amount-breakdown li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: #cdd8f5;
+    font-size: 14px;
+}
+
+.amount-breakdown li span {
+    color: #9caed6;
+}
+
+.amount-total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.24);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.amount-total span {
+    color: #dce6ff;
+    font-weight: 700;
+}
+
+.amount-total strong {
+    color: #dcf836;
+    font-size: 30px;
+    line-height: 1;
+}
+
+.payment-cta {
+    margin-top: 14px;
+}
+
+.payment-links {
+    margin-top: 10px;
+}
+
+.payment-notice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 1200px) {
+    .booking-payment-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-summary-panel {
+        position: static;
+    }
+}
+
+@media (max-width: 992px) {
+    .payment-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .payment-input-grid,
+    .payment-method-grid,
+    .payment-method-detail,
+    .payment-notice-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .payment-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .benefit-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .status-chip {
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .inline-field {
+        grid-template-columns: 1fr;
+    }
+
+    .inline-field button,
+    .method-card,
+    .summary-cta .hero-btn {
+        min-height: 46px;
+    }
+
+    .amount-total strong {
+        font-size: 26px;
+    }
+}
