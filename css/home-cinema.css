@@ -2850,3 +2850,471 @@ body {
         font-size: 24px;
     }
 }
+
+/* booking history page */
+.history-body {
+    padding-top: 24px;
+}
+
+.history-summary-panel {
+    margin-bottom: 14px;
+}
+
+.history-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.history-summary-item {
+    background: #101a33;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.history-summary-item span {
+    display: block;
+    color: #96a8d2;
+    font-size: 12px;
+}
+
+.history-summary-item strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 28px;
+    color: #fff;
+    line-height: 1;
+}
+
+.history-main-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 18px;
+    align-items: start;
+}
+
+.history-content-stack,
+.history-side-stack {
+    display: grid;
+    gap: 14px;
+}
+
+.history-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.history-tab {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.04);
+    color: #cad6f6;
+    border-radius: 999px;
+    min-height: 38px;
+    padding: 0 14px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.history-tab.is-active {
+    color: #0e1730;
+    border-color: #dcf836;
+    background: #dcf836;
+}
+
+.section-headline h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 26px;
+}
+
+.section-headline p {
+    margin: 6px 0 0;
+    color: #97a8d2;
+    font-size: 14px;
+}
+
+.history-section {
+    display: grid;
+    gap: 10px;
+}
+
+.history-booking-card {
+    display: grid;
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 14px;
+}
+
+.history-booking-card--featured {
+    border-color: rgba(220, 248, 54, 0.4);
+    background: linear-gradient(130deg, rgba(220, 248, 54, 0.08) 0%, rgba(12, 21, 44, 0.95) 70%), #0c152c;
+}
+
+.history-poster img {
+    width: 100%;
+    height: 152px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.history-card-main {
+    display: grid;
+    gap: 9px;
+}
+
+.history-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.history-card-top h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 25px;
+}
+
+.history-info-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 12px;
+}
+
+.history-info-grid li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    color: #d3ddf8;
+}
+
+.history-info-grid li span {
+    color: #98a9d2;
+}
+
+.history-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.history-card-tags em {
+    font-style: normal;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #d8e3ff;
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+.history-state-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    min-height: 28px;
+    padding: 0 11px;
+    white-space: nowrap;
+}
+
+.state-booked {
+    background: rgba(220, 248, 54, 0.15);
+    border: 1px solid rgba(220, 248, 54, 0.5);
+    color: #e5f58d;
+}
+
+.state-upcoming,
+.state-soon {
+    background: rgba(77, 150, 255, 0.16);
+    border: 1px solid rgba(120, 174, 255, 0.5);
+    color: #c8dcff;
+}
+
+.state-done {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #dbe5ff;
+}
+
+.state-cancel {
+    background: rgba(246, 63, 99, 0.15);
+    border: 1px solid rgba(246, 63, 99, 0.45);
+    color: #ffb9c8;
+}
+
+.state-refund {
+    background: rgba(250, 192, 61, 0.16);
+    border: 1px solid rgba(250, 192, 61, 0.45);
+    color: #f8d88f;
+}
+
+.state-refunded {
+    background: rgba(94, 214, 140, 0.14);
+    border: 1px solid rgba(94, 214, 140, 0.4);
+    color: #c4f3d4;
+}
+
+.history-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.history-card-actions .hero-btn {
+    min-height: 42px;
+}
+
+.history-past-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.history-past-main h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 22px;
+}
+
+.history-past-main ul {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+}
+
+.history-past-main li {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    color: #cfdbf7;
+    font-size: 13px;
+}
+
+.history-past-main li span {
+    color: #96a8d2;
+}
+
+.history-past-side {
+    display: grid;
+    justify-items: end;
+    gap: 8px;
+}
+
+.history-inline-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.history-inline-actions a {
+    color: #c5d3f5;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.history-refund-table-wrap {
+    overflow-x: auto;
+}
+
+.history-refund-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 840px;
+}
+
+.history-refund-table th,
+.history-refund-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 10px;
+    text-align: left;
+    color: #d4def8;
+    font-size: 13px;
+}
+
+.history-refund-table th {
+    color: #9fb0d9;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.history-empty-card h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 24px;
+}
+
+.history-empty-card p {
+    margin: 8px 0 0;
+    color: #98a9d2;
+}
+
+.history-preview-card {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.history-preview-card img {
+    width: 100%;
+    height: 126px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.history-preview-info strong {
+    color: #fff;
+    font-size: 19px;
+}
+
+.history-preview-info ul {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+}
+
+.history-preview-info li {
+    display: grid;
+    gap: 2px;
+}
+
+.history-preview-info span {
+    color: #93a4cc;
+    font-size: 12px;
+}
+
+.history-preview-info em {
+    color: #d8e3ff;
+    font-size: 13px;
+    font-style: normal;
+}
+
+.history-preview-btn {
+    width: 100%;
+}
+
+.history-action-grid {
+    display: grid;
+    gap: 8px;
+}
+
+.history-action-grid a {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: #101a33;
+    color: #d9e4fe;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-weight: 700;
+}
+
+.history-action-grid a:hover {
+    border-color: rgba(220, 248, 54, 0.55);
+    color: #fff;
+}
+
+@media (max-width: 1200px) {
+    .history-main-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .history-side-stack {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .history-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .history-side-stack {
+        grid-template-columns: 1fr;
+    }
+
+    .history-past-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .history-past-side,
+    .history-inline-actions {
+        justify-items: start;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .history-booking-card {
+        grid-template-columns: 1fr;
+    }
+
+    .history-poster img {
+        width: 108px;
+        height: 152px;
+    }
+
+    .history-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .history-card-top {
+        flex-direction: column;
+    }
+
+    .history-card-top h3 {
+        font-size: 22px;
+    }
+
+    .history-card-actions .hero-btn {
+        width: 100%;
+    }
+
+    .history-summary-item strong {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .history-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .history-tab {
+        min-height: 40px;
+        font-size: 12px;
+        padding: 0 12px;
+    }
+
+    .history-state-chip {
+        min-height: 26px;
+        font-size: 11px;
+    }
+
+    .history-card-actions .hero-btn,
+    .history-action-grid a,
+    .history-preview-btn {
+        min-height: 46px;
+        font-size: 14px;
+    }
+
+    .history-empty-card h3 {
+        font-size: 22px;
+    }
+}
