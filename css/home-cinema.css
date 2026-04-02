@@ -1,0 +1,68 @@
+.topbar-cinema {
+    background: #0b0f1f;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 13px;
+}
+.topbar-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+.topbar-wrap ul {display:flex; gap:16px; margin:0; padding:0; list-style:none;}
+.topbar-wrap a {color:#9ca3bd;}
+.topbar-wrap a:hover {color:#dcf836;}
+.cinema-header {padding-top: 8px;}
+.cinema-hero {padding-bottom: 20px;}
+.hero-copy {color:#9ca3bd; margin:18px 0 26px; max-width: 540px;}
+.quick-booking-section {margin-top:-20px; margin-bottom: 40px;}
+.quick-booking-inner {
+    background: #0f1630;
+    border: 1px solid rgba(220,248,54,0.15);
+    border-radius: 8px;
+    padding: 24px;
+}
+.quick-booking-inner h3 {margin:0 0 16px; color:#fff;}
+.booking-grid {display:grid; grid-template-columns: repeat(5,1fr); gap:12px; align-items:end;}
+.booking-field label {display:block; font-size:12px; color:#9ca3bd; margin-bottom:6px;}
+.booking-field button {
+    width:100%; text-align:left; background:#1d2747; border:1px solid #2e3a63; color:#fff;
+    border-radius: 4px; padding: 11px 12px;
+}
+.booking-field i {float:right;}
+.booking-action .redbtn {display:block; text-align:center; padding: 12px 10px;}
+.section-block {padding: 20px 0 40px;}
+.promo-card {display:block; background:#11172f; padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.08);}
+.promo-card img {width:100%; border-radius:6px; margin-bottom:10px;}
+.promo-card span {color:#fff; font-weight:600; display:block;}
+.special-card {
+    background:#121a37; border:1px solid rgba(255,255,255,0.1); border-radius:8px;
+    padding:22px; min-height: 170px;
+}
+.special-card h4 {margin-top:0; color:#fff;}
+.special-card p {color:#9ca3bd; min-height:40px;}
+.special-card a {color:#dcf836;}
+.theater-finder {display:grid; grid-template-columns: 2fr 3fr; gap:18px;}
+.finder-left, .finder-right {background:#11172f; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:18px;}
+.finder-left {display:flex; flex-wrap:wrap; gap:10px;}
+.finder-left button {background:#1d2747; color:#fff; border:1px solid #2e3a63; padding:8px 14px; border-radius: 20px;}
+.finder-right h4 {margin-top:0; color:#fff;}
+.finder-right ul {margin:0; padding-left:18px;}
+.finder-right a {color:#9ca3bd;}
+.notice-list {list-style:none; margin:0; padding:0;}
+.notice-list li {display:flex; justify-content:space-between; gap:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding:12px 0;}
+.notice-list a {color:#dbe1ff;}
+.notice-list span {color:#8f97b3;}
+.cs-shortcut {background:#11172f; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:18px;}
+.cs-shortcut h4 {margin-top:0; color:#fff;}
+.cs-shortcut a {display:block; color:#9ca3bd; margin-bottom:10px;}
+.coming-text {padding:30px 0; color:#9ca3bd;}
+
+@media (max-width: 991px) {
+    .booking-grid {grid-template-columns: 1fr 1fr;}
+    .theater-finder {grid-template-columns: 1fr;}
+}
+@media (max-width: 600px) {
+    .topbar-wrap {flex-direction:column; gap:6px;}
+    .booking-grid {grid-template-columns: 1fr;}
+}
