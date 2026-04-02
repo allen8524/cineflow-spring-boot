@@ -66,6 +66,7 @@ body {
 .menu-left {
     display: flex;
     gap: 4px;
+    flex-wrap: wrap;
 }
 
 .menu-left .lv1 {
@@ -768,6 +769,10 @@ body {
 .coming-text {padding:30px 0; color:#9ca3bd;}
 
 @media (max-width: 1199px) {
+    .menu-left .lv1 {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
     .hero-content-wrap {
         padding: 46px 36px;
     }
