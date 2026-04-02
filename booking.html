@@ -1,23 +1,234 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="no-js">
 <head>
+    <title>CINEFLOW | 빠른예매</title>
     <meta charset="UTF-8">
+    <meta name="description" content="CINEFLOW 빠른 예매">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CINEFLOW | 예매하기</title>
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
     <link rel="stylesheet" href="css/plugins.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/home-cinema.css">
 </head>
 <body>
-<main class="cinema-page">
-    <section class="cinema-page-hero">
+<div id="preloader">
+    <img class="logo" src="images/logo1.png" alt="logo" width="119" height="58">
+    <div id="status"><span></span><span></span></div>
+</div>
+
+<div class="topbar-cinema"><div class="container"><div class="topbar-wrap"><p class="topbar-msg">프리미엄 스크린과 빠른 예매를 한 번에, CINEFLOW</p><ul class="topbar-links"><li><a href="#">로그인</a></li><li><a href="#">회원가입</a></li><li><a href="#">멤버십</a></li><li><a href="#">고객센터</a></li><li><a href="booking.html" class="topbar-booking">빠른예매</a></li></ul></div></div></div>
+
+<header class="ht-header full-width-hd cinema-header">
+    <div class="row">
+        <nav id="mainNav" class="navbar navbar-default navbar-custom">
+            <div class="navbar-header logo">
+                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><div id="nav-icon1"><span></span><span></span><span></span></div></div>
+                <a href="homev2.html"><img class="logo" src="images/logo1.png" alt="CINEFLOW" width="119" height="58"></a>
+            </div>
+            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav flex-child-menu menu-left">
+                    <li><a class="btn btn-default lv1" href="movielist.html">영화</a></li>
+                    <li><a class="btn btn-default lv1 active" href="booking.html">예매</a></li>
+                    <li><a class="btn btn-default lv1" href="#">극장</a></li>
+                </ul>
+                <ul class="nav navbar-nav flex-child-menu menu-right">
+                    <li><a href="#" class="menu-link">상영시간표 보기</a></li>
+                    <li><a href="booking.html" class="menu-cta">예매하기</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="cinema-page booking-page">
+    <section class="cinema-page-hero booking-hero">
         <div class="container">
-            <ul class="cinema-breadcrumb"><li><a href="homev2.html">홈</a></li><li>예매</li><li>예매하기</li></ul>
-            <h1>예매하기</h1>
-            <p>현재 페이지는 템플릿 단계입니다. 영화/극장/좌석 선택 기능은 다음 단계에서 연결됩니다.</p>
-            <a href="movielist.html" class="hero-btn secondary">전체 영화로 돌아가기</a>
+            <ul class="cinema-breadcrumb">
+                <li><a href="homev2.html">홈</a></li>
+                <li>예매</li>
+                <li>빠른예매</li>
+            </ul>
+            <h1>빠른예매</h1>
+            <p>영화, 극장, 날짜, 시간을 선택하고 빠르게 예매를 진행하세요.</p>
+            <ul class="booking-mode-tabs">
+                <li><button class="is-active" type="button">영화별 예매</button></li>
+                <li><button type="button">극장별 예매</button></li>
+                <li><button type="button">특별관 예매</button></li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="cinema-page-body booking-body">
+        <div class="container">
+            <div class="booking-layout">
+                <div class="booking-main-grid">
+                    <section class="booking-panel movie-panel">
+                        <div class="panel-head">
+                            <h2>1. 영화 선택</h2>
+                            <a href="movielist.html" class="detail-link">전체보기</a>
+                        </div>
+                        <ul class="booking-subtabs">
+                            <li><button class="is-active" type="button">현재 상영중</button></li>
+                            <li><button type="button">개봉 예정</button></li>
+                        </ul>
+                        <ul class="selection-list movie-selection-list">
+                            <li class="is-selected"><button type="button"><span class="movie-title">심연의 궤도</span><span class="meta-line"><em class="age-badge age-12">12</em><span>예매율 31.2%</span></span></button></li>
+                            <li><button type="button"><span class="movie-title">화이트 노이즈</span><span class="meta-line"><em class="age-badge age-15">15</em><span>예매율 24.8%</span></span></button></li>
+                            <li><button type="button"><span class="movie-title">블랙아웃 시티</span><span class="meta-line"><em class="age-badge age-15">15</em><span>예매율 19.7%</span></span></button></li>
+                            <li><button type="button"><span class="movie-title">리버스 코드</span><span class="meta-line"><em class="age-badge age-12">12</em><span>개봉예정 D-2</span></span></button></li>
+                            <li><button type="button"><span class="movie-title">폴라리스</span><span class="meta-line"><em class="age-badge all">ALL</em><span>개봉예정 2026.05.01</span></span></button></li>
+                            <li><button type="button"><span class="movie-title">데이라이트 미션</span><span class="meta-line"><em class="age-badge age-19">청불</em><span>예매율 11.2%</span></span></button></li>
+                            <li><button type="button"><span class="movie-title">시그널 브레이크</span><span class="meta-line"><em class="age-badge age-12">12</em><span>예매율 9.4%</span></span></button></li>
+                            <li><button type="button"><span class="movie-title">오션 블루 2049</span><span class="meta-line"><em class="age-badge age-15">15</em><span>예매오픈 예정</span></span></button></li>
+                        </ul>
+                    </section>
+
+                    <section class="booking-panel theater-panel">
+                        <div class="panel-head">
+                            <h2>2. 극장 선택</h2>
+                        </div>
+                        <ul class="region-tabs">
+                            <li><button class="is-active" type="button">서울</button></li>
+                            <li><button type="button">경기</button></li>
+                            <li><button type="button">인천</button></li>
+                            <li><button type="button">부산</button></li>
+                            <li><button type="button">대전</button></li>
+                            <li><button type="button">광주</button></li>
+                        </ul>
+                        <ul class="selection-list theater-selection-list">
+                            <li class="is-selected"><button type="button">강남</button></li>
+                            <li><button type="button">코엑스</button></li>
+                            <li><button type="button">홍대</button></li>
+                            <li><button type="button">신촌</button></li>
+                            <li><button type="button">잠실</button></li>
+                            <li><button type="button">왕십리</button></li>
+                            <li><button type="button">송파파크</button></li>
+                        </ul>
+                    </section>
+
+                    <section class="booking-panel date-panel">
+                        <div class="panel-head">
+                            <h2>3. 날짜 선택</h2>
+                        </div>
+                        <ul class="date-list">
+                            <li class="is-selected"><button type="button"><span class="day-label">오늘</span><strong>04.02</strong><span class="weekday">목</span></button></li>
+                            <li><button type="button"><span class="day-label">내일</span><strong>04.03</strong><span class="weekday">금</span></button></li>
+                            <li><button type="button"><span class="day-label">주말</span><strong>04.04</strong><span class="weekday sat">토</span></button></li>
+                            <li><button type="button"><span class="day-label">주말</span><strong>04.05</strong><span class="weekday sun">일</span></button></li>
+                            <li><button type="button"><span class="day-label">평일</span><strong>04.06</strong><span class="weekday">월</span></button></li>
+                            <li><button type="button"><span class="day-label">평일</span><strong>04.07</strong><span class="weekday">화</span></button></li>
+                            <li><button type="button"><span class="day-label">평일</span><strong>04.08</strong><span class="weekday">수</span></button></li>
+                        </ul>
+                    </section>
+
+                    <section class="booking-panel timeslot-panel">
+                        <div class="panel-head">
+                            <h2>4. 시간 / 상영관 선택</h2>
+                            <a href="#" class="detail-link">상세보기</a>
+                        </div>
+                        <ul class="timeslot-list">
+                            <li class="is-selected">
+                                <button type="button">
+                                    <div class="time-primary"><strong>10:20</strong><span>종료 12:32 (132분)</span></div>
+                                    <div class="time-meta"><span>1관 · 2D</span><span>120석 중 73석 가능</span></div>
+                                    <div class="time-tags"><em>IMMERSE SOUND</em><em>잔여 많음</em></div>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button">
+                                    <div class="time-primary"><strong>12:55</strong><span>종료 15:07 (132분)</span></div>
+                                    <div class="time-meta"><span>4관 · 2D</span><span>110석 중 42석 가능</span></div>
+                                    <div class="time-tags"><em>일반</em><em>보통</em></div>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button">
+                                    <div class="time-primary"><strong>15:40</strong><span>종료 17:52 (132분)</span></div>
+                                    <div class="time-meta"><span>IMAX관</span><span>230석 중 31석 가능</span></div>
+                                    <div class="time-tags"><em>IMAX</em><em>매진 임박</em></div>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button">
+                                    <div class="time-primary"><strong>18:25</strong><span>종료 20:37 (132분)</span></div>
+                                    <div class="time-meta"><span>7관 · 2D</span><span>128석 중 69석 가능</span></div>
+                                    <div class="time-tags"><em>일반</em><em>잔여 많음</em></div>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button">
+                                    <div class="time-primary"><strong>21:05</strong><span>종료 23:17 (132분)</span></div>
+                                    <div class="time-meta"><span>Dolby Atmos관</span><span>160석 중 22석 가능</span></div>
+                                    <div class="time-tags"><em>DOLBY ATMOS</em><em>매진 임박</em></div>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button">
+                                    <div class="time-primary"><strong>23:40</strong><span>종료 01:52 (132분)</span></div>
+                                    <div class="time-meta"><span>3관 · 2D</span><span>98석 중 81석 가능</span></div>
+                                    <div class="time-tags"><em>심야</em><em>잔여 많음</em></div>
+                                </button>
+                            </li>
+                        </ul>
+                    </section>
+                </div>
+
+                <aside class="booking-summary booking-panel">
+                    <div class="panel-head">
+                        <h2>5. 선택 요약</h2>
+                    </div>
+                    <div class="summary-card">
+                        <img src="images/uploads/movie-single.jpg" alt="심연의 궤도 포스터">
+                        <div class="summary-text">
+                            <p class="summary-movie">심연의 궤도</p>
+                            <ul>
+                                <li><span>극장</span><strong>강남</strong></li>
+                                <li><span>관람일</span><strong>2026.04.02 (목)</strong></li>
+                                <li><span>시간</span><strong>10:20 ~ 12:32</strong></li>
+                                <li><span>상영관/포맷</span><strong>1관 · 2D · IMMERSE SOUND</strong></li>
+                                <li><span>관람 인원</span><strong>성인 2명 (더미)</strong></li>
+                                <li><span>예상 금액</span><strong>₩30,000</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="summary-cta">
+                        <a href="booking-seat.html" class="hero-btn primary">좌석 선택으로 이동</a>
+                        <a href="#" class="hero-btn secondary">상영시간표 다시 보기</a>
+                    </div>
+                    <p class="summary-note">선택 정보는 예시 데이터입니다. 실제 좌석/결제 단계에서 최종 정보가 확정됩니다.</p>
+                </aside>
+            </div>
+
+            <section class="booking-notice-section">
+                <h2>예매 안내</h2>
+                <div class="booking-notice-grid">
+                    <article class="notice-card">
+                        <h3>예매 취소 / 변경</h3>
+                        <p>상영 시작 전까지 취소 및 변경이 가능하며, 일부 특별관은 정책이 다를 수 있습니다.</p>
+                        <a href="#" class="detail-link">상세보기</a>
+                    </article>
+                    <article class="notice-card">
+                        <h3>관람권 / 할인 적용</h3>
+                        <p>관람권, 쿠폰, 제휴 할인은 결제 단계에서 선택할 수 있습니다.</p>
+                        <a href="#" class="detail-link">FAQ 바로가기</a>
+                    </article>
+                    <article class="notice-card">
+                        <h3>지점별 운영 안내</h3>
+                        <p>상영 포맷, 주차, 매점 운영 시간은 지점별로 상이할 수 있습니다.</p>
+                        <a href="#" class="detail-link">고객센터</a>
+                    </article>
+                </div>
+            </section>
         </div>
     </section>
 </main>
+
+<footer class="ht-footer full-width-ft"><div class="row"><div class="flex-parent-ft"><div class="flex-child-ft item1"><a href="homev2.html"><img class="logo" src="images/logo1.png" alt=""></a><p>Seoul, Republic of Korea</p></div></div></div></footer>
+
+<script src="js/jquery.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/plugins2.js"></script>
+<script src="js/custom.js"></script>
 </body>
 </html>
