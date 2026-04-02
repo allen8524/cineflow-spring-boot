@@ -22,14 +22,13 @@
 <div class="topbar-cinema">
     <div class="container">
         <div class="topbar-wrap">
-            <ul>
+            <p class="topbar-msg">프리미엄 스크린과 빠른 예매를 한 번에, CINEFLOW</p>
+            <ul class="topbar-links">
+                <li><a href="#">로그인</a></li>
+                <li><a href="#">회원가입</a></li>
                 <li><a href="#">멤버십</a></li>
-                <li><a href="#">VIP라운지</a></li>
-                <li><a href="#">빠른문의</a></li>
-            </ul>
-            <ul>
                 <li><a href="#">고객센터</a></li>
-                <li><a href="#">EN</a></li>
+                <li><a href="#quick-booking" class="topbar-booking">빠른예매</a></li>
             </ul>
         </div>
     </div>
@@ -47,7 +46,7 @@
             </div>
             <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav flex-child-menu menu-left">
-                    <li><a class="btn btn-default lv1" href="#section-movies">영화</a></li>
+                    <li><a class="btn btn-default lv1 active" href="#section-movies">영화</a></li>
                     <li><a class="btn btn-default lv1" href="#quick-booking">예매</a></li>
                     <li><a class="btn btn-default lv1" href="#section-theaters">극장</a></li>
                     <li><a class="btn btn-default lv1" href="#section-events">이벤트</a></li>
@@ -56,8 +55,9 @@
                     <li><a class="btn btn-default lv1" href="#section-help">고객센터</a></li>
                 </ul>
                 <ul class="nav navbar-nav flex-child-menu menu-right">
-                    <li><a href="#">상영시간표</a></li>
-                    <li><a href="#">MY</a></li>
+                    <li><a href="#" class="menu-link">상영시간표</a></li>
+                    <li><a href="#" class="menu-link">MY시네플로우</a></li>
+                    <li><a href="#quick-booking" class="menu-cta">빠른예매</a></li>
                 </ul>
             </div>
         </nav>
@@ -67,26 +67,73 @@
 <section class="slider sliderv2 cinema-hero">
     <div class="container">
         <div class="row">
-            <div class="movie-item">
-                <div class="row">
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="title-in">
-                            <div class="cate">
-                                <span class="blue"><a href="#">IMAX</a></span>
-                                <span class="yell"><a href="#">4DX</a></span>
-                                <span class="orange"><a href="#">DOLBY</a></span>
-                            </div>
-                            <h1><a href="#">이번 주 메인 상영작<br><span>NOW SHOWING</span></a></h1>
-                            <p class="hero-copy">압도적인 스케일과 사운드로 만나는 프리미엄 시네마 경험.</p>
-                            <div class="social-btn">
-                                <a href="#quick-booking" class="parent-btn"><i class="ion-ticket"></i> 예매하기</a>
-                                <a href="#section-movies" class="parent-btn"><i class="ion-ios-plus-outline"></i> 상세보기</a>
+            <div class="slick-hero">
+                <div class="hero-slide" style="background-image:url('images/uploads/slider-bg.jpg');">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content-wrap">
+                        <div class="hero-copy-area">
+                            <p class="hero-kicker">대표 상영작</p>
+                            <h1>심연의 궤도</h1>
+                            <p class="hero-copy">우주 정거장에서 시작된 미스터리를 압도적 사운드와 대형 스크린으로 만나보세요.</p>
+                            <ul class="hero-meta">
+                                <li>개봉 2026.04.10</li>
+                                <li>SF · 스릴러</li>
+                                <li>132분</li>
+                                <li>12세이상관람가</li>
+                            </ul>
+                            <div class="hero-actions">
+                                <a href="#quick-booking" class="hero-btn primary"><i class="ion-ticket"></i> 예매하기</a>
+                                <a href="#section-movies" class="hero-btn secondary">상세보기</a>
                             </div>
                         </div>
+                        <div class="hero-poster">
+                            <img src="images/uploads/poster1.jpg" alt="심연의 궤도 포스터">
+                        </div>
                     </div>
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="mv-img-2">
-                            <a href="#"><img src="images/uploads/poster1.jpg" alt="메인 포스터"></a>
+                </div>
+                <div class="hero-slide" style="background-image:url('images/uploads/slider-bg2.jpg');">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content-wrap">
+                        <div class="hero-copy-area">
+                            <p class="hero-kicker">특별관 추천</p>
+                            <h1>화이트 노이즈</h1>
+                            <p class="hero-copy">도시를 뒤덮은 정체불명 전파, 단서를 좇는 추적 스릴러.</p>
+                            <ul class="hero-meta">
+                                <li>개봉 2026.04.03</li>
+                                <li>스릴러 · 미스터리</li>
+                                <li>118분</li>
+                                <li>15세이상관람가</li>
+                            </ul>
+                            <div class="hero-actions">
+                                <a href="#quick-booking" class="hero-btn primary"><i class="ion-ticket"></i> 예매하기</a>
+                                <a href="#section-movies" class="hero-btn secondary">상세보기</a>
+                            </div>
+                        </div>
+                        <div class="hero-poster">
+                            <img src="images/uploads/mv-it5.jpg" alt="화이트 노이즈 포스터">
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-slide" style="background-image:url('images/uploads/slider-bg.jpg');">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content-wrap">
+                        <div class="hero-copy-area">
+                            <p class="hero-kicker">지금 인기작</p>
+                            <h1>블랙아웃 시티</h1>
+                            <p class="hero-copy">정전된 도시에서 벌어지는 하룻밤 생존 액션.</p>
+                            <ul class="hero-meta">
+                                <li>개봉 2026.03.28</li>
+                                <li>액션 · 범죄</li>
+                                <li>124분</li>
+                                <li>15세이상관람가</li>
+                            </ul>
+                            <div class="hero-actions">
+                                <a href="#quick-booking" class="hero-btn primary"><i class="ion-ticket"></i> 예매하기</a>
+                                <a href="#section-movies" class="hero-btn secondary">상세보기</a>
+                            </div>
+                        </div>
+                        <div class="hero-poster">
+                            <img src="images/uploads/mv-it6.jpg" alt="블랙아웃 시티 포스터">
                         </div>
                     </div>
                 </div>
@@ -98,49 +145,52 @@
 <section id="quick-booking" class="quick-booking-section">
     <div class="container">
         <div class="quick-booking-inner">
-            <h3>빠른 예매</h3>
+            <div class="quick-booking-head">
+                <h3>빠른 예매</h3>
+                <p>영화 · 극장 · 날짜 · 시간 선택 후 바로 예매하세요.</p>
+            </div>
             <div class="booking-grid">
-                <div class="booking-field"><label>영화</label><button>영화 선택 <i class="ion-chevron-down"></i></button></div>
-                <div class="booking-field"><label>극장</label><button>극장 선택 <i class="ion-chevron-down"></i></button></div>
-                <div class="booking-field"><label>날짜</label><button>날짜 선택 <i class="ion-chevron-down"></i></button></div>
-                <div class="booking-field"><label>시간</label><button>시간 선택 <i class="ion-chevron-down"></i></button></div>
+                <div class="booking-field"><label>영화 선택</label><button><span>심연의 궤도</span> <i class="ion-chevron-down"></i></button></div>
+                <div class="booking-field"><label>극장 선택</label><button><span>강남 센트럴점</span> <i class="ion-chevron-down"></i></button></div>
+                <div class="booking-field"><label>날짜 선택</label><button><span>오늘 (4월 2일)</span> <i class="ion-chevron-down"></i></button></div>
+                <div class="booking-field"><label>시간대 선택</label><button><span>19:30</span> <i class="ion-chevron-down"></i></button></div>
                 <div class="booking-action"><a href="#" class="redbtn">예매하기</a></div>
             </div>
         </div>
     </div>
 </section>
 
-<section id="section-movies" class="movie-items full-width section-block">
+<section id="section-movies" class="movie-items full-width section-block movie-first-section">
     <div class="row">
         <div class="col-md-12">
             <div class="title-hd">
-                <h2>박스오피스 / 현재 상영작</h2>
-                <a href="#" class="viewall">전체 상영작 보기 <i class="ion-ios-arrow-right"></i></a>
+                <h2>지금 상영 중인 영화</h2>
+                <a href="#" class="viewall">전체보기 <i class="ion-ios-arrow-right"></i></a>
             </div>
             <div class="tabs">
                 <ul class="tab-links">
                     <li class="active"><a href="#tab1-h2">박스오피스</a></li>
                     <li><a href="#tab2-h2">현재상영작</a></li>
-                    <li><a href="#tab3-h2">상영예정작</a></li>
+                    <li><a href="#tab3-h2">개봉예정작</a></li>
                 </ul>
                 <div class="tab-content">
                     <div id="tab1-h2" class="tab active">
                         <div class="row"><div class="slick-multiItem2">
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><img src="images/uploads/mv-it1.jpg" alt="영화1"></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div><div class="title-in"><h6><a href="#">1. 인터스텔라 리마스터</a></h6><p><i class="ion-android-star"></i><span>9.1</span> /10</p></div></div></div>
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><img src="images/uploads/mv-it2.jpg" alt="영화2"></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div><div class="title-in"><h6><a href="#">2. 더 레버넌트</a></h6><p><i class="ion-android-star"></i><span>8.8</span> /10</p></div></div></div>
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><img src="images/uploads/mv-it3.jpg" alt="영화3"></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div><div class="title-in"><h6><a href="#">3. 다이하드: 리부트</a></h6><p><i class="ion-android-star"></i><span>8.4</span> /10</p></div></div></div>
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><img src="images/uploads/mv-it4.jpg" alt="영화4"></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div><div class="title-in"><h6><a href="#">4. 더 워크</a></h6><p><i class="ion-android-star"></i><span>8.1</span> /10</p></div></div></div>
+                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge rank">1위</span><img src="images/uploads/mv-it1.jpg" alt="영화1"></div><div class="title-in"><h6><a href="#">인터스텔라 리마스터</a></h6><p>예매율 <span>31.2%</span></p></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
+                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge rank">2위</span><img src="images/uploads/mv-it2.jpg" alt="영화2"></div><div class="title-in"><h6><a href="#">더 레버넌트</a></h6><p>예매율 <span>24.8%</span></p></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
+                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge rank">3위</span><img src="images/uploads/mv-it3.jpg" alt="영화3"></div><div class="title-in"><h6><a href="#">다이하드: 리부트</a></h6><p>예매율 <span>19.7%</span></p></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
+                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge rank">4위</span><img src="images/uploads/mv-it4.jpg" alt="영화4"></div><div class="title-in"><h6><a href="#">더 워크</a></h6><p>예매율 <span>14.6%</span></p></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
                         </div></div>
                     </div>
                     <div id="tab2-h2" class="tab">
                         <div class="row"><div class="slick-multiItem2">
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><img src="images/uploads/mv-it5.jpg" alt="영화5"></div><div class="hvr-inner"><a href="#">상세보기 <i class="ion-android-arrow-dropright"></i></a></div><div class="title-in"><h6><a href="#">미드나잇 레이스</a></h6><p>2D | 126분</p></div></div></div>
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><img src="images/uploads/mv-it6.jpg" alt="영화6"></div><div class="hvr-inner"><a href="#">상세보기 <i class="ion-android-arrow-dropright"></i></a></div><div class="title-in"><h6><a href="#">오로라 프로젝트</a></h6><p>IMAX | 118분</p></div></div></div>
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><img src="images/uploads/mv-it7.jpg" alt="영화7"></div><div class="hvr-inner"><a href="#">상세보기 <i class="ion-android-arrow-dropright"></i></a></div><div class="title-in"><h6><a href="#">사일런트 코드</a></h6><p>4DX | 109분</p></div></div></div>
+                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge state">상영중</span><img src="images/uploads/mv-it5.jpg" alt="영화5"></div><div class="title-in"><h6><a href="#">미드나잇 레이스</a></h6><p>평점 <span>8.9</span> · 2D</p></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
+                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge state">상영중</span><img src="images/uploads/mv-it6.jpg" alt="영화6"></div><div class="title-in"><h6><a href="#">오로라 프로젝트</a></h6><p>평점 <span>8.7</span> · IMAX</p></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
+                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge state">예매가능</span><img src="images/uploads/mv-it7.jpg" alt="영화7"></div><div class="title-in"><h6><a href="#">사일런트 코드</a></h6><p>평점 <span>8.5</span> · 4DX</p></div><div class="hvr-inner"><a href="#">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
                         </div></div>
                     </div>
                     <div id="tab3-h2" class="tab">
-                        <div class="coming-text">상영예정작은 곧 업데이트됩니다.</div>
+                        <div class="coming-text">개봉예정작 정보는 순차적으로 업데이트됩니다.</div>
                     </div>
                 </div>
             </div>
