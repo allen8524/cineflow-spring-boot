@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js">
+<head>
+    <title>CINEFLOW | 예매내역</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="CINEFLOW 예매내역 및 예매조회">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
+    <link rel="stylesheet" href="css/plugins.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/home-cinema.css">
+</head>
+<body>
+<div id="preloader">
+    <img class="logo" src="images/logo1.png" alt="logo" width="119" height="58">
+    <div id="status"><span></span><span></span></div>
+</div>
+
+<div class="topbar-cinema"><div class="container"><div class="topbar-wrap"><p class="topbar-msg">프리미엄 스크린과 빠른 예매를 한 번에, CINEFLOW</p><ul class="topbar-links"><li><a href="#">로그인</a></li><li><a href="#">회원가입</a></li><li><a href="#">멤버십</a></li><li><a href="support.html">고객센터</a></li><li><a href="booking.html" class="topbar-booking">빠른예매</a></li></ul></div></div></div>
+
+<header class="ht-header full-width-hd cinema-header">
+    <div class="row">
+        <nav id="mainNav" class="navbar navbar-default navbar-custom">
+            <div class="navbar-header logo">
+                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><div id="nav-icon1"><span></span><span></span><span></span></div></div>
+                <a href="homev2.html"><img class="logo" src="images/logo1.png" alt="CINEFLOW" width="119" height="58"></a>
+            </div>
+            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav flex-child-menu menu-left">
+                    <li><a class="btn btn-default lv1" href="movielist.html">영화</a></li>
+                    <li><a class="btn btn-default lv1 active" href="booking.html">예매</a></li>
+                    <li><a class="btn btn-default lv1" href="#">극장</a></li>
+                </ul>
+                <ul class="nav navbar-nav flex-child-menu menu-right">
+                    <li><a href="#" class="menu-link">상영시간표 보기</a></li>
+                    <li><a href="booking.html" class="menu-cta">예매하기</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="cinema-page booking-page booking-history-page">
+    <section class="cinema-page-hero booking-hero history-hero">
+        <div class="container">
+            <ul class="cinema-breadcrumb">
+                <li><a href="homev2.html">홈</a></li>
+                <li><a href="#">마이페이지</a></li>
+                <li>예매내역</li>
+            </ul>
+            <h1>예매내역</h1>
+            <p>현재 예매와 지난 관람 내역을 확인하고 모바일 티켓, 취소/환불, 상세 정보를 관리하세요.</p>
+        </div>
+    </section>
+
+    <section class="cinema-page-body booking-body history-body">
+        <div class="container">
+            <article class="booking-panel history-summary-panel">
+                <div class="panel-head">
+                    <h2>My Booking Summary</h2>
+                    <span class="summary-chip">2026.04.02 기준</span>
+                </div>
+                <div class="history-summary-grid">
+                    <div class="history-summary-item"><span>현재 예매</span><strong>3건</strong></div>
+                    <div class="history-summary-item"><span>오늘 관람 예정</span><strong>1건</strong></div>
+                    <div class="history-summary-item"><span>지난 관람</span><strong>18건</strong></div>
+                    <div class="history-summary-item"><span>취소 가능</span><strong>2건</strong></div>
+                </div>
+            </article>
+
+            <div class="history-main-layout">
+                <section class="history-content-stack">
+                    <article class="booking-panel history-tabs-panel">
+                        <div class="history-tabs" role="tablist" aria-label="예매 상태 탭">
+                            <button type="button" class="history-tab is-active" aria-selected="true">예정된 예매</button>
+                            <button type="button" class="history-tab" aria-selected="false">지난 예매</button>
+                            <button type="button" class="history-tab" aria-selected="false">취소 / 환불</button>
+                        </div>
+                    </article>
+
+                    <section class="history-section is-current" id="scheduled-booking">
+                        <div class="section-headline">
+                            <h2>예정된 예매</h2>
+                            <p>상영 전 필요한 모바일 티켓, 예매상세, 취소/환불 안내를 빠르게 확인하세요.</p>
+                        </div>
+
+                        <article class="booking-panel history-booking-card history-booking-card--featured">
+                            <div class="history-poster"><img src="images/uploads/movie-single.jpg" alt="심연의 궤도 포스터"></div>
+                            <div class="history-card-main">
+                                <div class="history-card-top">
+                                    <div>
+                                        <h3>심연의 궤도</h3>
+                                        <div class="meta-line"><em class="age-badge age-12">12</em><span>CINEFLOW 강남 · 1관 (IMAX)</span></div>
+                                    </div>
+                                    <span class="history-state-chip state-booked">예매완료</span>
+                                </div>
+                                <ul class="history-info-grid">
+                                    <li><span>상영일시</span><strong>2026.04.02 (목) 10:20</strong></li>
+                                    <li><span>종료예정</span><strong>12:32 (132분)</strong></li>
+                                    <li><span>좌석</span><strong>E7, E8</strong></li>
+                                    <li><span>인원</span><strong>성인 2명</strong></li>
+                                    <li><span>예매번호</span><strong>CF20260402-1020-4H8K</strong></li>
+                                    <li><span>결제금액</span><strong>₩29,000</strong></li>
+                                </ul>
+                                <div class="history-card-tags"><em>IMAX</em><em>2D</em><em>자막</em></div>
+                                <div class="history-card-actions">
+                                    <a href="mobile-ticket.html" class="hero-btn primary">모바일 티켓 보기</a>
+                                    <a href="booking-detail.html" class="hero-btn secondary">예매상세</a>
+                                    <a href="#cancel-refund-guide" class="hero-btn secondary">취소/환불 안내</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="booking-panel history-booking-card">
+                            <div class="history-poster"><img src="images/uploads/mv-item3.jpg" alt="유리 미궁 포스터"></div>
+                            <div class="history-card-main">
+                                <div class="history-card-top">
+                                    <div>
+                                        <h3>유리 미궁</h3>
+                                        <div class="meta-line"><em class="age-badge age-15">15</em><span>CINEFLOW 홍대 · 5관</span></div>
+                                    </div>
+                                    <span class="history-state-chip state-upcoming">상영예정</span>
+                                </div>
+                                <ul class="history-info-grid">
+                                    <li><span>상영일시</span><strong>2026.04.03 (금) 19:40</strong></li>
+                                    <li><span>종료예정</span><strong>21:38 (118분)</strong></li>
+                                    <li><span>좌석</span><strong>H11, H12, H13</strong></li>
+                                    <li><span>인원</span><strong>성인 3명</strong></li>
+                                    <li><span>예매번호</span><strong>CF20260403-1940-T8M2</strong></li>
+                                    <li><span>결제금액</span><strong>₩42,000</strong></li>
+                                </ul>
+                                <div class="history-card-tags"><em>2D</em><em>돌비 사운드</em></div>
+                                <div class="history-card-actions">
+                                    <a href="mobile-ticket.html" class="hero-btn primary">모바일 티켓 보기</a>
+                                    <a href="booking-detail.html" class="hero-btn secondary">예매상세</a>
+                                    <a href="#cancel-refund-guide" class="hero-btn secondary">취소/환불 안내</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="booking-panel history-booking-card">
+                            <div class="history-poster"><img src="images/uploads/mv-item8.jpg" alt="사일런트 코드 포스터"></div>
+                            <div class="history-card-main">
+                                <div class="history-card-top">
+                                    <div>
+                                        <h3>사일런트 코드</h3>
+                                        <div class="meta-line"><em class="age-badge age-19">19</em><span>CINEFLOW 용산 · 3관</span></div>
+                                    </div>
+                                    <span class="history-state-chip state-soon">곧 상영</span>
+                                </div>
+                                <ul class="history-info-grid">
+                                    <li><span>상영일시</span><strong>2026.04.02 (목) 13:10</strong></li>
+                                    <li><span>종료예정</span><strong>15:05 (115분)</strong></li>
+                                    <li><span>좌석</span><strong>C4</strong></li>
+                                    <li><span>인원</span><strong>성인 1명</strong></li>
+                                    <li><span>예매번호</span><strong>CF20260402-1310-A1Q9</strong></li>
+                                    <li><span>결제금액</span><strong>₩15,000</strong></li>
+                                </ul>
+                                <div class="history-card-tags"><em>LASER</em><em>2D</em></div>
+                                <div class="history-card-actions">
+                                    <a href="mobile-ticket.html" class="hero-btn primary">모바일 티켓 보기</a>
+                                    <a href="booking-detail.html" class="hero-btn secondary">예매상세</a>
+                                    <a href="#cancel-refund-guide" class="hero-btn secondary">취소/환불 안내</a>
+                                </div>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="history-section" id="past-booking">
+                        <div class="section-headline">
+                            <h2>지난 예매</h2>
+                            <p>관람 완료된 예매 기록을 확인하고 다시 예매 또는 영화 상세로 이동할 수 있습니다.</p>
+                        </div>
+
+                        <article class="booking-panel history-past-card">
+                            <div class="history-past-main">
+                                <h3>광야의 파문</h3>
+                                <ul>
+                                    <li><span>극장 / 일시</span><strong>CINEFLOW 강남 · 2026.03.20 (금) 21:00</strong></li>
+                                    <li><span>좌석 / 인원</span><strong>F5, F6 · 성인 2명</strong></li>
+                                </ul>
+                            </div>
+                            <div class="history-past-side">
+                                <span class="history-state-chip state-done">관람완료</span>
+                                <div class="history-inline-actions">
+                                    <a href="booking.html">다시 예매하기</a>
+                                    <a href="moviesingle.html">영화 상세보기</a>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="booking-panel history-past-card">
+                            <div class="history-past-main">
+                                <h3>블루 노트: 라스트 세션</h3>
+                                <ul>
+                                    <li><span>극장 / 일시</span><strong>CINEFLOW 홍대 · 2026.03.09 (월) 18:30</strong></li>
+                                    <li><span>좌석 / 인원</span><strong>G8 · 성인 1명</strong></li>
+                                </ul>
+                            </div>
+                            <div class="history-past-side">
+                                <span class="history-state-chip state-done">관람완료</span>
+                                <div class="history-inline-actions">
+                                    <a href="booking.html">다시 예매하기</a>
+                                    <a href="moviesingle.html">영화 상세보기</a>
+                                </div>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="history-section" id="cancel-refund-guide">
+                        <div class="section-headline">
+                            <h2>취소 / 환불 내역</h2>
+                            <p>운영 상태를 빠르게 확인할 수 있도록 최근 내역만 요약해 제공합니다.</p>
+                        </div>
+                        <div class="booking-panel history-refund-table-wrap">
+                            <table class="history-refund-table">
+                                <thead>
+                                <tr>
+                                    <th>영화명</th>
+                                    <th>예매번호</th>
+                                    <th>취소일시</th>
+                                    <th>환불상태</th>
+                                    <th>결제수단</th>
+                                    <th>환불예정금액</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>야간 항로</td>
+                                    <td>CF20260328-2215-R1N6</td>
+                                    <td>2026.03.28 18:10</td>
+                                    <td><span class="history-state-chip state-cancel">취소완료</span></td>
+                                    <td>신용/체크카드</td>
+                                    <td>₩30,000</td>
+                                </tr>
+                                <tr>
+                                    <td>하이웨이 나이트</td>
+                                    <td>CF20260325-1740-H6K4</td>
+                                    <td>2026.03.25 12:42</td>
+                                    <td><span class="history-state-chip state-refund">환불처리중</span></td>
+                                    <td>간편결제</td>
+                                    <td>₩14,000</td>
+                                </tr>
+                                <tr>
+                                    <td>은하 정거장</td>
+                                    <td>CF20260312-1100-B3T2</td>
+                                    <td>2026.03.11 23:51</td>
+                                    <td><span class="history-state-chip state-refunded">환불완료</span></td>
+                                    <td>신용/체크카드</td>
+                                    <td>₩28,000</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="history-section">
+                        <div class="section-headline">
+                            <h2>빈 상태 예시</h2>
+                            <p>탭 전환 시 노출될 수 있는 empty state를 미리 구성해두었습니다.</p>
+                        </div>
+                        <article class="booking-panel history-empty-card">
+                            <h3>아직 예정된 예매가 없습니다</h3>
+                            <p>지금 상영 중인 작품과 상영시간표를 확인하고 원하는 좌석을 빠르게 예매해보세요.</p>
+                            <div class="history-card-actions">
+                                <a href="booking.html" class="hero-btn primary">빠른예매로 이동</a>
+                                <a href="movielist.html" class="hero-btn secondary">상영작 보러가기</a>
+                            </div>
+                        </article>
+                    </section>
+                </section>
+
+                <aside class="history-side-stack">
+                    <article class="booking-panel history-preview-panel">
+                        <div class="panel-head">
+                            <h2>선택 예매 상세 미리보기</h2>
+                        </div>
+                        <div class="history-preview-card">
+                            <img src="images/uploads/movie-single.jpg" alt="심연의 궤도 포스터">
+                            <div class="history-preview-info">
+                                <strong>심연의 궤도</strong>
+                                <ul>
+                                    <li><span>극장 / 상영관</span><em>CINEFLOW 강남 · 1관 (IMAX)</em></li>
+                                    <li><span>일시</span><em>2026.04.02 (목) 10:20</em></li>
+                                    <li><span>좌석</span><em>E7, E8</em></li>
+                                    <li><span>결제금액</span><em>₩29,000</em></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a href="mobile-ticket.html" class="hero-btn primary history-preview-btn">모바일 티켓 보기</a>
+                    </article>
+
+                    <article class="booking-panel history-quick-actions">
+                        <div class="panel-head"><h2>빠른 액션</h2></div>
+                        <div class="history-action-grid">
+                            <a href="mobile-ticket.html">모바일 티켓 보기</a>
+                            <a href="#">상영시간표 보기</a>
+                            <a href="support.html">고객센터</a>
+                            <a href="support.html#faq">FAQ</a>
+                            <a href="#cancel-refund-guide">취소/환불 안내</a>
+                        </div>
+                    </article>
+                </aside>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="ht-footer full-width-ft"><div class="row"><div class="flex-parent-ft"><div class="flex-child-ft item1"><a href="homev2.html"><img class="logo" src="images/logo1.png" alt=""></a><p>Seoul, Republic of Korea</p></div></div></div></footer>
+
+<script src="js/jquery.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/plugins2.js"></script>
+<script src="js/custom.js"></script>
+</body>
+</html>
