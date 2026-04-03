@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -26,14 +27,20 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "movies")
+@Table(
+        name = "movies",
+        indexes = {
+                @Index(name = "idx_movies_status", columnList = "status"),
+                @Index(name = "idx_movies_release_date", columnList = "release_date")
+        }
+)
 public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String title;
 
     @Column(length = 300)
@@ -42,15 +49,23 @@ public class Movie {
     @Column(length = 2000)
     private String description;
 
+    @Column(length = 100)
     private String genre;
+
+    @Column(length = 20)
     private String ageRating;
+
     private Integer runningTime;
+
+    @Column(length = 255)
     private String posterUrl;
+
     private Double bookingRate;
     private Double score;
     private LocalDate releaseDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private MovieStatus status;
 
     @Builder.Default

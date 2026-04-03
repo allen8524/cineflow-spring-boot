@@ -23,6 +23,7 @@ import com.cineflow.repository.ScheduleSeatRepository;
 import com.cineflow.repository.ScreenRepository;
 import com.cineflow.repository.SeatTemplateRepository;
 import com.cineflow.repository.TheaterRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,7 @@ import java.util.Locale;
 public class DataInitializer {
 
     @Bean
+    @ConditionalOnProperty(prefix = "app.seed", name = "enabled", havingValue = "true")
     CommandLineRunner initData(
             MovieRepository movieRepository,
             BookingRepository bookingRepository,

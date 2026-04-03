@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -30,7 +31,10 @@ import java.util.List;
 @Builder
 @Table(
         name = "seat_templates",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"screen_id", "seat_code"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"screen_id", "seat_code"}),
+        indexes = {
+                @Index(name = "idx_seat_templates_screen_id", columnList = "screen_id")
+        }
 )
 public class SeatTemplate {
 
@@ -42,17 +46,17 @@ public class SeatTemplate {
     @JoinColumn(name = "screen_id", nullable = false)
     private Screen screen;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 4)
     private String seatRow;
 
     @Column(nullable = false)
     private Integer seatNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     private String seatCode;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private SeatType seatType;
 
     @Column(nullable = false)

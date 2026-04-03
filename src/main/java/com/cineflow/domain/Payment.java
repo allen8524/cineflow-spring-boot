@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -26,7 +27,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "payments")
+@Table(
+        name = "payments",
+        indexes = {
+                @Index(name = "idx_payments_status", columnList = "payment_status")
+        }
+)
 public class Payment {
 
     @Id
@@ -38,22 +44,23 @@ public class Payment {
     private Booking booking;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private PaymentMethod method;
 
     @Column(nullable = false)
     private Integer amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private PaymentStatus paymentStatus;
 
     private LocalDateTime paidAt;
     private LocalDateTime canceledAt;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 60)
     private String transactionId;
 
+    @Column(length = 60)
     private String cancelTransactionId;
 
     public String getMethodLabel() {

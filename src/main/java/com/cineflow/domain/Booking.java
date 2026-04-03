@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -33,30 +34,58 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "bookings")
+@Table(
+        name = "bookings",
+        indexes = {
+                @Index(name = "idx_bookings_status", columnList = "status"),
+                @Index(name = "idx_bookings_schedule_id", columnList = "schedule_id"),
+                @Index(name = "idx_bookings_start_time", columnList = "start_time")
+        }
+)
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 40)
     private String bookingCode;
 
+    @Column(length = 100)
     private String customerName;
+
+    @Column(length = 30)
     private String customerPhone;
+
+    @Column(length = 200)
     private String movieTitle;
+
+    @Column(length = 255)
     private String posterUrl;
+
+    @Column(length = 20)
     private String ageRating;
+
+    @Column(length = 100)
     private String theaterName;
+
+    @Column(length = 50)
     private String screenName;
+
+    @Column(length = 50)
     private String screenType;
+
+    @Column(length = 255)
     private String seatNames;
+
     private Integer peopleCount;
     private Integer totalPrice;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+
+    @Column(length = 500)
     private String cancelReason;
+
     private LocalDateTime canceledAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -64,6 +93,7 @@ public class Booking {
     private Schedule schedule;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private BookingStatus status;
 
     @CreationTimestamp

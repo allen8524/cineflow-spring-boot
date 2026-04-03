@@ -1,22 +1,28 @@
+spring:
+  application:
+    name: cineflow
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  thymeleaf:
+    cache: false
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Seoul
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+    validate-on-migrate: true
+    clean-disabled: true
+
 server:
   port: 8080
 
-spring:
-  datasource:
-    url: jdbc:h2:mem:cineflow;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  thymeleaf:
-    cache: false
+app:
+  seed:
+    enabled: false

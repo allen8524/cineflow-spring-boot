@@ -6,6 +6,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -26,7 +27,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "schedules")
+@Table(
+        name = "schedules",
+        indexes = {
+                @Index(name = "idx_schedules_movie_id", columnList = "movie_id"),
+                @Index(name = "idx_schedules_screen_id", columnList = "screen_id"),
+                @Index(name = "idx_schedules_start_time", columnList = "start_time")
+        }
+)
 public class Schedule {
 
     @Id
