@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko" class="no-js">
+<html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>CineFlow | 영화 상세</title>
     <meta charset="UTF-8">
     <meta name="description" content="CineFlow 영화 상세 정보">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone-no">
+    <base href="/">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
     <link rel="stylesheet" href="css/plugins.css">
     <link rel="stylesheet" href="css/style.css">
@@ -55,25 +56,25 @@
                 <li>영화 상세</li>
             </ul>
             <div class="detail-hero-grid">
-                <div class="detail-poster-col"><img src="images/uploads/movie-single.jpg" alt="심연의 궤도 포스터"></div>
+                <div class="detail-poster-col"><img th:src="@{${movie.posterUrl}}" th:alt="${movie.title + ' 포스터'}"></div>
                 <div class="detail-info-col">
-                    <p class="hero-kicker">현재상영작</p>
-                    <h1>심연의 궤도</h1>
-                    <p class="detail-tagline">우주 관측 임무 중 발생한 신호 이상, 그리고 진실을 쫓는 마지막 72시간.</p>
+                    <p class="hero-kicker" th:text="${movie.statusLabel}">현재상영작</p>
+                    <h1 th:text="${movie.title}">심연의 궤도</h1>
+                    <p class="detail-tagline" th:text="${movie.shortDescription}">짧은 소개</p>
                     <ul class="detail-meta-list">
-                        <li><strong>개봉일</strong><span>2026.04.10</span></li>
-                        <li><strong>장르</strong><span>SF · 스릴러</span></li>
-                        <li><strong>러닝타임</strong><span>132분</span></li>
-                        <li><strong>관람등급</strong><span>12세이상관람가</span></li>
+                        <li><strong>개봉일</strong><span th:text="${#temporals.format(movie.releaseDate, 'yyyy.MM.dd')}">2026.04.10</span></li>
+                        <li><strong>장르</strong><span th:text="${movie.genre}">SF · 스릴러</span></li>
+                        <li><strong>러닝타임</strong><span th:text="${movie.runningTime + '분'}">132분</span></li>
+                        <li><strong>관람등급</strong><span th:text="${movie.ageRating + '세이상관람가'}">12세이상관람가</span></li>
                     </ul>
                     <div class="detail-score-row">
-                        <div class="score-item"><em>예매율</em><strong>31.2%</strong></div>
-                        <div class="score-item"><em>관람평점</em><strong>9.1</strong></div>
+                        <div class="score-item"><em th:text="${movie.metricName}">예매율</em><strong th:text="${movie.bookingRate + '%'}">31.2%</strong></div>
+                        <div class="score-item"><em th:text="${movie.scoreMetricName}">관람평점</em><strong th:text="${movie.score}">9.1</strong></div>
                     </div>
                     <div class="detail-actions">
                         <a href="booking.html" class="hero-btn primary">예매하기</a>
                         <a href="booking.html" class="hero-btn secondary">상영시간표 보기</a>
-                        <a href="booking-history.html" class="icon-action">관심영화</a>
+                        <a href="booking-history.html" class="icon-action">예매내역</a>
                         <a href="support.html" class="icon-action">고객센터 연결</a>
                     </div>
                 </div>
@@ -87,16 +88,16 @@
                 <div class="detail-main-sections">
                     <article class="detail-block">
                         <h2>줄거리</h2>
-                        <p>지구 저궤도 관측소에서 포착된 원인 불명의 신호. 임무 종료를 앞둔 팀 리더는 신호의 정체가 인류 생존과 연결되어 있음을 알게 되고, 제한된 시간 안에 선택을 내려야 한다.</p>
+                        <p th:text="${movie.description}">영화 줄거리</p>
                     </article>
 
                     <article class="detail-block">
                         <h2>주요 정보</h2>
                         <div class="info-table-grid">
-                            <div><span>제작국가</span><strong>대한민국</strong></div>
-                            <div><span>배급형태</span><strong>일반 / IMAX / Dolby Atmos</strong></div>
-                            <div><span>포맷</span><strong>2D · 4DX</strong></div>
-                            <div><span>상영상태</span><strong>현재상영중</strong></div>
+                            <div><span>장르</span><strong th:text="${movie.genre}">SF · 스릴러</strong></div>
+                            <div><span>관람등급</span><strong th:text="${movie.ageRating}">12</strong></div>
+                            <div><span>러닝타임</span><strong th:text="${movie.runningTime + '분'}">132분</strong></div>
+                            <div><span>상영상태</span><strong th:text="${movie.statusLabel}">현재상영중</strong></div>
                         </div>
                     </article>
 
