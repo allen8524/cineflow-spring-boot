@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>CineFlow | 좌석?�택</title>
+    <title>CineFlow | 좌석선택</title>
     <meta charset="UTF-8">
-    <meta name="description" content="CineFlow 좌석 ?�택">
+    <meta name="description" content="CineFlow 좌석 선택">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone-no">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
@@ -12,212 +12,28 @@
     <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
 </head>
 <body>
-<div id="preloader">
-    <img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58">
-    <div id="status"><span></span><span></span></div>
-</div>
-
-<div class="topbar-cinema"><div class="container"><div class="topbar-wrap"><p class="topbar-msg">?�리미엄 ?�크린과 빠른 ?�매�???번에, CineFlow</p><ul class="topbar-links"><li><a href="#">로그??</a></li><li><a href="#">?�원가??</a></li><li><a href="#">멤버??</a></li><li><a th:href="@{/support}">고객?�터</a></li><li><a th:href="@{/booking}" class="topbar-booking">빠른?�매</a></li></ul></div></div></div>
-
-<header class="ht-header full-width-hd cinema-header">
-    <div class="row">
-        <nav id="mainNav" class="navbar navbar-default navbar-custom">
-            <div class="navbar-header logo">
-                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><div id="nav-icon1"><span></span><span></span><span></span></div></div>
-                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a>
-            </div>
-            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav flex-child-menu menu-left">
-                    <li><a class="btn btn-default lv1 " th:href="@{/movies}">?�화</a></li>
-                    <li><a class="btn btn-default lv1 active" th:href="@{/booking}">?�매</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-events}">?�벤??</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-store}">?�토??</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">?�택</a></li>
-                    <li><a class="btn btn-default lv1 " th:href="@{/support}">고객?�터</a></li>
-                </ul>
-                <ul class="nav navbar-nav flex-child-menu menu-right">
-                    <li><a th:href="@{/booking}" class="menu-link">?�영?�간??보기</a></li>
-                    <li><a th:href="@{/booking/history}" class="menu-link">?�매?�역 ?�인</a></li>
-                    <li><a th:href="@{/booking}" class="menu-cta">빠른?�매</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-</header>
+<div id="preloader"><img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58"><div id="status"><span></span><span></span></div></div>
+<div class="topbar-cinema"><div class="container"><div class="topbar-wrap"><p class="topbar-msg">프리미엄 스크린과 빠른 예매를 한 번에, CineFlow</p><ul class="topbar-links"><li><a href="#">로그인</a></li><li><a href="#">회원가입</a></li><li><a href="#">멤버십</a></li><li><a th:href="@{/support}">고객센터</a></li><li><a th:href="@{/booking}" class="topbar-booking">빠른예매</a></li></ul></div></div></div>
+<header class="ht-header full-width-hd cinema-header"><div class="row"><nav id="mainNav" class="navbar navbar-default navbar-custom"><div class="navbar-header logo"><div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><div id="nav-icon1"><span></span><span></span><span></span></div></div><a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a></div><div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1"><ul class="nav navbar-nav flex-child-menu menu-left"><li><a class="btn btn-default lv1" th:href="@{/movies}">영화</a></li><li><a class="btn btn-default lv1 active" th:href="@{/booking}">예매</a></li><li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-events}">이벤트</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-store}">스토어</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">혜택</a></li><li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li></ul><ul class="nav navbar-nav flex-child-menu menu-right"><li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li><li><a th:href="@{/booking/history}" class="menu-link">예매내역 확인</a></li><li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li></ul></div></nav></div></header>
 
 <main class="cinema-page booking-page booking-seat-page">
     <section class="cinema-page-hero booking-hero seat-hero">
         <div class="container">
-            <ul class="cinema-breadcrumb">
-                <li><a th:href="@{/}">??</a></li>
-                <li><a th:href="@{/booking}">?�매</a></li>
-                <li><a th:href="@{/booking}">빠른?�매</a></li>
-                <li>좌석?�택</li>
-            </ul>
-            <h1>좌석?�택</h1>
-            <p>관???�원�?좌석???�택????결제 ?�계�??�동?�세??</p>
-            <ol class="booking-stepper">
-                <li><span>01</span><strong>?�영?�보</strong></li>
-                <li class="is-active"><span>02</span><strong>?�원/좌석</strong></li>
-                <li><span>03</span><strong>결제</strong></li>
-                <li><span>04</span><strong>?�료</strong></li>
-            </ol>
+            <ul class="cinema-breadcrumb"><li><a th:href="@{/}">홈</a></li><li><a th:href="@{/booking}">예매</a></li><li><a th:href="@{/booking}">빠른예매</a></li><li>좌석선택</li></ul>
+            <h1>좌석선택</h1>
+            <p>관람 인원과 좌석을 선택한 뒤 결제 단계로 이동하세요.</p>
+            <ol class="booking-stepper"><li><span>01</span><strong>상영정보</strong></li><li class="is-active"><span>02</span><strong>인원/좌석</strong></li><li><span>03</span><strong>결제</strong></li><li><span>04</span><strong>완료</strong></li></ol>
         </div>
     </section>
 
-    <section class="cinema-page-body booking-body">
-        <div class="container">
-            <div class="booking-seat-layout">
-                <section class="booking-seat-main">
-                    <article class="booking-panel screening-summary-bar">
-                        <div class="screening-summary-title">
-                            <h2>?�재 ?�영 ?�보</h2>
-                            <span class="summary-chip">?�매 진행 �?</span>
-                        </div>
-                        <div class="screening-summary-grid">
-                            <div class="summary-movie-group">
-                                <strong>?�연??궤도</strong>
-                                <div class="meta-line"><em class="age-badge age-12">12</em><span>강남 · 1관</span></div>
-                            </div>
-                            <div class="summary-info-block"><span>관?�일</span><strong>2026.04.02 (�?</strong></div>
-                            <div class="summary-info-block"><span>?�영?�간</span><strong>10:20 ~ 12:32 (132�?</strong></div>
-                            <div class="summary-info-block summary-format"><span>?�맷</span><strong><em>2D</em><em>IMMERSE SOUND</em><em>RECLINER</em></strong></div>
-                        </div>
-                    </article>
-
-                    <article class="booking-panel seat-select-panel">
-                        <div class="panel-head">
-                            <h2>?�원 ?�택</h2>
-                            <p class="seat-panel-meta">�?2�?· ?�택 가??좌석 2??</p>
-                        </div>
-                        <ul class="people-picker-list">
-                            <li>
-                                <div class="people-type"><strong>?�인</strong><span>�?19???�상</span></div>
-                                <div class="people-counter"><button type="button" aria-label="?�인 ?�원 감소">-</button><span>2</span><button type="button" aria-label="?�인 ?�원 증�?">+</button></div>
-                            </li>
-                            <li>
-                                <div class="people-type"><strong>�?��??</strong><span>�?13??18??</span></div>
-                                <div class="people-counter"><button type="button" aria-label="�?��???�원 감소">-</button><span>0</span><button type="button" aria-label="�?��???�원 증�?">+</button></div>
-                            </li>
-                            <li>
-                                <div class="people-type"><strong>?��?</strong><span>경로/?�애??�???�공??</span></div>
-                                <div class="people-counter"><button type="button" aria-label="?��? ?�원 감소">-</button><span>0</span><button type="button" aria-label="?��? ?�원 증�?">+</button></div>
-                            </li>
-                        </ul>
-                        <p class="people-picker-note">�??�원 2�?/ ?�상 금액 ??0,000 (?��?)</p>
-                    </article>
-
-                    <article class="booking-panel seat-map-panel">
-                        <div class="seat-legend" aria-label="좌석 범�?">
-                            <div class="legend-item"><span class="seat-sample available"></span><strong>?�택 가??</strong></div>
-                            <div class="legend-item"><span class="seat-sample selected"></span><strong>?�택??</strong></div>
-                            <div class="legend-item"><span class="seat-sample reserved"></span><strong>?�매 ?�료</strong></div>
-                            <div class="legend-item"><span class="seat-sample disabled-seat">??</span><strong>?�애?�석</strong></div>
-                            <div class="legend-item"><span class="seat-sample premium">P</span><strong>?�리미엄??</strong></div>
-                        </div>
-
-                        <div class="screen-badge">SCREEN</div>
-
-                        <div class="seat-map-scroll">
-                            <div class="seat-map" role="grid" aria-label="좌석 배치??>
-                                <div class="seat-row"><span class="row-label">A</span><button class="seat premium">A1</button><button class="seat premium">A2</button><button class="seat">A3</button><button class="seat">A4</button><span class="seat-aisle"></span><button class="seat">A5</button><button class="seat reserved">A6</button><button class="seat">A7</button><button class="seat">A8</button><span class="seat-aisle"></span><button class="seat">A9</button><button class="seat">A10</button><button class="seat">A11</button><button class="seat">A12</button></div>
-                                <div class="seat-row"><span class="row-label">B</span><button class="seat">B1</button><button class="seat">B2</button><button class="seat">B3</button><button class="seat reserved">B4</button><span class="seat-aisle"></span><button class="seat">B5</button><button class="seat">B6</button><button class="seat">B7</button><button class="seat">B8</button><span class="seat-aisle"></span><button class="seat">B9</button><button class="seat premium">B10</button><button class="seat premium">B11</button><button class="seat">B12</button></div>
-                                <div class="seat-row"><span class="row-label">C</span><button class="seat">C1</button><button class="seat">C2</button><button class="seat">C3</button><button class="seat">C4</button><span class="seat-aisle"></span><button class="seat">C5</button><button class="seat reserved">C6</button><button class="seat">C7</button><button class="seat">C8</button><span class="seat-aisle"></span><button class="seat">C9</button><button class="seat">C10</button><button class="seat">C11</button><button class="seat">C12</button></div>
-                                <div class="seat-row"><span class="row-label">D</span><button class="seat">D1</button><button class="seat">D2</button><button class="seat">D3</button><button class="seat">D4</button><span class="seat-aisle"></span><button class="seat">D5</button><button class="seat">D6</button><button class="seat reserved">D7</button><button class="seat">D8</button><span class="seat-aisle"></span><button class="seat">D9</button><button class="seat">D10</button><button class="seat">D11</button><button class="seat">D12</button></div>
-                                <div class="seat-row"><span class="row-label">E</span><button class="seat">E1</button><button class="seat">E2</button><button class="seat">E3</button><button class="seat">E4</button><span class="seat-aisle"></span><button class="seat">E5</button><button class="seat">E6</button><button class="seat selected">E7</button><button class="seat selected">E8</button><span class="seat-aisle"></span><button class="seat">E9</button><button class="seat">E10</button><button class="seat">E11</button><button class="seat">E12</button></div>
-                                <div class="seat-row"><span class="row-label">F</span><button class="seat">F1</button><button class="seat">F2</button><button class="seat">F3</button><button class="seat">F4</button><span class="seat-aisle"></span><button class="seat">F5</button><button class="seat reserved">F6</button><button class="seat">F7</button><button class="seat">F8</button><span class="seat-aisle"></span><button class="seat">F9</button><button class="seat">F10</button><button class="seat">F11</button><button class="seat">F12</button></div>
-                                <div class="seat-row"><span class="row-label">G</span><button class="seat">G1</button><button class="seat">G2</button><button class="seat">G3</button><button class="seat">G4</button><span class="seat-aisle"></span><button class="seat">G5</button><button class="seat">G6</button><button class="seat">G7</button><button class="seat">G8</button><span class="seat-aisle"></span><button class="seat">G9</button><button class="seat">G10</button><button class="seat">G11</button><button class="seat">G12</button></div>
-                                <div class="seat-row"><span class="row-label">H</span><button class="seat disabled-seat">??</button><button class="seat disabled-seat">??</button><button class="seat">H3</button><button class="seat">H4</button><span class="seat-aisle"></span><button class="seat">H5</button><button class="seat">H6</button><button class="seat">H7</button><button class="seat reserved">H8</button><span class="seat-aisle"></span><button class="seat">H9</button><button class="seat">H10</button><button class="seat">H11</button><button class="seat">H12</button></div>
-                                <div class="seat-row"><span class="row-label">I</span><button class="seat">I1</button><button class="seat">I2</button><button class="seat">I3</button><button class="seat">I4</button><span class="seat-aisle"></span><button class="seat">I5</button><button class="seat">I6</button><button class="seat">I7</button><button class="seat">I8</button><span class="seat-aisle"></span><button class="seat">I9</button><button class="seat">I10</button><button class="seat">I11</button><button class="seat">I12</button></div>
-                                <div class="seat-row"><span class="row-label">J</span><button class="seat premium">J1</button><button class="seat premium">J2</button><button class="seat">J3</button><button class="seat">J4</button><span class="seat-aisle"></span><button class="seat">J5</button><button class="seat">J6</button><button class="seat">J7</button><button class="seat">J8</button><span class="seat-aisle"></span><button class="seat">J9</button><button class="seat">J10</button><button class="seat reserved">J11</button><button class="seat">J12</button></div>
-                                <div class="seat-row"><span class="row-label">K</span><button class="seat">K1</button><button class="seat">K2</button><button class="seat">K3</button><button class="seat">K4</button><span class="seat-aisle"></span><button class="seat">K5</button><button class="seat">K6</button><button class="seat">K7</button><button class="seat">K8</button><span class="seat-aisle"></span><button class="seat">K9</button><button class="seat">K10</button><button class="seat">K11</button><button class="seat">K12</button></div>
-                            </div>
-                        </div>
-
-                        <ul class="seat-guide-list">
-                            <li>?�택 가?�한 좌석�??�택?????�습?�다.</li>
-                            <li>?�원 ?��? ?�일??좌석 ?��? ?�택?�주?�요.</li>
-                            <li>?�수 좌석?� 지?�별�??�영 ?��?가 ?��? ???�습?�다. <a href="#">FAQ</a></li>
-                        </ul>
-                    </article>
-                </section>
-
-                <aside class="booking-summary booking-panel seat-summary-panel">
-                    <div class="panel-head">
-                        <h2>?�택 ?�약</h2>
-                    </div>
-                    <div class="summary-card">
-                        <img th:src="@{/images/uploads/movie-single.jpg}" alt="?�연??궤도 ?�스??>
-                        <div class="summary-text">
-                            <p class="summary-movie">?�연??궤도</p>
-                            <ul>
-                                <li><span>극장 / ?�영관</span><strong>강남 · 1관</strong></li>
-                                <li><span>?�시</span><strong>2026.04.02 (�? 10:20</strong></li>
-                                <li><span>?�택 ?�원</span><strong>?�인 2 · �?��??0 · ?��? 0</strong></li>
-                                <li><span>?�택 좌석</span><strong>E7, E8</strong></li>
-                                <li><span>�?금액</span><strong>??0,000</strong></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="summary-cta">
-                        <a th:href="@{/booking/payment}" class="hero-btn primary">결제 ?�계�??�동</a>
-                        <a th:href="@{/booking}" class="hero-btn secondary">?�전 ?�계�?</a>
-                    </div>
-                    <div class="seat-summary-links">
-                        <a href="#">?�택 초기??</a>
-                        <a href="#">좌석 ?�시 ?�택</a>
-                    </div>
-                    <p class="summary-note">좌석 �??�금?� ?�시 ?�이?�이�??�제 결제 ?�계?�서 최종 ?�인?�니??</p>
-                </aside>
-            </div>
-
-            <section class="booking-notice-section seat-notice-section">
-                <h2>좌석 ?�택 ?�의?�항</h2>
-                <div class="booking-notice-grid">
-                    <article class="notice-card">
-                        <h3>취소 / 변�??�내</h3>
-                        <p>?�영 ?�작 ?�까지 취소 �?변경이 가?�하�? 결제?�단???�라 ?�불 반영 ?�점???��? ???�습?�다.</p>
-                    </article>
-                    <article class="notice-card">
-                        <h3>?�인 ?�용 ?�내</h3>
-                        <p>�?��???��? ?�금?� ?�장 ?�인 ??증빙?�료�??�청?????�으�?미�?�???차액 결제가 ?�요?�니??</p>
-                    </article>
-                    <article class="notice-card">
-                        <h3>지?�별 좌석 구조</h3>
-                        <p>?�영관�?좌석 배치, 리클?�이???�영, ?�애?�석 ?�치??지??�??�영관???�라 ?�이?????�습?�다.</p>
-                    </article>
-                </div>
-            </section>
-        </div>
-    </section>
+    <section class="cinema-page-body booking-body"><div class="container"><div class="booking-seat-layout"><section class="booking-seat-main"><article class="booking-panel screening-summary-bar"><div class="screening-summary-title"><h2>현재 상영 정보</h2><span class="summary-chip">예매 진행 중</span></div><div class="screening-summary-grid"><div class="summary-movie-group"><strong>시간의 궤도</strong><div class="meta-line"><em class="age-badge age-12">12</em><span>강남 · 1관</span></div></div><div class="summary-info-block"><span>관람일</span><strong>2026.04.02 (목)</strong></div><div class="summary-info-block"><span>상영시간</span><strong>10:20 ~ 12:32 (132분)</strong></div><div class="summary-info-block summary-format"><span>포맷</span><strong><em>2D</em><em>IMMERSE SOUND</em><em>RECLINER</em></strong></div></div></article>
+                    <article class="booking-panel seat-select-panel"><div class="panel-head"><h2>인원 선택</h2><p class="seat-panel-meta">총 2명 · 선택 가능 좌석 2석</p></div><ul class="people-picker-list"><li><div class="people-type"><strong>성인</strong><span>만 19세 이상</span></div><div class="people-counter"><button type="button" aria-label="성인 인원 감소">-</button><span>2</span><button type="button" aria-label="성인 인원 증가">+</button></div></li><li><div class="people-type"><strong>청소년</strong><span>만 13세~18세</span></div><div class="people-counter"><button type="button" aria-label="청소년 인원 감소">-</button><span>0</span><button type="button" aria-label="청소년 인원 증가">+</button></div></li><li><div class="people-type"><strong>우대</strong><span>경로/장애인/국가유공자</span></div><div class="people-counter"><button type="button" aria-label="우대 인원 감소">-</button><span>0</span><button type="button" aria-label="우대 인원 증가">+</button></div></li></ul><p class="people-picker-note">총 인원 2명 / 예상 금액 30,000원 (예시)</p></article>
+                    <article class="booking-panel seat-map-panel"><div class="seat-legend" aria-label="좌석 범례"><div class="legend-item"><span class="seat-sample available"></span><strong>선택 가능</strong></div><div class="legend-item"><span class="seat-sample selected"></span><strong>선택됨</strong></div><div class="legend-item"><span class="seat-sample reserved"></span><strong>예매 완료</strong></div><div class="legend-item"><span class="seat-sample disabled-seat">X</span><strong>이용 제한</strong></div><div class="legend-item"><span class="seat-sample premium">P</span><strong>프리미엄석</strong></div></div><div class="screen-badge">SCREEN</div><div class="seat-map-scroll"><div class="seat-map" role="grid" aria-label="좌석 배치도"><div class="seat-row"><span class="row-label">A</span><button class="seat premium">A1</button><button class="seat premium">A2</button><button class="seat">A3</button><button class="seat">A4</button><span class="seat-aisle"></span><button class="seat">A5</button><button class="seat reserved">A6</button><button class="seat">A7</button><button class="seat">A8</button><span class="seat-aisle"></span><button class="seat">A9</button><button class="seat">A10</button><button class="seat">A11</button><button class="seat">A12</button></div><div class="seat-row"><span class="row-label">B</span><button class="seat">B1</button><button class="seat">B2</button><button class="seat">B3</button><button class="seat reserved">B4</button><span class="seat-aisle"></span><button class="seat">B5</button><button class="seat">B6</button><button class="seat">B7</button><button class="seat">B8</button><span class="seat-aisle"></span><button class="seat">B9</button><button class="seat premium">B10</button><button class="seat premium">B11</button><button class="seat">B12</button></div><div class="seat-row"><span class="row-label">C</span><button class="seat">C1</button><button class="seat">C2</button><button class="seat">C3</button><button class="seat">C4</button><span class="seat-aisle"></span><button class="seat">C5</button><button class="seat reserved">C6</button><button class="seat">C7</button><button class="seat">C8</button><span class="seat-aisle"></span><button class="seat">C9</button><button class="seat">C10</button><button class="seat">C11</button><button class="seat">C12</button></div><div class="seat-row"><span class="row-label">D</span><button class="seat">D1</button><button class="seat">D2</button><button class="seat">D3</button><button class="seat">D4</button><span class="seat-aisle"></span><button class="seat">D5</button><button class="seat">D6</button><button class="seat reserved">D7</button><button class="seat">D8</button><span class="seat-aisle"></span><button class="seat">D9</button><button class="seat">D10</button><button class="seat">D11</button><button class="seat">D12</button></div><div class="seat-row"><span class="row-label">E</span><button class="seat">E1</button><button class="seat">E2</button><button class="seat">E3</button><button class="seat">E4</button><span class="seat-aisle"></span><button class="seat">E5</button><button class="seat">E6</button><button class="seat selected">E7</button><button class="seat selected">E8</button><span class="seat-aisle"></span><button class="seat">E9</button><button class="seat">E10</button><button class="seat">E11</button><button class="seat">E12</button></div><div class="seat-row"><span class="row-label">F</span><button class="seat">F1</button><button class="seat">F2</button><button class="seat">F3</button><button class="seat">F4</button><span class="seat-aisle"></span><button class="seat">F5</button><button class="seat reserved">F6</button><button class="seat">F7</button><button class="seat">F8</button><span class="seat-aisle"></span><button class="seat">F9</button><button class="seat">F10</button><button class="seat">F11</button><button class="seat">F12</button></div><div class="seat-row"><span class="row-label">G</span><button class="seat">G1</button><button class="seat">G2</button><button class="seat">G3</button><button class="seat">G4</button><span class="seat-aisle"></span><button class="seat">G5</button><button class="seat">G6</button><button class="seat">G7</button><button class="seat">G8</button><span class="seat-aisle"></span><button class="seat">G9</button><button class="seat">G10</button><button class="seat">G11</button><button class="seat">G12</button></div><div class="seat-row"><span class="row-label">H</span><button class="seat disabled-seat">X</button><button class="seat disabled-seat">X</button><button class="seat">H3</button><button class="seat">H4</button><span class="seat-aisle"></span><button class="seat">H5</button><button class="seat">H6</button><button class="seat">H7</button><button class="seat reserved">H8</button><span class="seat-aisle"></span><button class="seat">H9</button><button class="seat">H10</button><button class="seat">H11</button><button class="seat">H12</button></div></div></div><ul class="seat-guide-list"><li>선택 가능한 좌석만 선택할 수 있습니다.</li><li>인원 수와 동일한 좌석 수를 선택해 주세요.</li><li>특수 좌석은 지점별 운영 정책이 다를 수 있습니다. <a th:href="@{/support#faq}">FAQ</a></li></ul></article></section>
+                <aside class="booking-summary booking-panel seat-summary-panel"><div class="panel-head"><h2>선택 요약</h2></div><div class="summary-card"><img th:src="@{/images/uploads/movie-single.jpg}" alt="시간의 궤도 포스터"><div class="summary-text"><p class="summary-movie">시간의 궤도</p><ul><li><span>극장 / 상영관</span><strong>강남 · 1관</strong></li><li><span>일시</span><strong>2026.04.02 (목) 10:20</strong></li><li><span>선택 인원</span><strong>성인 2 · 청소년 0 · 우대 0</strong></li><li><span>선택 좌석</span><strong>E7, E8</strong></li><li><span>총 금액</span><strong>30,000원</strong></li></ul></div></div><div class="summary-cta"><a th:href="@{/booking/payment}" class="hero-btn primary">결제 단계로 이동</a><a th:href="@{/booking}" class="hero-btn secondary">이전 단계로</a></div><div class="seat-summary-links"><a href="#">선택 초기화</a><a href="#">좌석 다시 선택</a></div><p class="summary-note">좌석 및 요금은 예시 데이터이며 실제 결제 단계에서 최종 확인됩니다.</p></aside></div>
+            <section class="booking-notice-section seat-notice-section"><h2>좌석 선택 유의사항</h2><div class="booking-notice-grid"><article class="notice-card"><h3>취소 / 변경 안내</h3><p>상영 시작 전까지 취소 및 변경이 가능하며 결제수단에 따라 환불 반영 시점이 다를 수 있습니다.</p></article><article class="notice-card"><h3>우대 요금 안내</h3><p>청소년, 우대 요금은 현장 확인용 증빙자료를 요청할 수 있으며 미지참 시 차액 결제가 필요합니다.</p></article><article class="notice-card"><h3>지점별 좌석 구조</h3><p>상영관별 좌석 배치와 리클라이너, 장애인석 위치는 지점 및 상영관에 따라 다를 수 있습니다.</p></article></div></section></div></section>
 </main>
 
-<footer class="ht-footer full-width-ft cinema-footer">
-    <div class="row">
-        <div class="flex-parent-ft">
-            <div class="flex-child-ft item1">
-                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a>
-                <p>CineFlow CINEMA</p>
-                <p>?�울?�별???�네?�로?�로 100, 4�?</p>
-                <p>?�?�번??1544-0000 · help@cineflow.co.kr</p>
-            </div>
-            <div class="flex-child-ft item2"><h4>?�비???�내</h4><ul><li><a th:href="@{/movies}">?�화</a></li><li><a th:href="@{/booking}">?�매</a></li><li><a th:href="@{/#section-theaters}">극장</a></li><li><a th:href="@{/#section-events}">?�벤??</a></li></ul></div>
-            <div class="flex-child-ft item3"><h4>고객지??</h4><ul><li><a th:href="@{/support}">고객?�터</a></li><li><a th:href="@{/support#faq}">FAQ 보기</a></li><li><a th:href="@{/booking/history}">?�매?�역 ?�인</a></li></ul></div>
-            <div class="flex-child-ft item4"><h4>?�책</h4><ul><li><a th:href="@{/support#cancel-policy}">취소/?�불 ?�내</a></li><li><a th:href="@{/support#faq}">?�용?�내</a></li><li><a th:href="@{/support}">?�비???�책</a></li></ul></div>
-        </div>
-        <div class="ft-copyright">
-            <div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div>
-            <div class="backtotop"><p><a href="#" id="back-to-top">�??�로 <i class="ion-ios-arrow-thin-up"></i></a></p></div>
-        </div>
-    </div>
-</footer>
-
-<script th:src="@{/js/jquery.js}"></script>
-<script th:src="@{/js/plugins.js}"></script>
-<script th:src="@{/js/plugins2.js}"></script>
-<script th:src="@{/js/custom.js}"></script>
+<footer class="ht-footer full-width-ft cinema-footer"><div class="row"><div class="flex-parent-ft"><div class="flex-child-ft item1"><a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a><p>CineFlow CINEMA</p><p>서울특별시 시네마로 100, 4층</p><p>대표번호 1544-0000 · help@cineflow.co.kr</p></div><div class="flex-child-ft item2"><h4>서비스 안내</h4><ul><li><a th:href="@{/movies}">영화</a></li><li><a th:href="@{/booking}">예매</a></li><li><a th:href="@{/#section-theaters}">극장</a></li><li><a th:href="@{/#section-events}">이벤트</a></li></ul></div><div class="flex-child-ft item3"><h4>고객지원</h4><ul><li><a th:href="@{/support}">고객센터</a></li><li><a th:href="@{/support#faq}">FAQ 보기</a></li><li><a th:href="@{/booking/history}">예매내역 확인</a></li></ul></div><div class="flex-child-ft item4"><h4>정책</h4><ul><li><a th:href="@{/support#cancel-policy}">취소/환불 안내</a></li><li><a th:href="@{/support#faq}">이용안내</a></li><li><a th:href="@{/support}">서비스 정책</a></li></ul></div></div><div class="ft-copyright"><div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div><div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div></div></div></footer>
+<script th:src="@{/js/jquery.js}"></script><script th:src="@{/js/plugins.js}"></script><script th:src="@{/js/plugins2.js}"></script><script th:src="@{/js/custom.js}"></script>
 </body>
 </html>
-
-
