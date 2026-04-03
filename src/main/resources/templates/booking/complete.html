@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CineFlow | ?�매?�료</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="CineFlow ?�매?�료">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
+    <link rel="stylesheet" th:href="@{/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
+</head>
+<body>
+<div id="preloader">
+    <img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58">
+    <div id="status"><span></span><span></span></div>
+</div>
+
+<div class="topbar-cinema"><div class="container"><div class="topbar-wrap"><p class="topbar-msg">?�리미엄 ?�크린과 빠른 ?�매�???번에, CineFlow</p><ul class="topbar-links"><li><a href="#">로그??</a></li><li><a href="#">?�원가??</a></li><li><a href="#">멤버??</a></li><li><a th:href="@{/support}">고객?�터</a></li><li><a th:href="@{/booking}" class="topbar-booking">빠른?�매</a></li></ul></div></div></div>
+
+<header class="ht-header full-width-hd cinema-header">
+    <div class="row">
+        <nav id="mainNav" class="navbar navbar-default navbar-custom">
+            <div class="navbar-header logo">
+                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><div id="nav-icon1"><span></span><span></span><span></span></div></div>
+                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a>
+            </div>
+            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav flex-child-menu menu-left">
+                    <li><a class="btn btn-default lv1 " th:href="@{/movies}">?�화</a></li>
+                    <li><a class="btn btn-default lv1 active" th:href="@{/booking}">?�매</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-events}">?�벤??</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-store}">?�토??</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">?�택</a></li>
+                    <li><a class="btn btn-default lv1 " th:href="@{/support}">고객?�터</a></li>
+                </ul>
+                <ul class="nav navbar-nav flex-child-menu menu-right">
+                    <li><a th:href="@{/booking}" class="menu-link">?�영?�간??보기</a></li>
+                    <li><a th:href="@{/booking/history}" class="menu-link">?�매?�역 ?�인</a></li>
+                    <li><a th:href="@{/booking}" class="menu-cta">빠른?�매</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="cinema-page booking-page booking-complete-page">
+    <section class="cinema-page-hero booking-hero complete-hero">
+        <div class="container">
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/}">??</a></li>
+                <li><a th:href="@{/booking}">?�매</a></li>
+                <li><a th:href="@{/booking}">빠른?�매</a></li>
+                <li><a th:href="@{/booking/seat}">좌석?�택</a></li>
+                <li>결제?�료</li>
+            </ul>
+            <h1>?�매?�료</h1>
+            <p>?�매가 ?�상?�으�??�료?�었?�니?? 모바???�켓�??�매 ?�보�??�인?�주?�요.</p>
+            <ol class="booking-stepper">
+                <li><span>01</span><strong>?�영?�보</strong></li>
+                <li><span>02</span><strong>?�원/좌석</strong></li>
+                <li><span>03</span><strong>결제</strong></li>
+                <li class="is-active"><span>04</span><strong>?�료</strong></li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="cinema-page-body booking-body complete-body">
+        <div class="container">
+            <article class="booking-panel complete-success-hero">
+                <div class="success-state-badge"><span>??</span> ?�매 ?�공 ?�인</div>
+                <h2>?�매가 ?�상?�으�??�료?�었?�니??</h2>
+                <p>?�영 ?�작 ??모바???�켓??준비해주세?? ?�매번호�??�인?�면 ?�장 ?�내가 ??빨라집니??</p>
+                <div class="success-meta-grid">
+                    <div class="success-meta-item">
+                        <span>?�매번호</span>
+                        <strong>CF20260402-1020-4H8K</strong>
+                    </div>
+                    <div class="success-meta-item">
+                        <span>결제 ?�시</span>
+                        <strong>2026.04.02 (�? 09:58</strong>
+                    </div>
+                    <div class="success-meta-item">
+                        <span>?�인 ?�태</span>
+                        <strong class="ok">결제 ?�인 ?�료</strong>
+                    </div>
+                </div>
+            </article>
+
+            <div class="complete-main-grid">
+                <section class="complete-primary-stack">
+                    <article class="booking-panel complete-booking-card">
+                        <div class="panel-head">
+                            <h2>?�영 / ?�매 ?�보</h2>
+                            <span class="summary-chip">최종 ?�인</span>
+                        </div>
+                        <div class="summary-card complete-summary-card">
+                            <img th:src="@{/images/uploads/movie-single.jpg}" alt="?�연??궤도 ?�스??>
+                            <div class="summary-text">
+                                <p class="summary-movie">?�연??궤도</p>
+                                <div class="meta-line"><em class="age-badge age-12">12</em><span>SF ?�릴??· IMAX 2D</span></div>
+                                <ul class="complete-info-list">
+                                    <li><span>극장</span><strong>CineFlow 강남</strong></li>
+                                    <li><span>?�영관</span><strong>1관 (IMAX)</strong></li>
+                                    <li><span>?�영?�시</span><strong>2026.04.02 (�? 10:20</strong></li>
+                                    <li><span>종료?�정</span><strong>12:32 (132�?</strong></li>
+                                    <li><span>좌석</span><strong>E7, E8</strong></li>
+                                    <li><span>?�원</span><strong>?�인 2�?</strong></li>
+                                </ul>
+                                <div class="format-tags"><em>IMAX</em><em>2D</em><em>?�막</em></div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="booking-panel complete-payment-card">
+                        <div class="panel-head">
+                            <h2>결제 ?�보</h2>
+                        </div>
+                        <div class="amount-breakdown complete-amount-breakdown">
+                            <ul>
+                                <li><span>�??�품 금액</span><strong>??2,000</strong></li>
+                                <li><span>?�인 ?�용 금액</span><strong>-??,000</strong></li>
+                                <li><span>?�인???�용 금액</span><strong>-??,000</strong></li>
+                            </ul>
+                            <div class="amount-total">
+                                <span>최종 결제 금액</span>
+                                <strong>??9,000</strong>
+                            </div>
+                            <ul class="payment-meta-list">
+                                <li><span>결제?�단</span><strong>?�용/체크카드 (?�한카드)</strong></li>
+                                <li><span>?�인 ?�태</span><strong>?�상 ?�인</strong></li>
+                            </ul>
+                        </div>
+                    </article>
+                </section>
+
+                <aside class="complete-side-stack">
+                    <article id="mobile-ticket" class="booking-panel mobile-ticket-card">
+                        <div class="panel-head">
+                            <h2>모바???�켓</h2>
+                        </div>
+                        <div class="ticket-frame">
+                            <div class="qr-placeholder" aria-hidden="true">
+                                <span></span><span></span><span></span><span></span>
+                            </div>
+                            <p class="ticket-code">?�장 코드 <strong>CF-4H8K-1020</strong></p>
+                            <p class="ticket-time">?�출 ?�간: ?�영 1?�간 ?��????�인 가??(?�재 ?�연???�출)</p>
+                            <p class="ticket-note">?�영 ?�작 ??모바???�켓???�시?�주?�요.</p>
+                        </div>
+                    </article>
+
+                    <article class="booking-panel complete-cta-card">
+                        <div class="panel-head"><h2>?�음 ?�동</h2></div>
+                        <div class="summary-cta complete-cta-grid">
+                            <a href="#mobile-ticket" class="hero-btn primary">모바???�켓 보기</a>
+                            <a th:href="@{/booking/history}" class="hero-btn secondary">?�매?�역 ?�인</a>
+                            <a th:href="@{/}" class="hero-btn secondary">메인?�로 ?�아가�?</a>
+                            <a th:href="@{/booking}" class="hero-btn secondary">?�영?�간??보기</a>
+                        </div>
+                        <div class="seat-summary-links complete-sub-links">
+                            <a href="#cancel-policy">취소/?�불 ?�내</a>
+                            <a th:href="@{/support}">고객?�터</a>
+                            <a th:href="@{/support#faq}">FAQ</a>
+                        </div>
+                    </article>
+                </aside>
+            </div>
+
+            <section class="booking-notice-section complete-notice-section" id="cancel-policy">
+                <h2>?�내 / ?�의?�항</h2>
+                <div class="booking-notice-grid complete-notice-grid">
+                    <article class="notice-card">
+                        <h3>취소 / ?�불</h3>
+                        <p>?�라???�매 취소???�영 ?�작 20�??�까지 가?�합?�다. ?�후 취소??지???�스?�로 문의?�주?�요.</p>
+                    </article>
+                    <article class="notice-card">
+                        <h3>모바???�켓 ?�용</h3>
+                        <p>?�장 ??모바???�켓 코드 ?�는 QR ?�면???�시?�주?�요. 캡처본�? ?�용???�한?????�습?�다.</p>
+                    </article>
+                    <article class="notice-card">
+                        <h3>?�인 증빙 ?�내</h3>
+                        <p>�?��???��? ?�금 ?�용 고객?� ?�분�?�?증빙?�류�?지참해주세??</p>
+                    </article>
+                    <article class="notice-card">
+                        <h3>?�별관 ?�영 ?�책</h3>
+                        <p>?�별관/?�수좌석 규정?� 지?�별�??�이?????�으�? ?�장 ?�책???�선 ?�용?�니??</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="complete-support-section">
+                <article class="booking-panel support-info-card">
+                    <div class="panel-head"><h2>고객지??</h2></div>
+                    <ul class="support-link-list">
+                        <li><a th:href="@{/support#faq}">?�주 묻는 질문</a><span>?�매 변�? 결제 ?�류, ?�켓 ?�인 ?�내</span></li>
+                        <li><a th:href="@{/support#inquiry}">1:1 문의</a><span>결제/?�매 건별 문의 ?�수</span></li>
+                        <li><a th:href="@{/support#lost}">분실�?문의</a><span>지?�별 분실�??�수 �??�령 ?�인</span></li>
+                        <li><a th:href="@{/support#group}">?�체/?�관 문의</a><span>기업/?�교 ?�체 관??별도 ?�담</span></li>
+                    </ul>
+                    <p class="support-hours">고객?�터 ?�영?�간 09:00 ~ 21:00 (?�중무휴, 지?�별 ?�이)</p>
+                </article>
+            </section>
+
+            <section class="complete-recommend-section">
+                <h2>추천 ?�션</h2>
+                <div class="complete-recommend-grid">
+                    <a th:href="@{/movies}" class="recommend-action-card">
+                        <strong>비슷??분위기의 ?�화 ??보기</strong>
+                        <span>?�재 ?�영??�?SF/?�릴???�레?�션 보기</span>
+                    </a>
+                    <a href="#" class="recommend-action-card">
+                        <strong>진행 중인 ?�벤???�인</strong>
+                        <span>멤버???�휴/?�별관 ?�로모션 모아보기</span>
+                    </a>
+                    <a href="#" class="recommend-action-card">
+                        <strong>가까운 극장 찾기</strong>
+                        <span>??주�? CineFlow ?�영관�??�간???�인</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </section>
+</main>
+
+<footer class="ht-footer full-width-ft cinema-footer">
+    <div class="row">
+        <div class="flex-parent-ft">
+            <div class="flex-child-ft item1">
+                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a>
+                <p>CineFlow CINEMA</p>
+                <p>?�울?�별???�네?�로?�로 100, 4�?</p>
+                <p>?�?�번??1544-0000 · help@cineflow.co.kr</p>
+            </div>
+            <div class="flex-child-ft item2"><h4>?�비???�내</h4><ul><li><a th:href="@{/movies}">?�화</a></li><li><a th:href="@{/booking}">?�매</a></li><li><a th:href="@{/#section-theaters}">극장</a></li><li><a th:href="@{/#section-events}">?�벤??</a></li></ul></div>
+            <div class="flex-child-ft item3"><h4>고객지??</h4><ul><li><a th:href="@{/support}">고객?�터</a></li><li><a th:href="@{/support#faq}">FAQ 보기</a></li><li><a th:href="@{/booking/history}">?�매?�역 ?�인</a></li></ul></div>
+            <div class="flex-child-ft item4"><h4>?�책</h4><ul><li><a th:href="@{/support#cancel-policy}">취소/?�불 ?�내</a></li><li><a th:href="@{/support#faq}">?�용?�내</a></li><li><a th:href="@{/support}">?�비???�책</a></li></ul></div>
+        </div>
+        <div class="ft-copyright">
+            <div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div>
+            <div class="backtotop"><p><a href="#" id="back-to-top">�??�로 <i class="ion-ios-arrow-thin-up"></i></a></p></div>
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/plugins.js}"></script>
+<script th:src="@{/js/plugins2.js}"></script>
+<script th:src="@{/js/custom.js}"></script>
+</body>
+</html>
+
+

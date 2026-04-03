@@ -16,28 +16,28 @@ public class BookingController {
 
     @GetMapping({"/booking", "/booking.html"})
     public String booking() {
-        return "booking";
+        return "booking/quick";
     }
 
     @GetMapping({"/booking/history", "/booking-history.html"})
     public String history(Model model) {
         model.addAttribute("currentBookings", bookingService.getCurrentBookings());
         model.addAttribute("pastBookings", bookingService.getPastBookings());
-        return "booking-history";
+        return "booking/history";
     }
 
     @GetMapping({"/booking/seat", "/booking-seat.html"})
     public String seat() {
-        return "booking-seat";
+        return "booking/seat";
     }
 
     @GetMapping({"/booking/payment", "/booking-payment.html"})
     public String payment() {
-        return "booking-payment";
+        return "booking/payment";
     }
 
     @GetMapping({"/booking/complete", "/booking-complete.html"})
     public String complete() {
-        return "booking-complete";
+        return "booking/complete";
     }
 }

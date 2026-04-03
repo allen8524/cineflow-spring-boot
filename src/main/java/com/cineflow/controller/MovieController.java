@@ -19,18 +19,18 @@ public class MovieController {
     @GetMapping({"/movies", "/movielist.html"})
     public String list(Model model) {
         model.addAttribute("movies", movieService.getAllMovies());
-        return "movielist";
+        return "movies/list";
     }
 
     @GetMapping("/movies/{id}")
     public String detail(@PathVariable Long id, Model model) {
         model.addAttribute("movie", movieService.getMovie(id));
-        return "moviesingle";
+        return "movies/detail";
     }
 
     @GetMapping("/moviesingle.html")
     public String detailByParam(@RequestParam(name = "id", required = false) Long id, Model model) {
         model.addAttribute("movie", movieService.getMovieOrDefault(id));
-        return "moviesingle";
+        return "movies/detail";
     }
 }

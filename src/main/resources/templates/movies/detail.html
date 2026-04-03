@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CineFlow | ?�화 ?�세</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="CineFlow ?�화 ?�세 ?�보">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
+    <link rel="stylesheet" th:href="@{/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
+</head>
+<body>
+<div id="preloader">
+    <img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58">
+    <div id="status"><span></span><span></span></div>
+</div>
+
+<div class="topbar-cinema"><div class="container"><div class="topbar-wrap"><p class="topbar-msg">?�리미엄 ?�크린과 빠른 ?�매�???번에, CineFlow</p><ul class="topbar-links"><li><a href="#">로그??</a></li><li><a href="#">?�원가??</a></li><li><a href="#">멤버??</a></li><li><a th:href="@{/support}">고객?�터</a></li><li><a th:href="@{/booking}" class="topbar-booking">빠른?�매</a></li></ul></div></div></div>
+
+<header class="ht-header full-width-hd cinema-header">
+    <div class="row">
+        <nav id="mainNav" class="navbar navbar-default navbar-custom">
+            <div class="navbar-header logo">
+                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><div id="nav-icon1"><span></span><span></span><span></span></div></div>
+                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a>
+            </div>
+            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav flex-child-menu menu-left">
+                    <li><a class="btn btn-default lv1 active" th:href="@{/movies}">?�화</a></li>
+                    <li><a class="btn btn-default lv1 " th:href="@{/booking}">?�매</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-events}">?�벤??</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-store}">?�토??</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">?�택</a></li>
+                    <li><a class="btn btn-default lv1 " th:href="@{/support}">고객?�터</a></li>
+                </ul>
+                <ul class="nav navbar-nav flex-child-menu menu-right">
+                    <li><a th:href="@{/booking}" class="menu-link">?�영?�간??보기</a></li>
+                    <li><a th:href="@{/booking/history}" class="menu-link">?�매?�역 ?�인</a></li>
+                    <li><a th:href="@{/booking}" class="menu-cta">빠른?�매</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="cinema-page">
+    <section class="cinema-page-hero movie-detail-top">
+        <div class="container">
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/}">??</a></li>
+                <li><a th:href="@{/movies}">?�화</a></li>
+                <li>?�화 ?�세</li>
+            </ul>
+            <div class="detail-hero-grid">
+                <div class="detail-poster-col"><img th:src="@{${movie.posterUrl}}" th:alt="${movie.title + ' ?�스??}"></div>
+                <div class="detail-info-col">
+                    <p class="hero-kicker" th:text="${movie.statusLabel}">?�재?�영??</p>
+                    <h1 th:text="${movie.title}">?�연??궤도</h1>
+                    <p class="detail-tagline" th:text="${movie.shortDescription}">짧�? ?�개</p>
+                    <ul class="detail-meta-list">
+                        <li><strong>개봉??</strong><span th:text="${#temporals.format(movie.releaseDate, 'yyyy.MM.dd')}">2026.04.10</span></li>
+                        <li><strong>?�르</strong><span th:text="${movie.genre}">SF · ?�릴??</span></li>
+                        <li><strong>?�닝?�??</strong><span th:text="${movie.runningTime + '�?}">132�?</span></li>
+                        <li><strong>관?�등�?</strong><span th:text="${movie.ageRating + '?�이?��??��?'}">12?�이?��??��?</span></li>
+                    </ul>
+                    <div class="detail-score-row">
+                        <div class="score-item"><em th:text="${movie.metricName}">?�매??</em><strong th:text="${movie.bookingRate + '%'}">31.2%</strong></div>
+                        <div class="score-item"><em th:text="${movie.scoreMetricName}">관?�평??</em><strong th:text="${movie.score}">9.1</strong></div>
+                    </div>
+                    <div class="detail-actions">
+                        <a th:href="@{/booking}" class="hero-btn primary">?�매?�기</a>
+                        <a th:href="@{/booking}" class="hero-btn secondary">?�영?�간??보기</a>
+                        <a th:href="@{/booking/history}" class="icon-action">?�매?�역</a>
+                        <a th:href="@{/support}" class="icon-action">고객?�터 ?�결</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cinema-page-body">
+        <div class="container">
+            <div class="detail-content-layout">
+                <div class="detail-main-sections">
+                    <article class="detail-block">
+                        <h2>줄거�?</h2>
+                        <p th:text="${movie.description}">?�화 줄거�?</p>
+                    </article>
+
+                    <article class="detail-block">
+                        <h2>주요 ?�보</h2>
+                        <div class="info-table-grid">
+                            <div><span>?�르</span><strong th:text="${movie.genre}">SF · ?�릴??</strong></div>
+                            <div><span>관?�등�?</span><strong th:text="${movie.ageRating}">12</strong></div>
+                            <div><span>?�닝?�??</span><strong th:text="${movie.runningTime + '�?}">132�?</strong></div>
+                            <div><span>?�영?�태</span><strong th:text="${movie.statusLabel}">?�재?�영�?</strong></div>
+                        </div>
+                    </article>
+
+                    <article class="detail-block">
+                        <h2>출연 / 감독</h2>
+                        <ul class="cast-listing">
+                            <li><strong>감독</strong><span>강도??</span></li>
+                            <li><strong>출연</strong><span>?�시?? 최해�? ?�도??</span></li>
+                            <li><strong>각본</strong><span>?�서??</span></li>
+                        </ul>
+                    </article>
+
+                    <article class="detail-block">
+                        <h2>?�틸�?갤러�?</h2>
+                        <div class="stillcut-grid">
+                            <img th:src="@{/images/uploads/image11.jpg}" alt="?�틸�?1">
+                            <img th:src="@{/images/uploads/image12.jpg}" alt="?�틸�?2">
+                            <img th:src="@{/images/uploads/image13.jpg}" alt="?�틸�?3">
+                            <img th:src="@{/images/uploads/image14.jpg}" alt="?�틸�?4">
+                        </div>
+                    </article>
+
+                    <article class="detail-block">
+                        <h2>관???�인??</h2>
+                        <div class="keyword-chips">
+                            <span>#?�주?�릴??</span><span>#?�운?�특??</span><span>#몰입?�연�?</span><span>#반전?�개</span>
+                        </div>
+                    </article>
+
+                    <article class="detail-block">
+                        <h2>?�영 ?�??/ ?�별관 ?�내</h2>
+                        <p>?�반관, IMAX, 4DX, Dolby Atmos ?�별관?�서 ?�영?�니?? 극장�??�영 ?�맷�??�간?�는 ?�영?�간?�에???�인?�세??</p>
+                        <a th:href="@{/booking}" class="detail-link">?�영?�간??보기</a>
+                    </article>
+                </div>
+
+                <aside class="detail-booking-sticky">
+                    <h3>?�매 진입</h3>
+                    <ul>
+                        <li><span>?�택 ?�화</span><strong>?�연??궤도</strong></li>
+                        <li><span>?�??극장</span><strong>강남 ?�트?�점</strong></li>
+                        <li><span>?�짜</span><strong>2026.04.12 (??</strong></li>
+                        <li><span>?�간?�</span><strong>19:30 · 21:55</strong></li>
+                    </ul>
+                    <a th:href="@{/booking}" class="book-btn">?�매?�기</a>
+                </aside>
+            </div>
+
+            <section class="detail-recommend-section">
+                <div class="section-header-inline">
+                    <h2>비슷??분위기의 ?�화</h2>
+                    <a th:href="@{/movies}" class="detail-link">?�체보기</a>
+                </div>
+                <div class="recommend-grid">
+                    <article class="recommend-card"><a th:href="@{/movies/1}"><img th:src="@{/images/uploads/mv-it5.jpg}" alt="추천1"></a><h4><a th:href="@{/movies/1}">?�이???�이�?</a></h4><p>?�영�?· ?�매??24.8%</p><a th:href="@{/booking}" class="detail-link">바로?�매</a></article>
+                    <article class="recommend-card"><a th:href="@{/movies/1}"><img th:src="@{/images/uploads/mv-it6.jpg}" alt="추천2"></a><h4><a th:href="@{/movies/1}">블랙?�웃 ?�티</a></h4><p>?�영�?· ?�매??19.7%</p><a th:href="@{/booking}" class="detail-link">바로?�매</a></article>
+                    <article class="recommend-card"><a th:href="@{/movies/1}"><img th:src="@{/images/uploads/mv-it7.jpg}" alt="추천3"></a><h4><a th:href="@{/movies/1}">리버??코드</a></h4><p>개봉?�정 · 2026.04.18</p><a th:href="@{/booking}" class="detail-link">?�세보기</a></article>
+                    <article class="recommend-card"><a th:href="@{/movies/1}"><img th:src="@{/images/uploads/mv-it9.jpg}" alt="추천4"></a><h4><a th:href="@{/movies/1}">?�라리스</a></h4><p>개봉?�정 · 2026.05.01</p><a th:href="@{/booking}" class="detail-link">?�세보기</a></article>
+                </div>
+            </section>
+        </div>
+    </section>
+</main>
+
+<footer class="ht-footer full-width-ft cinema-footer">
+    <div class="row">
+        <div class="flex-parent-ft">
+            <div class="flex-child-ft item1">
+                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a>
+                <p>CineFlow CINEMA</p>
+                <p>?�울?�별???�네?�로?�로 100, 4�?</p>
+                <p>?�?�번??1544-0000 · help@cineflow.co.kr</p>
+            </div>
+            <div class="flex-child-ft item2"><h4>?�비???�내</h4><ul><li><a th:href="@{/movies}">?�화</a></li><li><a th:href="@{/booking}">?�매</a></li><li><a th:href="@{/#section-theaters}">극장</a></li><li><a th:href="@{/#section-events}">?�벤??</a></li></ul></div>
+            <div class="flex-child-ft item3"><h4>고객지??</h4><ul><li><a th:href="@{/support}">고객?�터</a></li><li><a th:href="@{/support#faq}">FAQ 보기</a></li><li><a th:href="@{/booking/history}">?�매?�역 ?�인</a></li></ul></div>
+            <div class="flex-child-ft item4"><h4>?�책</h4><ul><li><a th:href="@{/support#cancel-policy}">취소/?�불 ?�내</a></li><li><a th:href="@{/support#faq}">?�용?�내</a></li><li><a th:href="@{/support}">?�비???�책</a></li></ul></div>
+        </div>
+        <div class="ft-copyright">
+            <div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div>
+            <div class="backtotop"><p><a href="#" id="back-to-top">�??�로 <i class="ion-ios-arrow-thin-up"></i></a></p></div>
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/plugins.js}"></script>
+<script th:src="@{/js/plugins2.js}"></script>
+<script th:src="@{/js/custom.js}"></script>
+</body>
+</html>
+
+

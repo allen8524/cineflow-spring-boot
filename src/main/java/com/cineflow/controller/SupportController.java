@@ -8,6 +8,6 @@ public class SupportController {
 
     @GetMapping({"/support", "/support.html"})
     public String support() {
-        return "support";
+        return "support/index";
     }
 }
