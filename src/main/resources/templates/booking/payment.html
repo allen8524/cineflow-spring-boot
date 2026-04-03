@@ -6,28 +6,304 @@
     <meta name="description" content="CineFlow 결제">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone-no">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
     <link rel="stylesheet" th:href="@{/css/plugins.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
 </head>
 <body>
-<div id="preloader"><img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58"><div id="status"><span></span><span></span></div></div>
-<div class="topbar-cinema"><div class="container"><div class="topbar-wrap"><p class="topbar-msg">프리미엄 스크린과 빠른 예매를 한 번에, CineFlow</p><ul class="topbar-links"><li><a href="#">로그인</a></li><li><a href="#">회원가입</a></li><li><a href="#">멤버십</a></li><li><a th:href="@{/support}">고객센터</a></li><li><a th:href="@{/booking}" class="topbar-booking">빠른예매</a></li></ul></div></div></div>
-<header class="ht-header full-width-hd cinema-header"><div class="row"><nav id="mainNav" class="navbar navbar-default navbar-custom"><div class="navbar-header logo"><div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><div id="nav-icon1"><span></span><span></span><span></span></div></div><a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a></div><div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1"><ul class="nav navbar-nav flex-child-menu menu-left"><li><a class="btn btn-default lv1" th:href="@{/movies}">영화</a></li><li><a class="btn btn-default lv1 active" th:href="@{/booking}">예매</a></li><li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-events}">이벤트</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-store}">스토어</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">혜택</a></li><li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li></ul><ul class="nav navbar-nav flex-child-menu menu-right"><li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li><li><a th:href="@{/booking/history}" class="menu-link">예매내역 확인</a></li><li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li></ul></div></nav></div></header>
+<div id="preloader">
+    <img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58">
+    <div id="status"><span></span><span></span></div>
+</div>
+
+<div class="topbar-cinema">
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">프리미엄 상영과 빠른 예매를 한 번에, CineFlow</p>
+            <ul class="topbar-links">
+                <li><a href="#">로그인</a></li>
+                <li><a href="#">회원가입</a></li>
+                <li><a href="#">멤버십</a></li>
+                <li><a th:href="@{/support}">고객센터</a></li>
+                <li><a th:href="@{/booking}" class="topbar-booking">빠른예매</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<header class="ht-header full-width-hd cinema-header">
+    <div class="row">
+        <nav id="mainNav" class="navbar navbar-default navbar-custom">
+            <div class="navbar-header logo">
+                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <div id="nav-icon1"><span></span><span></span><span></span></div>
+                </div>
+                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a>
+            </div>
+            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav flex-child-menu menu-left">
+                    <li><a class="btn btn-default lv1" th:href="@{/movies}">영화</a></li>
+                    <li><a class="btn btn-default lv1 active" th:href="@{/booking}">예매</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-events}">이벤트</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-store}">스토어</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">혜택</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li>
+                </ul>
+                <ul class="nav navbar-nav flex-child-menu menu-right">
+                    <li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li>
+                    <li><a th:href="@{/booking/history}" class="menu-link">예매내역 확인</a></li>
+                    <li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
 
 <main class="cinema-page booking-page booking-payment-page">
-    <section class="cinema-page-hero booking-hero payment-hero"><div class="container"><ul class="cinema-breadcrumb"><li><a th:href="@{/}">홈</a></li><li><a th:href="@{/booking}">예매</a></li><li><a th:href="@{/booking}">빠른예매</a></li><li><a th:href="@{/booking/seat}">좌석선택</a></li><li>결제</li></ul><h1>결제</h1><p>할인 선택과 결제수단을 확인한 뒤 예매를 완료하세요.</p><ol class="booking-stepper"><li><span>01</span><strong>상영정보</strong></li><li><span>02</span><strong>인원/좌석</strong></li><li class="is-active"><span>03</span><strong>결제</strong></li><li><span>04</span><strong>완료</strong></li></ol></div></section>
-    <section class="cinema-page-body booking-body"><div class="container"><article class="booking-panel screening-summary-bar payment-summary-bar"><div class="screening-summary-title"><h2>예매 정보 최종 확인</h2><span class="summary-chip">결제 직전 확인</span></div><div class="screening-summary-grid payment-summary-grid"><div class="summary-movie-group"><strong>시간의 궤도</strong><div class="meta-line"><em class="age-badge age-12">12</em><span>강남 · 1관</span></div></div><div class="summary-info-block"><span>상영일시</span><strong>2026.04.02 (목) 10:20</strong></div><div class="summary-info-block"><span>종료예정</span><strong>12:32 (132분)</strong></div><div class="summary-info-block"><span>선택 좌석</span><strong>E7, E8</strong></div><div class="summary-info-block"><span>선택 인원</span><strong>성인 2명</strong></div></div></article>
-            <div class="booking-payment-layout"><section class="booking-payment-main"><article class="booking-panel payment-block"><div class="panel-head"><h2>멤버십 / 제휴 할인</h2><a href="#" class="payment-inline-link">할인 선택</a></div><div class="payment-benefit-list"><div class="benefit-item is-ready"><div class="benefit-main"><strong>멤버십 할인</strong><p>등급별 최대 2,000원 할인 가능</p></div><span class="status-chip">적용 가능</span></div><div class="benefit-item is-applied"><div class="benefit-main"><strong>통신사 제휴 할인</strong><p>월 1회 / 본인 인증 선택</p></div><span class="status-chip">적용 완료</span></div><div class="benefit-item is-checking"><div class="benefit-main"><strong>청소년 / 우대 요금</strong><p>현장 증빙 확인 후 적용</p></div><span class="status-chip">조건 확인</span></div><div class="benefit-item is-ready"><div class="benefit-main"><strong>생일 쿠폰</strong><p>발급일 기준 30일 이내 사용</p></div><span class="status-chip">적용 가능</span></div></div></article>
-                <article class="booking-panel payment-block"><div class="panel-head"><h2>관람권 / 쿠폰 / 포인트</h2><span class="input-help">중복 적용 가능 여부는 결제수단에 따라 달라질 수 있습니다.</span></div><div class="payment-input-grid"><div class="payment-input-card"><h3>영화 관람권</h3><div class="inline-field"><input type="text" placeholder="관람권 번호를 입력하세요"><button type="button">적용하기</button></div></div><div class="payment-input-card"><h3>모바일 상품권 / 스토어 교환권</h3><div class="inline-field"><select><option>보유 교환권 선택</option><option>스낵 세트 교환권</option><option>2D 영화 관람권</option></select><button type="button">적용하기</button></div></div><div class="payment-input-card"><h3>쿠폰</h3><div class="inline-field coupon-row"><select><option>보유 쿠폰 선택</option><option>평일 2,000원 할인 쿠폰</option><option>특별관 3,000원 할인 쿠폰</option></select><button type="button">적용하기</button></div></div><div class="payment-input-card"><h3>포인트 사용</h3><div class="inline-field"><input type="text" placeholder="사용할 포인트 입력"><button type="button">적용하기</button></div><p class="field-note">사용 가능 포인트 8,400P</p></div></div></article>
-                <article class="booking-panel payment-block"><div class="panel-head"><h2>결제수단 선택</h2><span class="input-help">원하는 결제수단을 선택하고 세부 옵션을 확인하세요.</span></div><div class="payment-method-grid"><button type="button" class="method-card is-active">신용/체크카드</button><button type="button" class="method-card">간편결제</button><button type="button" class="method-card">휴대폰 결제</button><button type="button" class="method-card">기프트카드 / 관람권 차감</button></div><div class="payment-method-detail"><div class="inline-field"><label for="card-company">카드사</label><select id="card-company"><option>카드사 선택</option><option>신한카드</option><option>국민카드</option><option>우리카드</option></select></div><div class="inline-field"><label for="card-installment">할부</label><select id="card-installment"><option>일시불</option><option>2개월</option><option>3개월</option></select></div><div class="inline-field quickpay-choice"><label>간편결제</label><div class="quickpay-buttons"><button type="button">PAY NOW</button><button type="button">CINE PAY</button><button type="button">MOBILE PAY</button></div></div></div></article>
-                <article class="booking-panel payment-block payment-agreement-block"><div class="panel-head"><h2>약관 및 동의</h2></div><ul class="agreement-list"><li><label><input type="checkbox"> 결제 진행에 따른 유의사항에 동의합니다.</label></li><li><label><input type="checkbox"> 취소/환불 규정을 확인했습니다.</label></li><li><label><input type="checkbox"> 개인정보 수집 및 이용에 동의합니다.</label></li></ul></article></section>
-                <aside class="booking-summary booking-panel payment-summary-panel"><div class="panel-head"><h2>주문 요약</h2></div><div class="summary-card payment-summary-card"><img th:src="@{/images/uploads/movie-single.jpg}" alt="시간의 궤도 포스터"><div class="summary-text"><p class="summary-movie">시간의 궤도</p><ul><li><span>극장 / 상영관</span><strong>강남 · 1관</strong></li><li><span>일시</span><strong>2026.04.02 (목) 10:20</strong></li><li><span>좌석</span><strong>E7, E8</strong></li><li><span>인원</span><strong>성인 2명</strong></li><li><span>적용 할인</span><strong>제휴 할인 2,000원</strong></li></ul></div></div><div class="amount-breakdown"><h3>주문 금액 상세</h3><ul><li><span>티켓 금액</span><strong>30,000원</strong></li><li><span>프리미엄관 추가금</span><strong>1,000원</strong></li><li><span>할인 적용 금액</span><strong>-2,000원</strong></li><li><span>포인트 사용 금액</span><strong>-0원</strong></li></ul><div class="amount-total"><span>최종 결제 금액</span><strong>29,000원</strong></div></div><div class="summary-cta payment-cta"><a th:href="@{/booking/complete}" class="hero-btn primary">결제 완료하기</a><a th:href="@{/booking/seat}" class="hero-btn secondary">이전 단계로</a></div><div class="seat-summary-links payment-links"><a href="#">할인 초기화</a><a href="#">예매 정보 다시 확인</a></div><p class="summary-note">실제 결제는 진행되지 않으며 현재 화면은 프론트엔드 목업입니다.</p></aside></div>
-            <section class="booking-notice-section payment-notice-section"><h2>결제 유의사항</h2><div class="booking-notice-grid payment-notice-grid"><article class="notice-card"><h3>취소 / 환불 가능 시간</h3><p>상영 시작 20분 전까지 온라인 취소가 가능하며 이후에는 현장 문의가 필요합니다.</p></article><article class="notice-card"><h3>모바일 티켓 사용 안내</h3><p>예매 완료 후 마이페이지에서 모바일 티켓을 확인할 수 있으며 입장 시 바코드를 제시해주세요.</p></article><article class="notice-card"><h3>할인 증빙 안내</h3><p>청소년 및 우대 할인은 현장에서 신분증 또는 증빙서류 확인이 필요합니다.</p></article><article class="notice-card"><h3>특별관 환불 기준</h3><p>특별관과 특수 좌석은 지점 정책에 따라 환불 수수료 기준이 달라질 수 있습니다.</p></article></div></section></div></section>
+    <section class="cinema-page-hero booking-hero payment-hero">
+        <div class="container">
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/}">홈</a></li>
+                <li><a th:href="@{/booking}">예매</a></li>
+                <li><a th:href="@{/booking}">빠른예매</a></li>
+                <li><a th:href="@{/booking/seat(scheduleId=${bookingRequest.scheduleId})}">좌석 선택</a></li>
+                <li>결제</li>
+            </ul>
+            <h1>결제</h1>
+            <p>예매 정보를 확인하고 결제수단을 선택해 예매를 완료해 주세요.</p>
+            <ol class="booking-stepper">
+                <li><span>01</span><strong>상영정보</strong></li>
+                <li><span>02</span><strong>인원/좌석</strong></li>
+                <li class="is-active"><span>03</span><strong>결제</strong></li>
+                <li><span>04</span><strong>완료</strong></li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="cinema-page-body booking-body">
+        <div class="container">
+            <div th:if="${errorMessage}" class="booking-feedback-banner">
+                <strong>결제 정보를 다시 확인해 주세요.</strong>
+                <span th:text="${errorMessage}">이미 다른 고객이 먼저 예매한 좌석입니다.</span>
+            </div>
+
+            <div th:if="${bookingSummary == null}" class="empty-state-card">
+                결제할 예매 정보가 없습니다. 상영시간표에서 회차와 좌석을 먼저 선택해 주세요.
+            </div>
+
+            <div th:if="${bookingSummary != null}" th:with="baseTotal=${bookingSummary.basePrice * bookingSummary.peopleCount}, extraAmount=${bookingSummary.totalPrice - (bookingSummary.basePrice * bookingSummary.peopleCount)}">
+                <article class="booking-panel screening-summary-bar payment-summary-bar">
+                    <div class="screening-summary-title">
+                        <h2>예매 정보 최종 확인</h2>
+                        <span class="summary-chip">결제 직전 확인</span>
+                    </div>
+                    <div class="screening-summary-grid payment-summary-grid">
+                        <div class="summary-movie-group">
+                            <strong th:text="${bookingSummary.movieTitle}">영화 제목</strong>
+                            <div class="meta-line">
+                                <em th:class="${bookingSummary.ageRating == 'ALL' ? 'age-badge all' : 'age-badge age-' + bookingSummary.ageRating}"
+                                    th:text="${bookingSummary.ageRating == 'ALL' ? 'ALL' : bookingSummary.ageRating}">12</em>
+                                <span th:text="${bookingSummary.theaterName + ' | ' + bookingSummary.screenName}">CineFlow 강남 | 1관</span>
+                            </div>
+                        </div>
+                        <div class="summary-info-block">
+                            <span>상영일시</span>
+                            <strong th:text="${#temporals.format(bookingSummary.startTime, 'yyyy.MM.dd (E) HH:mm')}">2026.04.03 (금) 10:20</strong>
+                        </div>
+                        <div class="summary-info-block">
+                            <span>종료예정</span>
+                            <strong th:text="${#temporals.format(bookingSummary.endTime, 'HH:mm')}">12:32</strong>
+                        </div>
+                        <div class="summary-info-block">
+                            <span>선택 좌석</span>
+                            <strong th:text="${bookingSummary.seatNames}">E7, E8</strong>
+                        </div>
+                        <div class="summary-info-block">
+                            <span>관람 인원</span>
+                            <strong th:text="${bookingSummary.peopleLabel}">성인 2명 / 청소년 0명 / 우대 0명</strong>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="booking-payment-layout">
+                    <section class="booking-payment-main">
+                        <form id="payment-form" th:action="@{/booking/complete}" method="post">
+                            <input type="hidden" name="scheduleId" th:value="${bookingSummary.scheduleId}">
+                            <input type="hidden" name="adultCount" th:value="${bookingRequest.adultCount}">
+                            <input type="hidden" name="teenCount" th:value="${bookingRequest.teenCount}">
+                            <input type="hidden" name="seniorCount" th:value="${bookingRequest.seniorCount}">
+                            <input type="hidden" name="seatCodes" th:each="seatCode : ${bookingSummary.seatCodes}" th:value="${seatCode}">
+
+                            <article class="booking-panel payment-block">
+                                <div class="panel-head">
+                                    <h2>예매자 정보</h2>
+                                    <span class="input-help">결제 완료 후 예매내역과 예매번호 확인에 사용됩니다.</span>
+                                </div>
+                                <div class="payment-input-grid">
+                                    <div class="payment-input-card">
+                                        <h3>예매자 이름</h3>
+                                        <div class="inline-field">
+                                            <input type="text" name="customerName" th:value="${bookingRequest.customerName}" placeholder="이름을 입력해 주세요" maxlength="20">
+                                        </div>
+                                    </div>
+                                    <div class="payment-input-card">
+                                        <h3>연락처</h3>
+                                        <div class="inline-field">
+                                            <input type="text" name="customerPhone" th:value="${bookingRequest.customerPhone}" placeholder="예: 01012345678" maxlength="20">
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="booking-panel payment-block">
+                                <div class="panel-head">
+                                    <h2>결제수단 선택</h2>
+                                    <span class="input-help">실제 PG 연동 대신 가상 결제 성공 처리로 동작합니다.</span>
+                                </div>
+                                <div class="payment-method-grid">
+                                    <label class="method-card-option" th:each="method : ${paymentMethods}">
+                                        <input type="radio"
+                                               name="paymentMethod"
+                                               th:value="${method}"
+                                               th:checked="${bookingRequest.paymentMethod == method or (bookingRequest.paymentMethod == null and method.name() == 'CARD')}">
+                                        <span class="method-card" th:text="${method.label}">카드</span>
+                                    </label>
+                                </div>
+                                <div class="payment-method-detail">
+                                    <div class="payment-input-card">
+                                        <h3>선택한 결제수단</h3>
+                                        <p class="field-note">카드, 카카오페이, 네이버페이, 토스를 선택할 수 있습니다.</p>
+                                    </div>
+                                    <div class="payment-input-card">
+                                        <h3>결제 안내</h3>
+                                        <p class="field-note">결제 완료 시 예매 저장, 좌석 예약 처리, 결제 내역 저장이 함께 진행됩니다.</p>
+                                    </div>
+                                </div>
+                            </article>
+                        </form>
+
+                        <article class="booking-panel payment-block payment-agreement-block">
+                            <div class="panel-head"><h2>안내 사항</h2></div>
+                            <ul class="agreement-list">
+                                <li><label><input type="checkbox" checked disabled> 선택한 좌석은 결제 완료 시 즉시 예약 처리됩니다.</label></li>
+                                <li><label><input type="checkbox" checked disabled> 이미 예매된 좌석은 결제 직전에 다시 한 번 검증합니다.</label></li>
+                                <li><label><input type="checkbox" checked disabled> 결제 완료 후 예매번호 기준으로 완료 페이지와 예매내역에서 확인할 수 있습니다.</label></li>
+                            </ul>
+                        </article>
+                    </section>
+
+                    <aside class="booking-summary booking-panel payment-summary-panel">
+                        <div class="panel-head"><h2>주문 요약</h2></div>
+                        <div class="summary-card payment-summary-card">
+                            <img th:src="@{${bookingSummary.posterUrl}}" th:alt="${bookingSummary.movieTitle + ' 포스터'}">
+                            <div class="summary-text">
+                                <p class="summary-movie" th:text="${bookingSummary.movieTitle}">영화 제목</p>
+                                <ul>
+                                    <li><span>극장 / 상영관</span><strong th:text="${bookingSummary.theaterName + ' | ' + bookingSummary.screenName + '(' + bookingSummary.screenType + ')'}">CineFlow 강남 | 1관(IMAX)</strong></li>
+                                    <li><span>상영시간</span><strong th:text="${#temporals.format(bookingSummary.startTime, 'yyyy.MM.dd (E) HH:mm')}">2026.04.03 (금) 10:20</strong></li>
+                                    <li><span>좌석</span><strong th:text="${bookingSummary.seatNames}">E7, E8</strong></li>
+                                    <li><span>관람 인원</span><strong th:text="${bookingSummary.peopleLabel}">성인 2명 / 청소년 0명 / 우대 0명</strong></li>
+                                    <li><span>결제수단</span><strong th:text="${bookingSummary.paymentMethodLabel}">결제수단 선택</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="amount-breakdown">
+                            <h3>금액 안내</h3>
+                            <ul>
+                                <li><span>기본 티켓 금액</span><strong th:text="${#numbers.formatInteger(baseTotal, 3, 'COMMA') + '원'}">44,000원</strong></li>
+                                <li><span>좌석 추가 금액</span><strong th:text="${(extraAmount > 0 ? '+' : '') + #numbers.formatInteger(extraAmount, 3, 'COMMA') + '원'}">+3,000원</strong></li>
+                            </ul>
+                            <div class="amount-total">
+                                <span>최종 결제 금액</span>
+                                <strong th:text="${#numbers.formatInteger(bookingSummary.totalPrice, 3, 'COMMA') + '원'}">47,000원</strong>
+                            </div>
+                        </div>
+                        <div class="summary-cta payment-cta">
+                            <button type="submit" form="payment-form" class="hero-btn primary">결제 완료</button>
+                            <a th:href="@{/booking/seat(scheduleId=${bookingSummary.scheduleId})}" class="hero-btn secondary">좌석 다시 선택</a>
+                        </div>
+                        <div class="seat-summary-links payment-links">
+                            <a th:href="@{/booking(movieId=${bookingSummary.movieId}, theaterId=${bookingSummary.theaterId}, date=${bookingSummary.showDate}, scheduleId=${bookingSummary.scheduleId})}">상영시간표로 돌아가기</a>
+                            <a th:href="@{/booking/history}">예매내역 보기</a>
+                        </div>
+                        <p class="summary-note">결제 완료 후 예매번호가 발급되며, 예매내역과 완료 페이지에 바로 반영됩니다.</p>
+                    </aside>
+                </div>
+
+                <section class="booking-notice-section payment-notice-section">
+                    <h2>결제 안내</h2>
+                    <div class="booking-notice-grid payment-notice-grid">
+                        <article class="notice-card">
+                            <h3>예매 확정 시점</h3>
+                            <p>결제 완료와 동시에 Booking, BookingSeat, Payment가 저장되고 회차 좌석이 예약 처리됩니다.</p>
+                        </article>
+                        <article class="notice-card">
+                            <h3>좌석 중복 검증</h3>
+                            <p>누군가 먼저 예매한 좌석이면 결제 직전에 실패 메시지를 보여주고 다시 선택할 수 있도록 안내합니다.</p>
+                        </article>
+                        <article class="notice-card">
+                            <h3>예매번호 확인</h3>
+                            <p>완료 페이지와 예매내역 페이지에서 bookingCode 기준으로 예매 정보를 확인할 수 있습니다.</p>
+                        </article>
+                        <article class="notice-card">
+                            <h3>향후 확장</h3>
+                            <p>현재는 가짜 결제 성공 처리이며, 이후 PG 연동과 취소·환불 로직을 같은 구조에 확장할 수 있습니다.</p>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
 </main>
 
-<footer class="ht-footer full-width-ft cinema-footer"><div class="row"><div class="flex-parent-ft"><div class="flex-child-ft item1"><a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a><p>CineFlow CINEMA</p><p>서울특별시 시네마로 100, 4층</p><p>대표번호 1544-0000 · help@cineflow.co.kr</p></div><div class="flex-child-ft item2"><h4>서비스 안내</h4><ul><li><a th:href="@{/movies}">영화</a></li><li><a th:href="@{/booking}">예매</a></li><li><a th:href="@{/#section-theaters}">극장</a></li><li><a th:href="@{/#section-events}">이벤트</a></li></ul></div><div class="flex-child-ft item3"><h4>고객지원</h4><ul><li><a th:href="@{/support}">고객센터</a></li><li><a th:href="@{/support#faq}">FAQ 보기</a></li><li><a th:href="@{/booking/history}">예매내역 확인</a></li></ul></div><div class="flex-child-ft item4"><h4>정책</h4><ul><li><a th:href="@{/support#cancel-policy}">취소/환불 안내</a></li><li><a th:href="@{/support#faq}">이용안내</a></li><li><a th:href="@{/support}">서비스 정책</a></li></ul></div></div><div class="ft-copyright"><div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div><div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div></div></div></footer>
-<script th:src="@{/js/jquery.js}"></script><script th:src="@{/js/plugins.js}"></script><script th:src="@{/js/plugins2.js}"></script><script th:src="@{/js/custom.js}"></script>
+<footer class="ht-footer full-width-ft cinema-footer">
+    <div class="row">
+        <div class="flex-parent-ft">
+            <div class="flex-child-ft item1">
+                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a>
+                <p>CineFlow CINEMA</p>
+                <p>서울 강남구 시네플로우로 100, 4층</p>
+                <p>대표번호 1544-0000 | help@cineflow.co.kr</p>
+            </div>
+            <div class="flex-child-ft item2">
+                <h4>서비스 안내</h4>
+                <ul>
+                    <li><a th:href="@{/movies}">영화</a></li>
+                    <li><a th:href="@{/booking}">예매</a></li>
+                    <li><a th:href="@{/#section-theaters}">극장</a></li>
+                    <li><a th:href="@{/#section-events}">이벤트</a></li>
+                </ul>
+            </div>
+            <div class="flex-child-ft item3">
+                <h4>고객지원</h4>
+                <ul>
+                    <li><a th:href="@{/support}">고객센터</a></li>
+                    <li><a th:href="@{/support#faq}">FAQ 보기</a></li>
+                    <li><a th:href="@{/booking/history}">예매내역 확인</a></li>
+                </ul>
+            </div>
+            <div class="flex-child-ft item4">
+                <h4>정책</h4>
+                <ul>
+                    <li><a th:href="@{/support#cancel-policy}">취소/환불 안내</a></li>
+                    <li><a th:href="@{/support#faq}">이용안내</a></li>
+                    <li><a th:href="@{/support}">서비스 정책</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ft-copyright">
+            <div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div>
+            <div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div>
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/plugins.js}"></script>
+<script th:src="@{/js/plugins2.js}"></script>
+<script th:src="@{/js/custom.js}"></script>
 </body>
 </html>

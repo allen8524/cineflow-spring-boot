@@ -37,9 +37,9 @@
                     <li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li>
                 </ul>
                 <ul class="nav navbar-nav flex-child-menu menu-right">
-                    <li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li>
+                    <li><a th:href="@{/booking(movieId=${movie.id})}" class="menu-link">상영시간표 보기</a></li>
                     <li><a th:href="@{/booking/history}" class="menu-link">예매내역 확인</a></li>
-                    <li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li>
+                    <li><a th:href="@{/booking(movieId=${movie.id})}" class="menu-cta">빠른예매</a></li>
                 </ul>
             </div>
         </nav>
@@ -71,8 +71,8 @@
                         <div class="score-item"><em th:text="${movie.scoreMetricName}">평점</em><strong th:text="${movie.score}">9.1</strong></div>
                     </div>
                     <div class="detail-actions">
-                        <a th:href="@{/booking}" class="hero-btn primary">예매하기</a>
-                        <a th:href="@{/booking}" class="hero-btn secondary">상영시간표 보기</a>
+                        <a th:href="@{/booking(movieId=${movie.id})}" class="hero-btn primary">예매하기</a>
+                        <a th:href="@{/booking(movieId=${movie.id})}" class="hero-btn secondary">상영시간표 보기</a>
                         <a th:href="@{/booking/history}" class="icon-action">예매내역</a>
                         <a th:href="@{/support}" class="icon-action">고객센터 연결</a>
                     </div>
@@ -96,6 +96,55 @@
                             <div><span>관람등급</span><strong th:text="${movie.ageRating}">12</strong></div>
                             <div><span>상영시간</span><strong th:text="${movie.runningTime + '분'}">132분</strong></div>
                             <div><span>상영상태</span><strong th:text="${movie.statusLabel}">상영중</strong></div>
+                        </div>
+                    </article>
+                    <article class="detail-block">
+                        <div class="section-header-inline detail-section-header">
+                            <h2>상영 극장</h2>
+                            <a th:href="@{/booking(movieId=${movie.id})}" class="detail-link">전체 시간표 보기</a>
+                        </div>
+                        <div class="theater-link-grid" th:if="${!#lists.isEmpty(theaters)}">
+                            <a class="theater-link-card" th:each="theater : ${theaters}" th:href="@{/booking(movieId=${movie.id}, theaterId=${theater.id})}">
+                                <strong th:text="${theater.name}">CineFlow 강남</strong>
+                                <span th:text="${theater.location}">서울특별시 강남구 테헤란로 410</span>
+                            </a>
+                        </div>
+                        <div class="empty-state-card" th:if="${#lists.isEmpty(theaters)}">
+                            현재 예매 가능한 상영 극장이 준비 중입니다. 조금만 기다려 주세요.
+                        </div>
+                    </article>
+                    <article class="detail-block">
+                        <div class="section-header-inline detail-section-header">
+                            <h2>상영시간표</h2>
+                            <a th:href="@{/booking(movieId=${movie.id})}" class="detail-link">빠른예매</a>
+                        </div>
+                        <div th:if="${!#lists.isEmpty(theaterScheduleGroups)}">
+                            <section class="detail-schedule-group" th:each="group : ${theaterScheduleGroups}">
+                                <div class="detail-schedule-group-head">
+                                    <div>
+                                        <h3 th:text="${group.theaterName}">CineFlow 강남</h3>
+                                        <p th:text="${group.theaterLocation}">서울특별시 강남구 테헤란로 410</p>
+                                    </div>
+                                    <a th:href="@{/booking(movieId=${movie.id}, theaterId=${group.theaterId})}" class="detail-link">이 극장 예매</a>
+                                </div>
+                                <ul class="detail-schedule-list">
+                                    <li th:each="schedule : ${group.schedules}">
+                                        <div class="detail-schedule-main">
+                                            <strong th:text="${group.theaterName + ' | ' + schedule.screenDisplayName + ' | ' + #temporals.format(schedule.startTime, 'HH:mm') + ' | ' + schedule.runningTime + '분 | 잔여 ' + schedule.availableSeats + '석'}">CineFlow 강남 | 1관(IMAX) | 10:20 | 132분 | 잔여 58석</strong>
+                                            <div class="detail-schedule-sub">
+                                                <span th:text="${#temporals.format(schedule.startTime, 'yyyy.MM.dd (E)')}">2026.04.04 (토)</span>
+                                                <span th:text="${'종료 ' + #temporals.format(schedule.endTime, 'HH:mm')}">종료 12:32</span>
+                                                <span th:text="${'상영관 ' + schedule.screenSummary}">상영관 1관 · IMAX</span>
+                                                <span th:text="${'잔여 좌석 ' + schedule.availableSeats + '/' + schedule.totalSeats}">잔여 좌석 58/220</span>
+                                            </div>
+                                        </div>
+                                        <a class="hero-btn secondary" th:href="@{/booking(movieId=${movie.id}, theaterId=${schedule.theaterId}, date=${schedule.showDate}, scheduleId=${schedule.scheduleId})}">바로 예매</a>
+                                    </li>
+                                </ul>
+                            </section>
+                        </div>
+                        <div class="empty-state-card" th:if="${#lists.isEmpty(theaterScheduleGroups)}">
+                            등록된 상영시간표가 없습니다. 빠른예매 페이지에서 다른 영화를 먼저 확인해 보세요.
                         </div>
                     </article>
                     <article class="detail-block">
@@ -124,7 +173,7 @@
                     <article class="detail-block">
                         <h2>상영 포맷 · 특별관 안내</h2>
                         <p>일반관, IMAX, 4DX, Dolby Atmos 특별관에서 상영됩니다. 극장별 운영 포맷과 시간표는 상영시간표에서 확인해주세요.</p>
-                        <a th:href="@{/booking}" class="detail-link">상영시간표 보기</a>
+                        <a th:href="@{/booking(movieId=${movie.id})}" class="detail-link">상영시간표 보기</a>
                     </article>
                 </div>
 
@@ -132,11 +181,12 @@
                     <h3>예매 정보</h3>
                     <ul>
                         <li><span>선택 영화</span><strong th:text="${movie.title}">시간의 궤도</strong></li>
-                        <li><span>추천 극장</span><strong>CineFlow 강남</strong></li>
-                        <li><span>추천 날짜</span><strong>2026.04.12 (일)</strong></li>
-                        <li><span>대표 시간</span><strong>19:30 · 21:55</strong></li>
+                        <li><span>추천 극장</span><strong th:text="${nextSchedule != null ? nextSchedule.theaterName : '상영 극장 확인 중'}">CineFlow 강남</strong></li>
+                        <li><span>추천 날짜</span><strong th:text="${nextSchedule != null ? #temporals.format(nextSchedule.showDate, 'yyyy.MM.dd (E)') : '상영일 확인 중'}">2026.04.05 (일)</strong></li>
+                        <li><span>대표 시간</span><strong th:text="${nextSchedule != null ? #temporals.format(nextSchedule.startTime, 'HH:mm') + ' · ' + #temporals.format(nextSchedule.endTime, 'HH:mm') : '시간표 확인 중'}">19:40 · 21:52</strong></li>
                     </ul>
-                    <a th:href="@{/booking}" class="book-btn">예매하기</a>
+                    <a th:if="${nextSchedule != null}" th:href="@{/booking(movieId=${movie.id}, theaterId=${nextSchedule.theaterId}, date=${nextSchedule.showDate}, scheduleId=${nextSchedule.scheduleId})}" class="book-btn">예매하기</a>
+                    <a th:if="${nextSchedule == null}" th:href="@{/booking(movieId=${movie.id})}" class="book-btn">예매하기</a>
                 </aside>
             </div>
 
@@ -146,8 +196,8 @@
                     <a th:href="@{/movies}" class="detail-link">전체보기</a>
                 </div>
                 <div class="recommend-grid">
-                    <article class="recommend-card"><a th:href="@{/movies/2}"><img th:src="@{/images/uploads/mv-it5.jpg}" alt="추천 영화 1"></a><h4><a th:href="@{/movies/2}">보이스 노이즈</a></h4><p>상영중 · 예매율 24.8%</p><a th:href="@{/booking}" class="detail-link">바로예매</a></article>
-                    <article class="recommend-card"><a th:href="@{/movies/3}"><img th:src="@{/images/uploads/mv-it6.jpg}" alt="추천 영화 2"></a><h4><a th:href="@{/movies/3}">블랙아웃 시티</a></h4><p>상영중 · 예매율 19.7%</p><a th:href="@{/booking}" class="detail-link">바로예매</a></article>
+                    <article class="recommend-card"><a th:href="@{/movies/2}"><img th:src="@{/images/uploads/mv-it5.jpg}" alt="추천 영화 1"></a><h4><a th:href="@{/movies/2}">보이스 노이즈</a></h4><p>상영중 · 예매율 24.8%</p><a th:href="@{/booking(movieId=2)}" class="detail-link">바로예매</a></article>
+                    <article class="recommend-card"><a th:href="@{/movies/3}"><img th:src="@{/images/uploads/mv-it6.jpg}" alt="추천 영화 2"></a><h4><a th:href="@{/movies/3}">블랙아웃 시티</a></h4><p>상영중 · 예매율 19.7%</p><a th:href="@{/booking(movieId=3)}" class="detail-link">바로예매</a></article>
                     <article class="recommend-card"><a th:href="@{/movies/5}"><img th:src="@{/images/uploads/mv-it7.jpg}" alt="추천 영화 3"></a><h4><a th:href="@{/movies/5}">리버스 코드</a></h4><p>개봉예정 · 2026.04.18</p><a th:href="@{/movies/5}" class="detail-link">상세보기</a></article>
                     <article class="recommend-card"><a th:href="@{/movies/7}"><img th:src="@{/images/uploads/mv-it9.jpg}" alt="추천 영화 4"></a><h4><a th:href="@{/movies/7}">일리시스</a></h4><p>개봉예정 · 2026.05.01</p><a th:href="@{/movies/7}" class="detail-link">상세보기</a></article>
                 </div>

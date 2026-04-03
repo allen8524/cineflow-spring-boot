@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CineFlow | 관리자 대시보드</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="CineFlow 관리자 대시보드">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
+    <link rel="stylesheet" th:href="@{/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
+</head>
+<body>
+<div class="topbar-cinema">
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">내부 운영 확인용 관리자 페이지입니다.</p>
+            <ul class="topbar-links">
+                <li><a th:href="@{/}">메인</a></li>
+                <li><a th:href="@{/booking/history}">예매내역</a></li>
+                <li><a th:href="@{/admin/bookings}">예매 관리</a></li>
+                <li><a th:href="@{/admin/schedules}">회차 관리</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<main class="cinema-page admin-page">
+    <section class="cinema-page-hero admin-hero">
+        <div class="container">
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/}">홈</a></li>
+                <li>관리자 대시보드</li>
+            </ul>
+            <h1>관리자 대시보드</h1>
+            <p>예매 현황, 회차 현황, 좌석 점유 상태를 빠르게 확인할 수 있습니다.</p>
+            <div class="admin-subnav">
+                <a th:href="@{/admin}" class="is-active">대시보드</a>
+                <a th:href="@{/admin/bookings}">예매 현황</a>
+                <a th:href="@{/admin/schedules}">회차 현황</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="cinema-page-body admin-body">
+        <div class="container">
+            <div th:if="${successMessage}" class="booking-feedback-banner is-success">
+                <strong>처리가 완료되었습니다.</strong>
+                <span th:text="${successMessage}">예매가 취소되었습니다.</span>
+            </div>
+            <div th:if="${errorMessage}" class="booking-feedback-banner">
+                <strong>처리를 완료하지 못했습니다.</strong>
+                <span th:text="${errorMessage}">오류가 발생했습니다.</span>
+            </div>
+
+            <section class="admin-stat-grid">
+                <article class="booking-panel admin-stat-card">
+                    <span>총 영화 수</span>
+                    <strong th:text="${dashboard.totalMovies}">7</strong>
+                </article>
+                <article class="booking-panel admin-stat-card">
+                    <span>총 회차 수</span>
+                    <strong th:text="${dashboard.totalSchedules}">12</strong>
+                </article>
+                <article class="booking-panel admin-stat-card">
+                    <span>총 예매 수</span>
+                    <strong th:text="${dashboard.totalBookings}">8</strong>
+                </article>
+                <article class="booking-panel admin-stat-card">
+                    <span>예정된 예매</span>
+                    <strong th:text="${dashboard.upcomingBookings}">3</strong>
+                </article>
+                <article class="booking-panel admin-stat-card">
+                    <span>취소된 예매</span>
+                    <strong th:text="${dashboard.canceledBookings}">1</strong>
+                </article>
+                <article class="booking-panel admin-stat-card">
+                    <span>총 매출</span>
+                    <strong th:text="${#numbers.formatInteger(dashboard.totalRevenue, 3, 'COMMA') + '원'}">90,000원</strong>
+                </article>
+                <article class="booking-panel admin-stat-card">
+                    <span>오늘 상영 수</span>
+                    <strong th:text="${dashboard.todaySchedules}">4</strong>
+                </article>
+                <article class="booking-panel admin-stat-card">
+                    <span>오늘 예매 수</span>
+                    <strong th:text="${dashboard.todayBookings}">2</strong>
+                </article>
+            </section>
+
+            <section class="admin-quick-grid">
+                <a th:href="@{/admin/bookings}" class="booking-panel admin-quick-card">
+                    <strong>예매 관리</strong>
+                    <span>예매 상태, 결제 상태, 취소 가능 여부를 한 번에 확인</span>
+                </a>
+                <a th:href="@{/admin/schedules}" class="booking-panel admin-quick-card">
+                    <strong>회차 관리</strong>
+                    <span>회차별 잔여 좌석과 점유율, 좌석 배치 현황 확인</span>
+                </a>
+                <a th:href="@{/booking}" class="booking-panel admin-quick-card">
+                    <strong>사용자 페이지</strong>
+                    <span>현재 운영 중인 예매 흐름을 사용자 화면 기준으로 확인</span>
+                </a>
+            </section>
+
+            <div class="admin-layout">
+                <section class="admin-main-stack">
+                    <article class="booking-panel admin-section">
+                        <div class="panel-head">
+                            <h2>최근 예매</h2>
+                            <a th:href="@{/admin/bookings}">전체 보기</a>
+                        </div>
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                <tr>
+                                    <th>예매번호</th>
+                                    <th>영화</th>
+                                    <th>상영시간</th>
+                                    <th>좌석</th>
+                                    <th>상태</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="booking : ${recentBookings}">
+                                    <td th:text="${booking.bookingCode}">CF20260404-1940-T8M2</td>
+                                    <td th:text="${booking.movieTitle}">영화 제목</td>
+                                    <td th:text="${booking.startTime != null ? #temporals.format(booking.startTime, 'yyyy.MM.dd HH:mm') : '-'}">2026.04.04 19:40</td>
+                                    <td th:text="${booking.seatNames}">H10, H11</td>
+                                    <td><span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">예매완료</span></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(recentBookings)}">
+                                    <td colspan="5">표시할 예매가 없습니다.</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                </section>
+
+                <aside class="admin-side-stack">
+                    <article class="booking-panel admin-section">
+                        <div class="panel-head">
+                            <h2>오늘 회차</h2>
+                            <a th:href="@{/admin/schedules}">전체 보기</a>
+                        </div>
+                        <div class="admin-mini-list">
+                            <div class="admin-mini-item" th:each="schedule : ${todaySchedules}">
+                                <strong th:text="${schedule.movieTitle}">영화 제목</strong>
+                                <span th:text="${schedule.theaterName + ' | ' + schedule.screenName + ' (' + schedule.screenType + ')'}">CineFlow 강남 | 2관(2D)</span>
+                                <em th:text="${#temporals.format(schedule.startTime, 'HH:mm') + ' | 잔여 ' + schedule.availableSeats + '석'}">19:40 | 잔여 67석</em>
+                            </div>
+                            <div class="admin-mini-item" th:if="${#lists.isEmpty(todaySchedules)}">
+                                <strong>오늘 상영 회차가 없습니다</strong>
+                                <span>현재 기준으로 오늘 날짜의 회차가 잡혀 있지 않습니다.</span>
+                            </div>
+                        </div>
+                    </article>
+                </aside>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

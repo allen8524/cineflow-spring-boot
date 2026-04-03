@@ -1,0 +1,82 @@
+package com.cineflow.domain;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "payments")
+public class Payment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "booking_id", nullable = false, unique = true)
+    private Booking booking;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentMethod method;
+
+    @Column(nullable = false)
+    private Integer amount;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentStatus paymentStatus;
+
+    private LocalDateTime paidAt;
+    private LocalDateTime canceledAt;
+
+    @Column(nullable = false, unique = true)
+    private String transactionId;
+
+    private String cancelTransactionId;
+
+    public String getMethodLabel() {
+        return method != null ? method.getLabel() : "-";
+    }
+
+    @Transient
+    public String getPaymentStatusLabel() {
+        return switch (paymentStatus) {
+            case READY -> "결제대기";
+            case PAID -> "결제완료";
+            case CANCELED -> "환불완료";
+            case FAILED -> "결제실패";
+        };
+    }
+
+    @Transient
+    public String getPaymentStatusCssClass() {
+        return switch (paymentStatus) {
+            case READY -> "history-state-chip state-upcoming";
+            case PAID -> "history-state-chip state-booked";
+            case CANCELED -> "history-state-chip state-refunded";
+            case FAILED -> "history-state-chip state-cancel";
+        };
+    }
+}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CineFlow | 관리자 예매 현황</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="CineFlow 관리자 예매 현황">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
+    <link rel="stylesheet" th:href="@{/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
+</head>
+<body>
+<div class="topbar-cinema">
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">관리자 예매 관리 페이지입니다.</p>
+            <ul class="topbar-links">
+                <li><a th:href="@{/admin}">대시보드</a></li>
+                <li><a th:href="@{/admin/bookings}">예매 현황</a></li>
+                <li><a th:href="@{/admin/schedules}">회차 현황</a></li>
+                <li><a th:href="@{/booking/history}">사용자 예매내역</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<main class="cinema-page admin-page">
+    <section class="cinema-page-hero admin-hero">
+        <div class="container">
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/admin}">관리자</a></li>
+                <li>예매 현황</li>
+            </ul>
+            <h1>예매 현황</h1>
+            <p>예매번호, 고객명, 상영시간, 좌석, 결제 상태를 확인하고 동일 서비스 로직으로 취소 처리할 수 있습니다.</p>
+            <div class="admin-subnav">
+                <a th:href="@{/admin}">대시보드</a>
+                <a th:href="@{/admin/bookings}" class="is-active">예매 현황</a>
+                <a th:href="@{/admin/schedules}">회차 현황</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="cinema-page-body admin-body">
+        <div class="container">
+            <div th:if="${successMessage}" class="booking-feedback-banner is-success">
+                <strong>처리가 완료되었습니다.</strong>
+                <span th:text="${successMessage}">예매가 취소되었습니다.</span>
+            </div>
+            <div th:if="${errorMessage}" class="booking-feedback-banner">
+                <strong>처리를 완료하지 못했습니다.</strong>
+                <span th:text="${errorMessage}">이미 취소된 예매입니다.</span>
+            </div>
+
+            <article class="booking-panel admin-section">
+                <div class="panel-head">
+                    <h2>필터</h2>
+                </div>
+                <form class="admin-filter-form" th:action="@{/admin/bookings}" method="get">
+                    <select name="status">
+                        <option value="">전체 상태</option>
+                        <option th:each="status : ${statuses}" th:value="${status}" th:text="${status.name()}" th:selected="${selectedStatus == status}">BOOKED</option>
+                    </select>
+                    <select name="movieId">
+                        <option value="">전체 영화</option>
+                        <option th:each="movie : ${movies}" th:value="${movie.id}" th:text="${movie.title}" th:selected="${selectedMovieId == movie.id}">영화 제목</option>
+                    </select>
+                    <select name="theaterId">
+                        <option value="">전체 극장</option>
+                        <option th:each="theater : ${theaters}" th:value="${theater.id}" th:text="${theater.name}" th:selected="${selectedTheaterId == theater.id}">CineFlow 강남</option>
+                    </select>
+                    <input type="date" name="date" th:value="${selectedDate}">
+                    <button type="submit">조회</button>
+                </form>
+            </article>
+
+            <article class="booking-panel admin-section">
+                <div class="panel-head">
+                    <h2>예매 목록</h2>
+                    <span class="input-help" th:text="${#lists.size(bookings) + '건'}">0건</span>
+                </div>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                        <tr>
+                            <th>예매번호</th>
+                            <th>고객명</th>
+                            <th>영화명</th>
+                            <th>극장</th>
+                            <th>상영시간</th>
+                            <th>좌석</th>
+                            <th>예매상태</th>
+                            <th>결제상태</th>
+                            <th>결제금액</th>
+                            <th>관리</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="booking : ${bookings}">
+                            <td>
+                                <a th:href="@{/booking/complete(bookingCode=${booking.bookingCode})}" th:text="${booking.bookingCode}">CF20260404-1940-T8M2</a>
+                            </td>
+                            <td th:text="${booking.customerName}">김민서</td>
+                            <td th:text="${booking.movieTitle}">영화 제목</td>
+                            <td th:text="${booking.theaterName}">CineFlow 강남</td>
+                            <td th:text="${booking.startTime != null ? #temporals.format(booking.startTime, 'yyyy.MM.dd HH:mm') : '-'}">2026.04.04 19:40</td>
+                            <td th:text="${booking.seatNames}">H10, H11, H12</td>
+                            <td><span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">예매완료</span></td>
+                            <td>
+                                <span th:if="${booking.payment != null}" th:class="${booking.payment.paymentStatusCssClass}" th:text="${booking.payment.paymentStatusLabel}">결제완료</span>
+                                <span th:if="${booking.payment == null}" class="history-state-chip state-refund">결제없음</span>
+                            </td>
+                            <td th:text="${#numbers.formatInteger(booking.totalPrice, 3, 'COMMA') + '원'}">45,000원</td>
+                            <td class="admin-actions">
+                                <form th:if="${booking.cancelable}" th:action="@{/admin/bookings/{bookingCode}/cancel(bookingCode=${booking.bookingCode})}" method="post" class="inline-post-form">
+                                    <input type="hidden" name="cancelReason" value="관리자 취소">
+                                    <input type="hidden" name="redirectTo" value="/admin/bookings">
+                                    <button type="submit" class="hero-btn secondary admin-action-btn">취소</button>
+                                </form>
+                                <span th:if="${!booking.cancelable}" class="history-state-chip state-refund" th:text="${booking.cancelAvailabilityLabel}">취소불가</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(bookings)}">
+                            <td colspan="10">조건에 맞는 예매가 없습니다.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+</body>
+</html>

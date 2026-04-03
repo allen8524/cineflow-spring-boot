@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CineFlow | 관리자 회차 현황</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="CineFlow 관리자 회차 현황">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
+    <link rel="stylesheet" th:href="@{/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
+</head>
+<body>
+<div class="topbar-cinema">
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">회차별 좌석 점유 현황을 관리합니다.</p>
+            <ul class="topbar-links">
+                <li><a th:href="@{/admin}">대시보드</a></li>
+                <li><a th:href="@{/admin/bookings}">예매 현황</a></li>
+                <li><a th:href="@{/admin/schedules}">회차 현황</a></li>
+                <li><a th:href="@{/booking}">사용자 예매</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<main class="cinema-page admin-page">
+    <section class="cinema-page-hero admin-hero">
+        <div class="container">
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/admin}">관리자</a></li>
+                <li>회차 현황</li>
+            </ul>
+            <h1>회차 현황</h1>
+            <p>회차별 잔여 좌석, 총 좌석, 점유율을 확인하고 좌석 현황 상세로 이동할 수 있습니다.</p>
+            <div class="admin-subnav">
+                <a th:href="@{/admin}">대시보드</a>
+                <a th:href="@{/admin/bookings}">예매 현황</a>
+                <a th:href="@{/admin/schedules}" class="is-active">회차 현황</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="cinema-page-body admin-body">
+        <div class="container">
+            <article class="booking-panel admin-section">
+                <div class="panel-head"><h2>필터</h2></div>
+                <form class="admin-filter-form" th:action="@{/admin/schedules}" method="get">
+                    <select name="movieId">
+                        <option value="">전체 영화</option>
+                        <option th:each="movie : ${movies}" th:value="${movie.id}" th:text="${movie.title}" th:selected="${selectedMovieId == movie.id}">영화 제목</option>
+                    </select>
+                    <select name="theaterId">
+                        <option value="">전체 극장</option>
+                        <option th:each="theater : ${theaters}" th:value="${theater.id}" th:text="${theater.name}" th:selected="${selectedTheaterId == theater.id}">CineFlow 강남</option>
+                    </select>
+                    <input type="date" name="date" th:value="${selectedDate}">
+                    <button type="submit">조회</button>
+                </form>
+            </article>
+
+            <article class="booking-panel admin-section">
+                <div class="panel-head">
+                    <h2>회차 목록</h2>
+                    <span class="input-help" th:text="${#lists.size(schedules) + '건'}">0건</span>
+                </div>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                        <tr>
+                            <th>영화명</th>
+                            <th>극장명</th>
+                            <th>상영관</th>
+                            <th>시작시간</th>
+                            <th>잔여좌석</th>
+                            <th>총좌석</th>
+                            <th>예매율</th>
+                            <th>상세</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="schedule : ${schedules}">
+                            <td th:text="${schedule.movieTitle}">영화 제목</td>
+                            <td th:text="${schedule.theaterName}">CineFlow 강남</td>
+                            <td th:text="${schedule.screenName + ' (' + schedule.screenType + ')'}">2관 (2D)</td>
+                            <td th:text="${#temporals.format(schedule.startTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 19:40</td>
+                            <td th:text="${schedule.availableSeats + '석'}">67석</td>
+                            <td th:text="${schedule.totalSeats + '석'}">120석</td>
+                            <td th:text="${schedule.occupancyRate + '%'}">44%</td>
+                            <td><a th:href="@{/admin/schedules/{id}(id=${schedule.scheduleId})}">상세보기</a></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(schedules)}">
+                            <td colspan="8">조건에 맞는 회차가 없습니다.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+</body>
+</html>

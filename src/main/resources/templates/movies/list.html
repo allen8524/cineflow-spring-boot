@@ -102,7 +102,7 @@
                             <li th:text="${'개봉 ' + #temporals.format(movie.releaseDate, 'yyyy.MM.dd')}">개봉 2026.04.10</li>
                         </ul>
                         <div class="movie-card-actions">
-                            <a th:href="@{/booking}" class="book-btn">바로예매</a>
+                            <a th:href="@{/booking(movieId=${movie.id})}" class="book-btn">바로예매</a>
                             <a th:href="@{/movies/{id}(id=${movie.id})}" class="detail-link">상세보기</a>
                         </div>
                     </div>

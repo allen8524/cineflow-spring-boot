@@ -3,80 +3,326 @@
 <head>
     <title>CineFlow | 예매내역</title>
     <meta charset="UTF-8">
-    <meta name="description" content="CineFlow 예매내역 및 취소/환불 조회">
+    <meta name="description" content="CineFlow 예매내역">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone-no">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
     <link rel="stylesheet" th:href="@{/css/plugins.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
 </head>
 <body>
-<div id="preloader"><img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58"><div id="status"><span></span><span></span></div></div>
-<div class="topbar-cinema"><div class="container"><div class="topbar-wrap"><p class="topbar-msg">프리미엄 스크린과 빠른 예매를 한 번에, CineFlow</p><ul class="topbar-links"><li><a href="#">로그인</a></li><li><a href="#">회원가입</a></li><li><a href="#">멤버십</a></li><li><a th:href="@{/support}">고객센터</a></li><li><a th:href="@{/booking}" class="topbar-booking">빠른예매</a></li></ul></div></div></div>
-<header class="ht-header full-width-hd cinema-header"><div class="row"><nav id="mainNav" class="navbar navbar-default navbar-custom"><div class="navbar-header logo"><div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><div id="nav-icon1"><span></span><span></span><span></span></div></div><a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a></div><div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1"><ul class="nav navbar-nav flex-child-menu menu-left"><li><a class="btn btn-default lv1" th:href="@{/movies}">영화</a></li><li><a class="btn btn-default lv1 active" th:href="@{/booking}">예매</a></li><li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-events}">이벤트</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-store}">스토어</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">혜택</a></li><li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li></ul><ul class="nav navbar-nav flex-child-menu menu-right"><li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li><li><a th:href="@{/booking/history}" class="menu-link">예매내역 확인</a></li><li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li></ul></div></nav></div></header>
+<div id="preloader">
+    <img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58">
+    <div id="status"><span></span><span></span></div>
+</div>
+
+<div class="topbar-cinema">
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">프리미엄 상영과 빠른 예매를 한 번에, CineFlow</p>
+            <ul class="topbar-links">
+                <li><a href="#">로그인</a></li>
+                <li><a href="#">회원가입</a></li>
+                <li><a href="#">멤버십</a></li>
+                <li><a th:href="@{/support}">고객센터</a></li>
+                <li><a th:href="@{/booking}" class="topbar-booking">빠른예매</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<header class="ht-header full-width-hd cinema-header">
+    <div class="row">
+        <nav id="mainNav" class="navbar navbar-default navbar-custom">
+            <div class="navbar-header logo">
+                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <div id="nav-icon1"><span></span><span></span><span></span></div>
+                </div>
+                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a>
+            </div>
+            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav flex-child-menu menu-left">
+                    <li><a class="btn btn-default lv1" th:href="@{/movies}">영화</a></li>
+                    <li><a class="btn btn-default lv1 active" th:href="@{/booking}">예매</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-events}">이벤트</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-store}">스토어</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">혜택</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li>
+                </ul>
+                <ul class="nav navbar-nav flex-child-menu menu-right">
+                    <li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li>
+                    <li><a th:href="@{/booking/history}" class="menu-link">예매내역 확인</a></li>
+                    <li><a th:href="@{/admin}" class="menu-link">관리자</a></li>
+                    <li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>
 
 <main class="cinema-page booking-page booking-history-page">
     <section class="cinema-page-hero booking-hero history-hero">
         <div class="container">
-            <ul class="cinema-breadcrumb"><li><a th:href="@{/}">홈</a></li><li><a th:href="@{/booking/history}">마이페이지</a></li><li>예매내역</li></ul>
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/}">홈</a></li>
+                <li><a th:href="@{/booking/history}">마이페이지</a></li>
+                <li>예매내역</li>
+            </ul>
             <h1>예매내역</h1>
-            <p>현재 예매와 지난 관람 내역을 확인하고 모바일 티켓, 취소/환불, 상세 정보를 관리하세요.</p>
+            <p>예정된 예매, 지난 관람, 취소된 예매를 한 화면에서 확인할 수 있습니다.</p>
         </div>
     </section>
 
     <section class="cinema-page-body booking-body history-body">
         <div class="container">
+            <div th:if="${successMessage}" class="booking-feedback-banner is-success">
+                <strong>처리가 완료되었습니다.</strong>
+                <span th:text="${successMessage}">예매가 취소되었습니다.</span>
+            </div>
+            <div th:if="${errorMessage}" class="booking-feedback-banner">
+                <strong>처리를 완료하지 못했습니다.</strong>
+                <span th:text="${errorMessage}">이미 취소된 예매입니다.</span>
+            </div>
+
             <article class="booking-panel history-summary-panel">
-                <div class="panel-head"><h2>예매 요약</h2><span class="summary-chip">2026.04.02 기준</span></div>
-                <div class="history-summary-grid"><div class="history-summary-item"><span>현재 예매</span><strong>3건</strong></div><div class="history-summary-item"><span>오늘 관람 예정</span><strong>1건</strong></div><div class="history-summary-item"><span>지난 관람</span><strong>18건</strong></div><div class="history-summary-item"><span>취소 가능</span><strong>2건</strong></div></div>
+                <div class="panel-head">
+                    <h2>예매 요약</h2>
+                    <span class="summary-chip" th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy.MM.dd') + ' 기준'}">2026.04.03 기준</span>
+                </div>
+                <div class="history-summary-grid">
+                    <div class="history-summary-item">
+                        <span>예정된 예매</span>
+                        <strong th:text="${currentBookingCount + '건'}">0건</strong>
+                    </div>
+                    <div class="history-summary-item">
+                        <span>오늘 관람 예정</span>
+                        <strong th:text="${todayBookingCount + '건'}">0건</strong>
+                    </div>
+                    <div class="history-summary-item">
+                        <span>지난 예매</span>
+                        <strong th:text="${pastBookingCount + '건'}">0건</strong>
+                    </div>
+                    <div class="history-summary-item">
+                        <span>취소된 예매</span>
+                        <strong th:text="${canceledBookingCount + '건'}">0건</strong>
+                    </div>
+                </div>
             </article>
 
             <div class="history-main-layout">
                 <section class="history-content-stack">
-                    <article class="booking-panel history-tabs-panel"><div class="history-tabs" role="tablist" aria-label="예매 상태 탭"><button type="button" class="history-tab is-active" aria-selected="true">예정된 예매</button><button type="button" class="history-tab" aria-selected="false">지난 예매</button><button type="button" class="history-tab" aria-selected="false">취소 / 환불</button></div></article>
+                    <article class="booking-panel history-tabs-panel">
+                        <div class="history-tabs" role="tablist" aria-label="예매 상태">
+                            <button type="button" class="history-tab is-active" aria-selected="true">예정된 예매</button>
+                            <button type="button" class="history-tab" aria-selected="false">지난 예매</button>
+                            <button type="button" class="history-tab" aria-selected="false">취소된 예매</button>
+                        </div>
+                    </article>
 
                     <section class="history-section is-current" id="scheduled-booking">
-                        <div class="section-headline"><h2>예정된 예매</h2><p>상영 전 필요한 모바일 티켓, 예매 상세, 취소/환불 안내를 빠르게 확인하세요.</p></div>
-                        <article class="booking-panel history-booking-card" th:each="booking, stat : ${currentBookings}" th:classappend="${stat.index == 0} ? ' history-booking-card--featured' : ''">
-                            <div class="history-poster"><img th:src="@{${booking.posterUrl}}" th:alt="${booking.movieTitle + ' 포스터'}"></div>
+                        <div class="section-headline">
+                            <h2>예정된 예매</h2>
+                            <p>상영 전 예매는 상세 페이지와 예매내역에서 바로 취소할 수 있습니다.</p>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(currentBookings)}" class="booking-panel history-empty-card">
+                            <h3>예정된 예매가 없습니다</h3>
+                            <p>원하는 영화와 좌석을 선택해 새로운 예매를 진행해 보세요.</p>
+                            <div class="history-card-actions">
+                                <a th:href="@{/booking}" class="hero-btn primary">빠른예매</a>
+                                <a th:href="@{/movies}" class="hero-btn secondary">상영작 보기</a>
+                            </div>
+                        </div>
+
+                        <article class="booking-panel history-booking-card"
+                                 th:each="booking, stat : ${currentBookings}"
+                                 th:classappend="${stat.index == 0} ? ' history-booking-card--featured' : ''">
+                            <div class="history-poster">
+                                <img th:src="@{${booking.posterUrl}}" th:alt="${booking.movieTitle + ' 포스터'}">
+                            </div>
                             <div class="history-card-main">
-                                <div class="history-card-top"><div><h3 th:text="${booking.movieTitle}">영화 제목</h3><div class="meta-line"><em th:class="${booking.ageBadgeCssClass}" th:text="${booking.ageRating}">12</em><span th:text="${booking.theaterName + ' · ' + booking.screenName + ' (' + booking.screenType + ')'}">CineFlow 강남 · 1관 (IMAX)</span></div></div><span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">예매완료</span></div>
-                                <ul class="history-info-grid"><li><span>상영일시</span><strong th:text="${#temporals.format(booking.startTime, 'yyyy.MM.dd HH:mm')}">2026.04.10 10:20</strong></li><li><span>종료예정</span><strong th:text="${#temporals.format(booking.endTime, 'HH:mm')}">12:32</strong></li><li><span>좌석</span><strong th:text="${booking.seatNames}">E7, E8</strong></li><li><span>인원</span><strong th:text="${'성인 ' + booking.peopleCount + '명'}">성인 2명</strong></li><li><span>예매번호</span><strong th:text="${booking.bookingCode}">CF20260410-1020-4H8K</strong></li><li><span>결제금액</span><strong th:text="${#numbers.formatInteger(booking.totalPrice, 3, 'COMMA') + '원'}">29,000원</strong></li></ul>
-                                <div class="history-card-tags"><em th:text="${booking.screenType}">IMAX</em><em>모바일 티켓</em></div>
-                                <div class="history-card-actions"><a th:href="@{/booking/complete}" class="hero-btn primary">예매상세</a><a th:href="@{/booking}" class="hero-btn secondary">다시 예매하기</a><a href="#cancel-refund-guide" class="hero-btn secondary">취소/환불 안내</a></div>
+                                <div class="history-card-top">
+                                    <div>
+                                        <h3 th:text="${booking.movieTitle}">영화 제목</h3>
+                                        <div class="meta-line">
+                                            <em th:class="${booking.ageBadgeCssClass}" th:text="${booking.ageRating}">12</em>
+                                            <span th:text="${booking.theaterName + ' | ' + booking.screenName + ' (' + booking.screenType + ')'}">CineFlow 강남 | 1관(IMAX)</span>
+                                        </div>
+                                    </div>
+                                    <span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">예매완료</span>
+                                </div>
+                                <ul class="history-info-grid">
+                                    <li><span>상영시간</span><strong th:text="${#temporals.format(booking.startTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 19:40</strong></li>
+                                    <li><span>좌석</span><strong th:text="${booking.seatNames}">H10, H11</strong></li>
+                                    <li><span>예매번호</span><strong th:text="${booking.bookingCode}">CF20260404-1940-T8M2</strong></li>
+                                    <li><span>결제금액</span><strong th:text="${#numbers.formatInteger(booking.totalPrice, 3, 'COMMA') + '원'}">45,000원</strong></li>
+                                </ul>
+                                <div class="history-card-tags">
+                                    <em th:text="${booking.screenType}">IMAX</em>
+                                    <em th:text="${booking.cancelAvailabilityLabel}">취소가능</em>
+                                </div>
+                                <div class="history-card-actions">
+                                    <a th:href="@{/booking/complete(bookingCode=${booking.bookingCode})}" class="hero-btn primary">예매상세</a>
+                                    <form th:if="${booking.cancelable}" th:action="@{/booking/cancel}" method="post" class="inline-post-form">
+                                        <input type="hidden" name="bookingCode" th:value="${booking.bookingCode}">
+                                        <input type="hidden" name="cancelReason" value="사용자 요청">
+                                        <input type="hidden" name="redirectTo" value="/booking/history">
+                                        <button type="submit" class="hero-btn secondary">예매 취소</button>
+                                    </form>
+                                    <span th:if="${!booking.cancelable}" class="history-state-chip state-refund" th:text="${booking.cancelAvailabilityLabel}">취소불가</span>
+                                </div>
                             </div>
                         </article>
                     </section>
 
                     <section class="history-section" id="past-booking">
-                        <div class="section-headline"><h2>지난 예매</h2><p>관람이 완료된 예매 기록을 확인하고 다시 예매하거나 영화 상세로 이동할 수 있습니다.</p></div>
+                        <div class="section-headline">
+                            <h2>지난 예매</h2>
+                            <p>상영이 끝난 예매 내역을 다시 확인하고 동일 회차 기준 재예매도 연결할 수 있습니다.</p>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(pastBookings)}" class="booking-panel history-empty-card">
+                            <h3>지난 예매가 없습니다</h3>
+                            <p>관람이 완료된 예매는 이 영역에서 확인할 수 있습니다.</p>
+                        </div>
+
                         <article class="booking-panel history-past-card" th:each="booking : ${pastBookings}">
-                            <div class="history-past-main"><h3 th:text="${booking.movieTitle}">영화 제목</h3><ul><li><span>극장 / 일시</span><strong th:text="${booking.theaterName + ' · ' + #temporals.format(booking.startTime, 'yyyy.MM.dd HH:mm')}">CineFlow 강남 · 2026.03.20 21:00</strong></li><li><span>좌석 / 인원</span><strong th:text="${booking.seatNames + ' · 성인 ' + booking.peopleCount + '명'}">F5, F6 · 성인 2명</strong></li></ul></div>
-                            <div class="history-past-side"><span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">관람완료</span><div class="history-inline-actions"><a th:href="@{/booking}">다시 예매하기</a><a th:href="@{/movies}">영화 목록보기</a></div></div>
+                            <div class="history-past-main">
+                                <h3 th:text="${booking.movieTitle}">영화 제목</h3>
+                                <ul>
+                                    <li><span>극장 / 상영시간</span><strong th:text="${booking.theaterName + ' | ' + #temporals.format(booking.startTime, 'yyyy.MM.dd HH:mm')}">CineFlow 강남 | 2026.03.20 21:00</strong></li>
+                                    <li><span>좌석 / 인원</span><strong th:text="${booking.seatNames + ' | ' + booking.peopleCount + '명'}">F5, F6 | 2명</strong></li>
+                                </ul>
+                            </div>
+                            <div class="history-past-side">
+                                <span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">상영종료</span>
+                                <div class="history-inline-actions">
+                                    <a th:href="@{/booking/complete(bookingCode=${booking.bookingCode})}">상세 보기</a>
+                                    <a th:if="${booking.schedule != null}" th:href="@{/booking(movieId=${booking.schedule.movie.id}, scheduleId=${booking.schedule.id})}">다시 예매하기</a>
+                                    <a th:if="${booking.schedule == null}" th:href="@{/booking}">다시 예매하기</a>
+                                </div>
+                            </div>
                         </article>
                     </section>
 
-                    <section class="history-section" id="cancel-refund-guide">
-                        <div class="section-headline"><h2>취소 / 환불 내역</h2><p>이용 상태를 빠르게 확인할 수 있도록 최근 내역만 요약해 제공합니다.</p></div>
-                        <div class="booking-panel history-refund-table-wrap">
-                            <table class="history-refund-table"><thead><tr><th>영화명</th><th>예매번호</th><th>취소일시</th><th>환불상태</th><th>결제수단</th><th>환불예정금액</th></tr></thead><tbody><tr><td>시간의 항로</td><td>CF20260328-2215-R1N6</td><td>2026.03.28 18:10</td><td><span class="history-state-chip state-cancel">취소완료</span></td><td>신용/체크카드</td><td>30,000원</td></tr><tr><td>헤이즈 하이브</td><td>CF20260325-1740-H6K4</td><td>2026.03.25 12:42</td><td><span class="history-state-chip state-refund">환불처리중</span></td><td>간편결제</td><td>24,000원</td></tr><tr><td>대지의 경계선</td><td>CF20260312-1100-B3T2</td><td>2026.03.11 23:51</td><td><span class="history-state-chip state-refunded">환불완료</span></td><td>신용/체크카드</td><td>18,000원</td></tr></tbody></table>
+                    <section class="history-section" id="canceled-booking">
+                        <div class="section-headline">
+                            <h2>취소된 예매</h2>
+                            <p>취소 시각과 사유, 환불 상태를 함께 확인할 수 있습니다.</p>
                         </div>
-                    </section>
 
-                    <section class="history-section"><div class="section-headline"><h2>빈 상태 예시</h2><p>예매가 없을 때도 레이아웃이 깨지지 않도록 안내 블록을 함께 구성했습니다.</p></div><article class="booking-panel history-empty-card"><h3>아직 예정된 예매가 없습니다</h3><p>지금 상영 중인 작품과 상영시간표를 확인하고 원하는 좌석을 빠르게 예매해보세요.</p><div class="history-card-actions"><a th:href="@{/booking}" class="hero-btn primary">빠른예매로 이동</a><a th:href="@{/movies}" class="hero-btn secondary">상영작 보러가기</a></div></article></section>
+                        <div th:if="${#lists.isEmpty(canceledBookings)}" class="booking-panel history-empty-card">
+                            <h3>취소된 예매가 없습니다</h3>
+                            <p>취소 완료된 예매가 생기면 이 영역에 자동으로 반영됩니다.</p>
+                        </div>
+
+                        <article class="booking-panel history-past-card" th:each="booking : ${canceledBookings}">
+                            <div class="history-past-main">
+                                <h3 th:text="${booking.movieTitle}">영화 제목</h3>
+                                <ul>
+                                    <li><span>예매번호</span><strong th:text="${booking.bookingCode}">CF20260402-1810-CN01</strong></li>
+                                    <li><span>취소 시각</span><strong th:text="${booking.canceledAt != null ? #temporals.format(booking.canceledAt, 'yyyy.MM.dd HH:mm') : '-'}">2026.04.01 18:10</strong></li>
+                                    <li><span>취소 사유</span><strong th:text="${booking.cancelReasonOrDefault}">일정 변경</strong></li>
+                                </ul>
+                            </div>
+                            <div class="history-past-side">
+                                <span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">취소완료</span>
+                                <div class="history-inline-actions">
+                                    <a th:href="@{/booking/complete(bookingCode=${booking.bookingCode})}">상세 보기</a>
+                                </div>
+                            </div>
+                        </article>
+                    </section>
                 </section>
 
                 <aside class="history-side-stack">
-                    <article class="booking-panel history-preview-panel"><div class="panel-head"><h2>선택 예매 상세 미리보기</h2></div><div class="history-preview-card"><img th:src="@{/images/uploads/movie-single.jpg}" alt="시간의 궤도 포스터"><div class="history-preview-info"><strong>시간의 궤도</strong><ul><li><span>극장 / 상영관</span><em>CineFlow 강남 · 1관 (IMAX)</em></li><li><span>일시</span><em>2026.04.02 (목) 10:20</em></li><li><span>좌석</span><em>E7, E8</em></li><li><span>결제금액</span><em>29,000원</em></li></ul></div></div><a th:href="@{/booking/complete#mobile-ticket}" class="hero-btn primary history-preview-btn">모바일 티켓 보기</a></article>
-                    <article class="booking-panel history-quick-actions"><div class="panel-head"><h2>빠른 액션</h2></div><div class="history-action-grid"><a th:href="@{/booking/complete#mobile-ticket}">모바일 티켓 보기</a><a th:href="@{/booking}">상영시간표 보기</a><a th:href="@{/support}">고객센터</a><a th:href="@{/support#faq}">FAQ</a><a href="#cancel-refund-guide">취소/환불 안내</a></div></article>
+                    <article class="booking-panel history-preview-panel" th:if="${previewBooking != null}">
+                        <div class="panel-head"><h2>최근 예매 미리보기</h2></div>
+                        <div class="history-preview-card">
+                            <img th:src="@{${previewBooking.posterUrl}}" th:alt="${previewBooking.movieTitle + ' 포스터'}">
+                            <div class="history-preview-info">
+                                <strong th:text="${previewBooking.movieTitle}">영화 제목</strong>
+                                <ul>
+                                    <li><span>극장 / 상영관</span><em th:text="${previewBooking.theaterName + ' | ' + previewBooking.screenName + ' (' + previewBooking.screenType + ')'}">CineFlow 강남 | 1관(IMAX)</em></li>
+                                    <li><span>상영시간</span><em th:text="${#temporals.format(previewBooking.startTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 19:40</em></li>
+                                    <li><span>좌석</span><em th:text="${previewBooking.seatNames}">H10, H11</em></li>
+                                    <li><span>상태</span><em th:text="${previewBooking.stateLabel}">예매완료</em></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a th:href="@{/booking/complete(bookingCode=${previewBooking.bookingCode})}" class="hero-btn primary history-preview-btn">최근 예매 보기</a>
+                    </article>
+
+                    <article class="booking-panel history-preview-panel" th:if="${previewBooking == null}">
+                        <div class="panel-head"><h2>최근 예매 미리보기</h2></div>
+                        <div class="history-empty-card">
+                            <h3>표시할 예매가 없습니다</h3>
+                            <p>예매를 완료하면 이 영역에서 가장 최근 예매를 바로 확인할 수 있습니다.</p>
+                        </div>
+                    </article>
+
+                    <article class="booking-panel history-quick-actions">
+                        <div class="panel-head"><h2>빠른 이동</h2></div>
+                        <div class="history-action-grid">
+                            <a th:href="@{/booking}">빠른예매</a>
+                            <a th:href="@{/movies}">상영작 보기</a>
+                            <a th:href="@{/admin}">관리자 대시보드</a>
+                            <a th:href="@{/support}">고객센터</a>
+                        </div>
+                    </article>
                 </aside>
             </div>
         </div>
     </section>
 </main>
 
-<footer class="ht-footer full-width-ft cinema-footer"><div class="row"><div class="flex-parent-ft"><div class="flex-child-ft item1"><a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a><p>CineFlow CINEMA</p><p>서울특별시 시네마로 100, 4층</p><p>대표번호 1544-0000 · help@cineflow.co.kr</p></div><div class="flex-child-ft item2"><h4>서비스 안내</h4><ul><li><a th:href="@{/movies}">영화</a></li><li><a th:href="@{/booking}">예매</a></li><li><a th:href="@{/#section-theaters}">극장</a></li><li><a th:href="@{/#section-events}">이벤트</a></li></ul></div><div class="flex-child-ft item3"><h4>고객지원</h4><ul><li><a th:href="@{/support}">고객센터</a></li><li><a th:href="@{/support#faq}">FAQ 보기</a></li><li><a th:href="@{/booking/history}">예매내역 확인</a></li></ul></div><div class="flex-child-ft item4"><h4>정책</h4><ul><li><a th:href="@{/support#cancel-policy}">취소/환불 안내</a></li><li><a th:href="@{/support#faq}">이용안내</a></li><li><a th:href="@{/support}">서비스 정책</a></li></ul></div></div><div class="ft-copyright"><div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div><div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div></div></div></footer>
-<script th:src="@{/js/jquery.js}"></script><script th:src="@{/js/plugins.js}"></script><script th:src="@{/js/plugins2.js}"></script><script th:src="@{/js/custom.js}"></script>
+<footer class="ht-footer full-width-ft cinema-footer">
+    <div class="row">
+        <div class="flex-parent-ft">
+            <div class="flex-child-ft item1">
+                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a>
+                <p>CineFlow CINEMA</p>
+                <p>서울 강남구 시네플로우로 100, 4층</p>
+                <p>대표번호 1544-0000 | help@cineflow.co.kr</p>
+            </div>
+            <div class="flex-child-ft item2">
+                <h4>서비스 안내</h4>
+                <ul>
+                    <li><a th:href="@{/movies}">영화</a></li>
+                    <li><a th:href="@{/booking}">예매</a></li>
+                    <li><a th:href="@{/admin}">관리자</a></li>
+                </ul>
+            </div>
+            <div class="flex-child-ft item3">
+                <h4>고객지원</h4>
+                <ul>
+                    <li><a th:href="@{/support}">고객센터</a></li>
+                    <li><a th:href="@{/support#faq}">FAQ 보기</a></li>
+                    <li><a th:href="@{/booking/history}">예매내역 확인</a></li>
+                </ul>
+            </div>
+            <div class="flex-child-ft item4">
+                <h4>정책</h4>
+                <ul>
+                    <li><a th:href="@{/support#cancel-policy}">취소/환불 안내</a></li>
+                    <li><a th:href="@{/support#faq}">이용안내</a></li>
+                    <li><a th:href="@{/support}">서비스 정책</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ft-copyright">
+            <div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div>
+            <div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div>
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/plugins.js}"></script>
+<script th:src="@{/js/plugins2.js}"></script>
+<script th:src="@{/js/custom.js}"></script>
 </body>
 </html>
