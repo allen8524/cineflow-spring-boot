@@ -134,21 +134,21 @@ public class Booking {
     @Transient
     public String getStateLabel() {
         if (status == BookingStatus.CANCELED) {
-            return "취소완료";
+            return "Canceled";
         }
         if (status == BookingStatus.USED) {
-            return "관람완료";
+            return "Used";
         }
         if (isPastShowTime()) {
-            return "상영종료";
+            return "Ended";
         }
         if (status == BookingStatus.SOON) {
-            return "곧 상영";
+            return "Soon";
         }
         if (status == BookingStatus.UPCOMING) {
-            return "상영예정";
+            return "Upcoming";
         }
-        return "예매완료";
+        return "Booked";
     }
 
     @Transient
@@ -171,17 +171,17 @@ public class Booking {
     @Transient
     public String getCancelAvailabilityLabel() {
         if (isCanceled()) {
-            return "취소완료";
+            return "Canceled";
         }
         if (isCancelable()) {
-            return "취소가능";
+            return "Cancelable";
         }
-        return "취소불가";
+        return "Not Cancelable";
     }
 
     @Transient
     public String getCancelReasonOrDefault() {
-        return cancelReason != null && !cancelReason.isBlank() ? cancelReason : "사유 없음";
+        return cancelReason != null && !cancelReason.isBlank() ? cancelReason : "No reason";
     }
 
     @Transient

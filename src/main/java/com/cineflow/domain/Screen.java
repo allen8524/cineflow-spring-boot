@@ -29,7 +29,8 @@ import java.util.List;
 @Table(
         name = "screens",
         indexes = {
-                @Index(name = "idx_screens_theater_id", columnList = "theater_id")
+                @Index(name = "idx_screens_theater_id", columnList = "theater_id"),
+                @Index(name = "idx_screens_active", columnList = "active")
         }
 )
 public class Screen {
@@ -50,6 +51,10 @@ public class Screen {
 
     @Column(nullable = false)
     private Integer totalSeats;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean active = true;
 
     @Builder.Default
     @OneToMany(mappedBy = "screen")

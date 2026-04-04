@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CineFlow | Admin Screen Management</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="CineFlow admin screen management">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
+    <link rel="stylesheet" th:href="@{/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
+</head>
+<body>
+<div class="topbar-cinema">
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">Manage screen capacity, format, and visibility tied to each theater.</p>
+            <ul th:replace="~{fragments/auth-menu :: adminTopbarLinks}"></ul>
+        </div>
+    </div>
+</div>
+
+<main class="cinema-page admin-page">
+    <section class="cinema-page-hero admin-hero">
+        <div class="container">
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/admin}">Admin</a></li>
+                <li>Screens</li>
+            </ul>
+            <h1>Screen Management</h1>
+            <p>Maintain theater assignment, screen format, capacity, and public availability.</p>
+            <div class="admin-subnav">
+                <a th:href="@{/admin}">Dashboard</a>
+                <a th:href="@{/admin/movies}">Movies</a>
+                <a th:href="@{/admin/theaters}">Theaters</a>
+                <a th:href="@{/admin/screens}" class="is-active">Screens</a>
+                <a th:href="@{/admin/schedules}">Schedules</a>
+                <a th:href="@{/admin/bookings}">Bookings</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="cinema-page-body admin-body">
+        <div class="container">
+            <div th:if="${successMessage}" class="booking-feedback-banner is-success">
+                <strong>Completed successfully.</strong>
+                <span th:text="${successMessage}">Screen data updated.</span>
+            </div>
+            <div th:if="${errorMessage}" class="booking-feedback-banner">
+                <strong>Something went wrong.</strong>
+                <span th:text="${errorMessage}">Please review the request.</span>
+            </div>
+
+            <article class="booking-panel admin-section">
+                <div class="panel-head">
+                    <h2>Screens</h2>
+                    <a th:href="@{/admin/screens/new}" class="detail-link">Create Screen</a>
+                </div>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                        <tr>
+                            <th>Theater</th>
+                            <th>Screen</th>
+                            <th>Format</th>
+                            <th>Total Seats</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="screen : ${screens}">
+                            <td th:text="${screen.theater.name}">CineFlow Gangnam</td>
+                            <td th:text="${screen.name}">Screen 1</td>
+                            <td th:text="${screen.screenType}">IMAX</td>
+                            <td th:text="${screen.totalSeats + ' seats'}">120 seats</td>
+                            <td><span th:class="${screen.active ? 'history-state-chip state-booked' : 'history-state-chip state-cancel'}" th:text="${screen.active ? 'Active' : 'Inactive'}">Active</span></td>
+                            <td class="admin-actions admin-actions--stack">
+                                <a th:href="@{/admin/screens/{id}/edit(id=${screen.id})}" class="detail-link">Edit</a>
+                                <form th:action="@{/admin/screens/{id}/delete(id=${screen.id})}" method="post" class="inline-post-form">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button type="submit" class="hero-btn secondary admin-action-btn">Deactivate</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(screens)}">
+                            <td colspan="6">No screens registered.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+</body>
+</html>

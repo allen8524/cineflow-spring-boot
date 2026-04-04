@@ -8,4 +8,8 @@ import java.util.List;
 public interface SeatTemplateRepository extends JpaRepository<SeatTemplate, Long> {
 
     List<SeatTemplate> findByScreenIdAndActiveTrueOrderBySeatRowAscSeatNumberAsc(Long screenId);
+
+    List<SeatTemplate> findByScreenIdOrderBySeatRowAscSeatNumberAsc(Long screenId);
+
+    long countByScreenIdAndActiveTrue(Long screenId);
 }

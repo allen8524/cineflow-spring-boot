@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>CineFlow | 관리자 회차 상세</title>
+    <title>CineFlow | Admin Schedule Detail</title>
     <meta charset="UTF-8">
-    <meta name="description" content="CineFlow 관리자 회차 상세">
+    <meta name="description" content="CineFlow admin schedule detail">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone-no">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
@@ -13,50 +13,88 @@
 </head>
 <body>
 <div class="topbar-cinema">
-    <div class="container"><div class="topbar-wrap"><p class="topbar-msg">회차별 좌석 점유 현황 상세입니다.</p><ul th:replace="~{fragments/auth-menu :: adminTopbarLinks}"></ul></div></div>
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">Review occupancy and connected bookings at the schedule level.</p>
+            <ul th:replace="~{fragments/auth-menu :: adminTopbarLinks}"></ul>
+        </div>
+    </div>
 </div>
 
 <main class="cinema-page admin-page">
     <section class="cinema-page-hero admin-hero">
         <div class="container">
-            <ul class="cinema-breadcrumb"><li><a th:href="@{/admin}">관리자</a></li><li><a th:href="@{/admin/schedules}">회차 현황</a></li><li>회차 상세</li></ul>
-            <h1>회차 상세</h1>
-            <p>회차 정보, 예약 좌석 현황, 연결된 예매 목록을 함께 확인합니다.</p>
-            <div class="admin-subnav"><a th:href="@{/admin}">대시보드</a><a th:href="@{/admin/bookings}">예매 현황</a><a th:href="@{/admin/schedules}" class="is-active">회차 현황</a></div>
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/admin}">Admin</a></li>
+                <li><a th:href="@{/admin/schedules}">Schedules</a></li>
+                <li>Detail</li>
+            </ul>
+            <h1>Schedule Detail</h1>
+            <p>Inspect the schedule profile, seat map, and connected bookings from one screen.</p>
+            <div class="admin-subnav">
+                <a th:href="@{/admin}">Dashboard</a>
+                <a th:href="@{/admin/movies}">Movies</a>
+                <a th:href="@{/admin/theaters}">Theaters</a>
+                <a th:href="@{/admin/screens}">Screens</a>
+                <a th:href="@{/admin/schedules}" class="is-active">Schedules</a>
+                <a th:href="@{/admin/bookings}">Bookings</a>
+            </div>
         </div>
     </section>
 
     <section class="cinema-page-body admin-body">
         <div class="container">
-            <div th:if="${successMessage}" class="booking-feedback-banner is-success"><strong>처리가 완료되었습니다.</strong><span th:text="${successMessage}">예매가 취소되었습니다.</span></div>
-            <div th:if="${errorMessage}" class="booking-feedback-banner"><strong>처리를 완료하지 못했습니다.</strong><span th:text="${errorMessage}">오류가 발생했습니다.</span></div>
+            <div th:if="${successMessage}" class="booking-feedback-banner is-success">
+                <strong>Completed successfully.</strong>
+                <span th:text="${successMessage}">State updated.</span>
+            </div>
+            <div th:if="${errorMessage}" class="booking-feedback-banner">
+                <strong>Something went wrong.</strong>
+                <span th:text="${errorMessage}">Please review the request.</span>
+            </div>
 
-            <div th:if="${schedule == null}" class="empty-state-card">요청한 회차를 찾을 수 없습니다. 회차 목록으로 돌아가 다시 선택해 주세요.</div>
+            <div th:if="${schedule == null}" class="empty-state-card">
+                The requested schedule could not be found. Please go back to the schedule list and try again.
+            </div>
 
             <div th:if="${schedule != null}">
+                <div class="admin-toolbar">
+                    <a th:href="@{/admin/schedules}" class="hero-btn secondary">Back to List</a>
+                    <a th:href="@{/admin/schedules/{id}/edit(id=${schedule.scheduleId})}" class="hero-btn secondary">Edit Schedule</a>
+                    <form th:action="@{/admin/schedules/{id}/delete(id=${schedule.scheduleId})}" method="post" class="inline-post-form">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="hero-btn secondary admin-action-btn">Deactivate</button>
+                    </form>
+                </div>
+
                 <section class="admin-stat-grid admin-stat-grid--compact">
-                    <article class="booking-panel admin-stat-card"><span>영화</span><strong th:text="${schedule.movieTitle}">영화 제목</strong></article>
-                    <article class="booking-panel admin-stat-card"><span>극장 / 상영관</span><strong th:text="${schedule.theaterName + ' | ' + schedule.screenName + ' (' + schedule.screenType + ')'}">CineFlow 강남 | 2관(2D)</strong></article>
-                    <article class="booking-panel admin-stat-card"><span>예약 좌석</span><strong th:text="${reservedSeatCount + '석'}">53석</strong></article>
-                    <article class="booking-panel admin-stat-card"><span>잔여 좌석</span><strong th:text="${availableSeatCount + '석'}">67석</strong></article>
+                    <article class="booking-panel admin-stat-card"><span>Movie</span><strong th:text="${schedule.movieTitle}">Movie Title</strong></article>
+                    <article class="booking-panel admin-stat-card"><span>Theater / Screen</span><strong th:text="${schedule.theaterName + ' | ' + schedule.screenName + ' (' + schedule.screenType + ')'}">CineFlow Gangnam | Screen 2 (2D)</strong></article>
+                    <article class="booking-panel admin-stat-card"><span>Reserved Seats</span><strong th:text="${reservedSeatCount + ' seats'}">53 seats</strong></article>
+                    <article class="booking-panel admin-stat-card"><span>Available Seats</span><strong th:text="${availableSeatCount + ' seats'}">67 seats</strong></article>
                 </section>
 
                 <article class="booking-panel admin-section">
-                    <div class="panel-head"><h2>좌석 점유 현황</h2><span class="input-help" th:text="${#temporals.format(schedule.startTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 19:40</span></div>
-                    <div class="seat-legend" aria-label="좌석 범례">
-                        <div class="legend-item"><span class="seat-sample available"></span><strong>선택 가능</strong></div>
-                        <div class="legend-item"><span class="seat-sample reserved"></span><strong>예약 완료</strong></div>
-                        <div class="legend-item"><span class="seat-sample premium">P</span><strong>프리미엄석</strong></div>
-                        <div class="legend-item"><span class="seat-sample disabled-seat">X</span><strong>사용 불가</strong></div>
+                    <div class="panel-head">
+                        <h2>Seat Occupancy</h2>
+                        <span class="input-help" th:text="${#temporals.format(schedule.startTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 19:40</span>
+                    </div>
+                    <div class="seat-legend" aria-label="Seat legend">
+                        <div class="legend-item"><span class="seat-sample available"></span><strong>Available</strong></div>
+                        <div class="legend-item"><span class="seat-sample reserved"></span><strong>Reserved</strong></div>
+                        <div class="legend-item"><span class="seat-sample premium">P</span><strong>Premium</strong></div>
+                        <div class="legend-item"><span class="seat-sample disabled-seat">X</span><strong>Disabled</strong></div>
                     </div>
                     <div class="screen-badge">SCREEN</div>
                     <div class="seat-map-scroll">
-                        <div class="seat-map" role="grid" aria-label="좌석 배치도">
+                        <div class="seat-map" role="grid" aria-label="Seat layout">
                             <div class="seat-row" th:each="row : ${seatRows}">
                                 <span class="row-label" th:text="${row.rowLabel}">A</span>
                                 <th:block th:each="seat, seatStat : ${row.seats}">
                                     <span class="seat-aisle" th:if="${seatStat.index == 4 or seatStat.index == 8}"></span>
-                                    <button type="button" th:class="${seat.seatCssClass}" th:title="${seat.seatCode + ' | ' + seat.seatTypeLabel}" disabled><span th:text="${seat.seatCode}">A1</span></button>
+                                    <button type="button" th:class="${seat.seatCssClass}" th:title="${seat.seatCode + ' | ' + seat.seatTypeLabel}" disabled>
+                                        <span th:text="${seat.seatCode}">A1</span>
+                                    </button>
                                 </th:block>
                             </div>
                         </div>
@@ -64,28 +102,45 @@
                 </article>
 
                 <article class="booking-panel admin-section">
-                    <div class="panel-head"><h2>연결된 예매 목록</h2><span class="input-help" th:text="${#lists.size(bookings) + '건'}">0건</span></div>
+                    <div class="panel-head">
+                        <h2>Connected Bookings</h2>
+                        <span class="input-help" th:text="${#lists.size(bookings) + ' items'}">0 items</span>
+                    </div>
                     <div class="admin-table-wrap">
                         <table class="admin-table">
-                            <thead><tr><th>예매번호</th><th>고객명</th><th>좌석</th><th>예매상태</th><th>결제상태</th><th>관리</th></tr></thead>
+                            <thead>
+                            <tr>
+                                <th>Booking Code</th>
+                                <th>Customer</th>
+                                <th>Seats</th>
+                                <th>Booking State</th>
+                                <th>Payment State</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
                             <tbody>
                             <tr th:each="booking : ${bookings}">
                                 <td><a th:href="@{/booking/complete(bookingCode=${booking.bookingCode})}" th:text="${booking.bookingCode}">CF20260404-1940-T8M2</a></td>
-                                <td th:text="${booking.customerName}">김민서</td>
+                                <td th:text="${booking.customerName}">Customer Name</td>
                                 <td th:text="${booking.seatNames}">H10, H11, H12</td>
-                                <td><span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">예매완료</span></td>
-                                <td><span th:if="${booking.payment != null}" th:class="${booking.payment.paymentStatusCssClass}" th:text="${booking.payment.paymentStatusLabel}">결제완료</span><span th:if="${booking.payment == null}" class="history-state-chip state-refund">결제없음</span></td>
+                                <td><span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">BOOKED</span></td>
+                                <td>
+                                    <span th:if="${booking.payment != null}" th:class="${booking.payment.paymentStatusCssClass}" th:text="${booking.payment.paymentStatusLabel}">PAID</span>
+                                    <span th:if="${booking.payment == null}" class="history-state-chip state-refund">No Payment</span>
+                                </td>
                                 <td class="admin-actions">
                                     <form th:if="${booking.cancelable}" th:action="@{/admin/bookings/{bookingCode}/cancel(bookingCode=${booking.bookingCode})}" method="post" class="inline-post-form">
                                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                        <input type="hidden" name="cancelReason" value="관리자 취소">
+                                        <input type="hidden" name="cancelReason" value="Admin cancellation">
                                         <input type="hidden" name="redirectTo" th:value="${'/admin/schedules/' + schedule.scheduleId}">
-                                        <button type="submit" class="hero-btn secondary admin-action-btn">취소</button>
+                                        <button type="submit" class="hero-btn secondary admin-action-btn">Cancel</button>
                                     </form>
-                                    <span th:if="${!booking.cancelable}" class="history-state-chip state-refund" th:text="${booking.cancelAvailabilityLabel}">취소불가</span>
+                                    <span th:if="${!booking.cancelable}" class="history-state-chip state-refund" th:text="${booking.cancelAvailabilityLabel}">Not Cancelable</span>
                                 </td>
                             </tr>
-                            <tr th:if="${#lists.isEmpty(bookings)}"><td colspan="6">이 회차에 연결된 예매가 없습니다.</td></tr>
+                            <tr th:if="${#lists.isEmpty(bookings)}">
+                                <td colspan="6">No bookings are connected to this schedule.</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

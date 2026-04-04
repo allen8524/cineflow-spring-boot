@@ -40,11 +40,11 @@ public class AdminController {
 
     @GetMapping
     public String index(Model model) {
-        List<ScheduleViewDto> schedules = scheduleService.getAllScheduleViews();
+        List<ScheduleViewDto> schedules = scheduleService.getSchedulesForAdmin(null, null, null);
         List<Booking> bookings = bookingService.getBookingsForAdmin(null, null, null, null);
 
         AdminDashboardDto dashboard = AdminDashboardDto.builder()
-                .totalMovies(movieService.getAllMovies().size())
+                .totalMovies(movieService.getAllMoviesForAdmin().size())
                 .totalSchedules(schedules.size())
                 .totalBookings(bookings.size())
                 .upcomingBookings(bookingService.getCurrentBookings().size())
@@ -73,8 +73,8 @@ public class AdminController {
             Model model
     ) {
         model.addAttribute("bookings", bookingService.getBookingsForAdmin(status, movieId, theaterId, date));
-        model.addAttribute("movies", movieService.getAllMovies());
-        model.addAttribute("theaters", theaterService.getAllTheaters());
+        model.addAttribute("movies", movieService.getAllMoviesForAdmin());
+        model.addAttribute("theaters", theaterService.getAllTheatersForAdmin());
         model.addAttribute("statuses", BookingStatus.values());
         model.addAttribute("selectedStatus", status);
         model.addAttribute("selectedMovieId", movieId);
@@ -91,8 +91,8 @@ public class AdminController {
             Model model
     ) {
         model.addAttribute("schedules", scheduleService.getSchedulesForAdmin(movieId, theaterId, date).stream().map(AdminScheduleRowDto::from).toList());
-        model.addAttribute("movies", movieService.getAllMovies());
-        model.addAttribute("theaters", theaterService.getAllTheaters());
+        model.addAttribute("movies", movieService.getAllMoviesForAdmin());
+        model.addAttribute("theaters", theaterService.getAllTheatersForAdmin());
         model.addAttribute("selectedMovieId", movieId);
         model.addAttribute("selectedTheaterId", theaterId);
         model.addAttribute("selectedDate", date);
@@ -101,7 +101,7 @@ public class AdminController {
 
     @GetMapping("/schedules/{id}")
     public String scheduleDetail(@PathVariable Long id, Model model) {
-        ScheduleViewDto schedule = scheduleService.findScheduleView(id).orElse(null);
+        ScheduleViewDto schedule = scheduleService.findAdminScheduleView(id).orElse(null);
 
         model.addAttribute("schedule", schedule);
         model.addAttribute("scheduleRow", schedule != null ? AdminScheduleRowDto.from(schedule) : null);
@@ -123,7 +123,7 @@ public class AdminController {
         User currentUser = authenticatedUser != null ? authenticatedUser.getUser() : null;
         try {
             Booking booking = bookingService.cancelBooking(bookingCode, cancelReason, currentUser);
-            redirectAttributes.addFlashAttribute("successMessage", booking.getBookingCode() + " 예매를 취소했습니다.");
+            redirectAttributes.addFlashAttribute("successMessage", "Booking " + booking.getBookingCode() + " canceled successfully.");
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         }
@@ -137,6 +137,9 @@ public class AdminController {
         if (redirectTo.startsWith("/admin/schedules/")
                 || redirectTo.startsWith("/admin/schedules")
                 || redirectTo.startsWith("/admin/bookings")
+                || redirectTo.startsWith("/admin/movies")
+                || redirectTo.startsWith("/admin/theaters")
+                || redirectTo.startsWith("/admin/screens")
                 || "/admin".equals(redirectTo)) {
             return redirectTo;
         }

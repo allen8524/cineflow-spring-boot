@@ -31,7 +31,8 @@ import java.util.List;
         name = "movies",
         indexes = {
                 @Index(name = "idx_movies_status", columnList = "status"),
-                @Index(name = "idx_movies_release_date", columnList = "release_date")
+                @Index(name = "idx_movies_release_date", columnList = "release_date"),
+                @Index(name = "idx_movies_active_booking_open", columnList = "active, booking_open")
         }
 )
 public class Movie {
@@ -64,6 +65,14 @@ public class Movie {
     private Double score;
     private LocalDate releaseDate;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean bookingOpen = true;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean active = true;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private MovieStatus status;
@@ -85,7 +94,7 @@ public class Movie {
 
     @Transient
     public String getStatusLabel() {
-        return status == MovieStatus.NOW_SHOWING ? "상영중" : "개봉예정";
+        return status == MovieStatus.NOW_SHOWING ? "Now Showing" : "Coming Soon";
     }
 
     @Transient
@@ -95,11 +104,21 @@ public class Movie {
 
     @Transient
     public String getMetricName() {
-        return status == MovieStatus.NOW_SHOWING ? "예매율" : "사전예매율";
+        return status == MovieStatus.NOW_SHOWING ? "Booking Rate" : "Advance Rate";
     }
 
     @Transient
     public String getScoreMetricName() {
-        return status == MovieStatus.NOW_SHOWING ? "평점" : "기대지수";
+        return status == MovieStatus.NOW_SHOWING ? "Score" : "Interest";
+    }
+
+    @Transient
+    public String getBookingOpenLabel() {
+        return bookingOpen ? "Open" : "Closed";
+    }
+
+    @Transient
+    public String getActiveLabel() {
+        return active ? "Visible" : "Hidden";
     }
 }

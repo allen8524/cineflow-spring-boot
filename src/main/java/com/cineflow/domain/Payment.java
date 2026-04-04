@@ -70,10 +70,10 @@ public class Payment {
     @Transient
     public String getPaymentStatusLabel() {
         return switch (paymentStatus) {
-            case READY -> "결제대기";
-            case PAID -> "결제완료";
-            case CANCELED -> "환불완료";
-            case FAILED -> "결제실패";
+            case READY -> "Ready";
+            case PAID -> "Paid";
+            case CANCELED -> "Refunded";
+            case FAILED -> "Failed";
         };
     }
 

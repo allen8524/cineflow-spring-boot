@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>CineFlow | 관리자 대시보드</title>
+    <title>CineFlow | Admin Dashboard</title>
     <meta charset="UTF-8">
-    <meta name="description" content="CineFlow 관리자 대시보드">
+    <meta name="description" content="CineFlow admin dashboard">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone-no">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
@@ -15,7 +15,7 @@
 <div class="topbar-cinema">
     <div class="container">
         <div class="topbar-wrap">
-            <p class="topbar-msg">내부 운영 확인용 관리자 페이지입니다.</p>
+            <p class="topbar-msg">Review core operations and jump directly into management areas.</p>
             <ul th:replace="~{fragments/auth-menu :: adminTopbarLinks}"></ul>
         </div>
     </div>
@@ -25,15 +25,19 @@
     <section class="cinema-page-hero admin-hero">
         <div class="container">
             <ul class="cinema-breadcrumb">
-                <li><a th:href="@{/}">홈</a></li>
-                <li>관리자 대시보드</li>
+                <li><a th:href="@{/}">Home</a></li>
+                <li>Admin</li>
+                <li>Dashboard</li>
             </ul>
-            <h1>관리자 대시보드</h1>
-            <p>예매 현황, 회차 현황, 좌석 점유 상태를 빠르게 확인할 수 있습니다.</p>
+            <h1>Admin Dashboard</h1>
+            <p>Track movies, schedules, bookings, and revenue from one operational overview.</p>
             <div class="admin-subnav">
-                <a th:href="@{/admin}" class="is-active">대시보드</a>
-                <a th:href="@{/admin/bookings}">예매 현황</a>
-                <a th:href="@{/admin/schedules}">회차 현황</a>
+                <a th:href="@{/admin}" class="is-active">Dashboard</a>
+                <a th:href="@{/admin/movies}">Movies</a>
+                <a th:href="@{/admin/theaters}">Theaters</a>
+                <a th:href="@{/admin/screens}">Screens</a>
+                <a th:href="@{/admin/schedules}">Schedules</a>
+                <a th:href="@{/admin/bookings}">Bookings</a>
             </div>
         </div>
     </section>
@@ -41,47 +45,81 @@
     <section class="cinema-page-body admin-body">
         <div class="container">
             <div th:if="${successMessage}" class="booking-feedback-banner is-success">
-                <strong>처리가 완료되었습니다.</strong>
-                <span th:text="${successMessage}">예매가 취소되었습니다.</span>
+                <strong>Completed successfully.</strong>
+                <span th:text="${successMessage}">Operation finished.</span>
             </div>
             <div th:if="${errorMessage}" class="booking-feedback-banner">
-                <strong>처리를 완료하지 못했습니다.</strong>
-                <span th:text="${errorMessage}">오류가 발생했습니다.</span>
+                <strong>Something went wrong.</strong>
+                <span th:text="${errorMessage}">Please review the request.</span>
             </div>
 
             <section class="admin-stat-grid">
-                <article class="booking-panel admin-stat-card"><span>총 영화 수</span><strong th:text="${dashboard.totalMovies}">7</strong></article>
-                <article class="booking-panel admin-stat-card"><span>총 회차 수</span><strong th:text="${dashboard.totalSchedules}">12</strong></article>
-                <article class="booking-panel admin-stat-card"><span>총 예매 수</span><strong th:text="${dashboard.totalBookings}">8</strong></article>
-                <article class="booking-panel admin-stat-card"><span>예정된 예매</span><strong th:text="${dashboard.upcomingBookings}">3</strong></article>
-                <article class="booking-panel admin-stat-card"><span>취소된 예매</span><strong th:text="${dashboard.canceledBookings}">1</strong></article>
-                <article class="booking-panel admin-stat-card"><span>총 매출</span><strong th:text="${#numbers.formatInteger(dashboard.totalRevenue, 3, 'COMMA') + '원'}">90,000원</strong></article>
-                <article class="booking-panel admin-stat-card"><span>오늘 상영 수</span><strong th:text="${dashboard.todaySchedules}">4</strong></article>
-                <article class="booking-panel admin-stat-card"><span>오늘 예매 수</span><strong th:text="${dashboard.todayBookings}">2</strong></article>
+                <article class="booking-panel admin-stat-card"><span>Total Movies</span><strong th:text="${dashboard.totalMovies}">0</strong></article>
+                <article class="booking-panel admin-stat-card"><span>Total Schedules</span><strong th:text="${dashboard.totalSchedules}">0</strong></article>
+                <article class="booking-panel admin-stat-card"><span>Total Bookings</span><strong th:text="${dashboard.totalBookings}">0</strong></article>
+                <article class="booking-panel admin-stat-card"><span>Upcoming Bookings</span><strong th:text="${dashboard.upcomingBookings}">0</strong></article>
+                <article class="booking-panel admin-stat-card"><span>Canceled Bookings</span><strong th:text="${dashboard.canceledBookings}">0</strong></article>
+                <article class="booking-panel admin-stat-card"><span>Total Revenue</span><strong th:text="${#numbers.formatInteger(dashboard.totalRevenue, 3, 'COMMA') + ' KRW'}">0 KRW</strong></article>
+                <article class="booking-panel admin-stat-card"><span>Today Schedules</span><strong th:text="${dashboard.todaySchedules}">0</strong></article>
+                <article class="booking-panel admin-stat-card"><span>Today Bookings</span><strong th:text="${dashboard.todayBookings}">0</strong></article>
             </section>
 
             <section class="admin-quick-grid">
-                <a th:href="@{/admin/bookings}" class="booking-panel admin-quick-card"><strong>예매 관리</strong><span>예매 상태, 결제 상태, 취소 가능 여부를 한 번에 확인</span></a>
-                <a th:href="@{/admin/schedules}" class="booking-panel admin-quick-card"><strong>회차 관리</strong><span>회차별 잔여 좌석과 점유율, 좌석 배치 현황 확인</span></a>
-                <a th:href="@{/booking}" class="booking-panel admin-quick-card"><strong>사용자 페이지</strong><span>현재 운영 중인 예매 흐름을 사용자 화면 기준으로 확인</span></a>
+                <a th:href="@{/admin/movies}" class="booking-panel admin-quick-card">
+                    <strong>Movie Management</strong>
+                    <span>Create, edit, and deactivate movies shown across the public experience.</span>
+                </a>
+                <a th:href="@{/admin/theaters}" class="booking-panel admin-quick-card">
+                    <strong>Theater Management</strong>
+                    <span>Control theater profile data and public visibility.</span>
+                </a>
+                <a th:href="@{/admin/screens}" class="booking-panel admin-quick-card">
+                    <strong>Screen Management</strong>
+                    <span>Keep screen formats, seat capacity, and visibility aligned.</span>
+                </a>
+                <a th:href="@{/admin/schedules}" class="booking-panel admin-quick-card">
+                    <strong>Schedule Management</strong>
+                    <span>Register schedules and inspect occupancy in one flow.</span>
+                </a>
+                <a th:href="@{/admin/bookings}" class="booking-panel admin-quick-card">
+                    <strong>Booking Operations</strong>
+                    <span>Review booking state, payment state, and cancel actions.</span>
+                </a>
+                <a th:href="@{/booking}" class="booking-panel admin-quick-card">
+                    <strong>Public View Check</strong>
+                    <span>Confirm how operational data appears in the user booking journey.</span>
+                </a>
             </section>
 
             <div class="admin-layout">
                 <section class="admin-main-stack">
                     <article class="booking-panel admin-section">
-                        <div class="panel-head"><h2>최근 예매</h2><a th:href="@{/admin/bookings}">전체 보기</a></div>
+                        <div class="panel-head">
+                            <h2>Recent Bookings</h2>
+                            <a th:href="@{/admin/bookings}">View All</a>
+                        </div>
                         <div class="admin-table-wrap">
                             <table class="admin-table">
-                                <thead><tr><th>예매번호</th><th>영화</th><th>상영시간</th><th>좌석</th><th>상태</th></tr></thead>
+                                <thead>
+                                <tr>
+                                    <th>Booking Code</th>
+                                    <th>Movie</th>
+                                    <th>Show Time</th>
+                                    <th>Seats</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
                                 <tbody>
                                 <tr th:each="booking : ${recentBookings}">
-                                    <td th:text="${booking.bookingCode}">CF20260404-1940-T8M2</td>
-                                    <td th:text="${booking.movieTitle}">영화 제목</td>
+                                    <td><a th:href="@{/booking/complete(bookingCode=${booking.bookingCode})}" th:text="${booking.bookingCode}">CF20260404-1940-T8M2</a></td>
+                                    <td th:text="${booking.movieTitle}">Movie Title</td>
                                     <td th:text="${booking.startTime != null ? #temporals.format(booking.startTime, 'yyyy.MM.dd HH:mm') : '-'}">2026.04.04 19:40</td>
                                     <td th:text="${booking.seatNames}">H10, H11</td>
-                                    <td><span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">예매완료</span></td>
+                                    <td><span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">BOOKED</span></td>
                                 </tr>
-                                <tr th:if="${#lists.isEmpty(recentBookings)}"><td colspan="5">표시할 예매가 없습니다.</td></tr>
+                                <tr th:if="${#lists.isEmpty(recentBookings)}">
+                                    <td colspan="5">No recent bookings.</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -90,14 +128,20 @@
 
                 <aside class="admin-side-stack">
                     <article class="booking-panel admin-section">
-                        <div class="panel-head"><h2>오늘 회차</h2><a th:href="@{/admin/schedules}">전체 보기</a></div>
+                        <div class="panel-head">
+                            <h2>Today Schedules</h2>
+                            <a th:href="@{/admin/schedules}">View All</a>
+                        </div>
                         <div class="admin-mini-list">
                             <div class="admin-mini-item" th:each="schedule : ${todaySchedules}">
-                                <strong th:text="${schedule.movieTitle}">영화 제목</strong>
-                                <span th:text="${schedule.theaterName + ' | ' + schedule.screenName + ' (' + schedule.screenType + ')'}">CineFlow 강남 | 2관(2D)</span>
-                                <em th:text="${#temporals.format(schedule.startTime, 'HH:mm') + ' | 잔여 ' + schedule.availableSeats + '석'}">19:40 | 잔여 67석</em>
+                                <strong th:text="${schedule.movieTitle}">Movie Title</strong>
+                                <span th:text="${schedule.theaterName + ' | ' + schedule.screenName + ' (' + schedule.screenType + ')'}">CineFlow Gangnam | Screen 2 (2D)</span>
+                                <em th:text="${#temporals.format(schedule.startTime, 'HH:mm') + ' | Seats Left ' + schedule.availableSeats}">19:40 | Seats Left 67</em>
                             </div>
-                            <div class="admin-mini-item" th:if="${#lists.isEmpty(todaySchedules)}"><strong>오늘 상영 회차가 없습니다</strong><span>현재 기준으로 오늘 날짜의 회차가 잡혀 있지 않습니다.</span></div>
+                            <div class="admin-mini-item" th:if="${#lists.isEmpty(todaySchedules)}">
+                                <strong>No schedules today.</strong>
+                                <span>Create a new schedule to start selling tickets.</span>
+                            </div>
                         </div>
                     </article>
                 </aside>

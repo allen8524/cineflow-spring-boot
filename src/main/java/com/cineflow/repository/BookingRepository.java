@@ -42,4 +42,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @EntityGraph(attributePaths = {"bookingSeats", "payment", "schedule", "schedule.movie", "schedule.screen", "schedule.screen.theater", "user"})
     Optional<Booking> findTopByUserIdOrderByCreatedAtDesc(Long userId);
+
+    boolean existsByScheduleId(Long scheduleId);
 }

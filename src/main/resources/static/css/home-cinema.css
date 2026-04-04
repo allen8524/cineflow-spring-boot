@@ -4126,6 +4126,109 @@ body {
     font-size: 12px;
 }
 
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.admin-actions--stack {
+    display: grid;
+    gap: 8px;
+}
+
+.admin-form-card {
+    display: grid;
+    gap: 18px;
+}
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.admin-form-field,
+.admin-form-check,
+.admin-form-note {
+    display: grid;
+    gap: 8px;
+}
+
+.admin-form-field--full,
+.admin-form-note--full,
+.admin-form-actions {
+    grid-column: 1 / -1;
+}
+
+.admin-form-field label,
+.admin-form-check label,
+.admin-form-note strong {
+    color: #f2f6ff;
+    font-weight: 700;
+    margin: 0;
+}
+
+.admin-form-field input,
+.admin-form-field select,
+.admin-form-field textarea {
+    min-height: 46px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: #101a33;
+    color: #e4ecff;
+    padding: 0 14px;
+}
+
+.admin-form-field textarea {
+    min-height: 160px;
+    padding: 14px;
+    resize: vertical;
+}
+
+.admin-form-check {
+    align-content: start;
+    min-height: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 16px;
+}
+
+.admin-form-check label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-form-check p,
+.admin-form-note p {
+    margin: 0;
+    color: #9dafd5;
+    line-height: 1.6;
+}
+
+.admin-form-note {
+    border-radius: 12px;
+    border: 1px solid rgba(220, 248, 54, 0.18);
+    background: rgba(220, 248, 54, 0.06);
+    padding: 16px;
+}
+
+.admin-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.field-error {
+    margin: 0;
+    color: #ffb9c8;
+    font-size: 12px;
+}
+
 @media (max-width: 1200px) {
     .admin-layout {
         grid-template-columns: 1fr;
@@ -4141,6 +4244,10 @@ body {
 @media (max-width: 992px) {
     .admin-filter-form {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-form-grid {
+        grid-template-columns: 1fr;
     }
 }
 

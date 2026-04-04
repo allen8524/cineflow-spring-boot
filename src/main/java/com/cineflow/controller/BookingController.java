@@ -63,7 +63,7 @@ public class BookingController {
             date = scheduleFromRequest.getShowDate();
         }
 
-        List<Movie> movies = movieService.getAllMovies();
+        List<Movie> movies = movieService.getBookableMovies();
         Movie selectedMovie = resolveSelectedMovie(movies, movieId);
         List<Theater> theaters = selectedMovie != null
                 ? theaterService.getTheatersForMovie(selectedMovie.getId())

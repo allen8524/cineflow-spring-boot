@@ -7,9 +7,9 @@ public enum SeatType {
 
     public String getLabel() {
         return switch (this) {
-            case STANDARD -> "일반석";
-            case PREMIUM -> "프리미엄석";
-            case COUPLE -> "커플석";
+            case STANDARD -> "Standard";
+            case PREMIUM -> "Premium";
+            case COUPLE -> "Couple";
         };
     }
 }

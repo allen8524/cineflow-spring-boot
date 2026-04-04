@@ -8,10 +8,10 @@ public enum PaymentMethod {
 
     public String getLabel() {
         return switch (this) {
-            case CARD -> "카드";
-            case KAKAO_PAY -> "카카오페이";
-            case NAVER_PAY -> "네이버페이";
-            case TOSS -> "토스";
+            case CARD -> "Card";
+            case KAKAO_PAY -> "Kakao Pay";
+            case NAVER_PAY -> "Naver Pay";
+            case TOSS -> "Toss";
         };
     }
 }

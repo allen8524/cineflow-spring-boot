@@ -70,14 +70,14 @@ public class ScheduleViewDto {
 
     public String getSeatAvailabilityLabel() {
         if (availableSeats == null) {
-            return "좌석 확인 중";
+            return "Checking";
         }
         if (availableSeats <= 20) {
-            return "매진 임박";
+            return "Selling Fast";
         }
         if (availableSeats <= 50) {
-            return "보통";
+            return "Limited";
         }
-        return "여유 많음";
+        return "Available";
     }
 }

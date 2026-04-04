@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${editMode ? 'CineFlow | Screen Edit' : 'CineFlow | Screen Create'}">CineFlow | Screen Create</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="CineFlow admin screen form">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
+    <link rel="stylesheet" th:href="@{/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
+</head>
+<body>
+<div class="topbar-cinema">
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">Manage screen profile, seat capacity, and visibility for booking operations.</p>
+            <ul th:replace="~{fragments/auth-menu :: adminTopbarLinks}"></ul>
+        </div>
+    </div>
+</div>
+
+<main class="cinema-page admin-page">
+    <section class="cinema-page-hero admin-hero">
+        <div class="container">
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/admin}">Admin</a></li>
+                <li><a th:href="@{/admin/screens}">Screens</a></li>
+                <li th:text="${editMode ? 'Edit Screen' : 'Create Screen'}">Create Screen</li>
+            </ul>
+            <h1 th:text="${editMode ? 'Edit Screen' : 'Create Screen'}">Create Screen</h1>
+            <p>Screen creation also prepares seat templates, so review capacity changes carefully.</p>
+        </div>
+    </section>
+
+    <section class="cinema-page-body admin-body">
+        <div class="container">
+            <article class="booking-panel admin-form-card">
+                <form th:action="@{${formAction}}" th:object="${screenForm}" method="post" class="admin-form-grid">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                    <div th:if="${formErrorMessage}" class="booking-feedback-banner admin-form-note--full">
+                        <strong>Please review the form.</strong>
+                        <span th:text="${formErrorMessage}">Error message</span>
+                    </div>
+
+                    <div class="admin-form-field">
+                        <label for="theaterId">Theater</label>
+                        <select id="theaterId" th:field="*{theaterId}">
+                            <option value="">Select</option>
+                            <option th:each="theater : ${theaters}" th:value="${theater.id}" th:text="${theater.name + ' | ' + theater.region}">CineFlow Gangnam | Seoul</option>
+                        </select>
+                        <p class="field-error" th:if="${#fields.hasErrors('theaterId')}" th:errors="*{theaterId}">Theater error</p>
+                    </div>
+
+                    <div class="admin-form-field">
+                        <label for="name">Screen Name</label>
+                        <input id="name" type="text" th:field="*{name}" placeholder="e.g. Screen 1">
+                        <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Screen name error</p>
+                    </div>
+
+                    <div class="admin-form-field">
+                        <label for="screenType">Format</label>
+                        <input id="screenType" type="text" th:field="*{screenType}" placeholder="e.g. IMAX, 2D, LASER">
+                        <p class="field-error" th:if="${#fields.hasErrors('screenType')}" th:errors="*{screenType}">Format error</p>
+                    </div>
+
+                    <div class="admin-form-field">
+                        <label for="totalSeats">Total Seats</label>
+                        <input id="totalSeats" type="number" th:field="*{totalSeats}" min="12" max="312" placeholder="e.g. 120">
+                        <p class="field-error" th:if="${#fields.hasErrors('totalSeats')}" th:errors="*{totalSeats}">Seat count error</p>
+                    </div>
+
+                    <div class="admin-form-check">
+                        <label><input type="checkbox" th:field="*{active}"> Visible to Users</label>
+                        <p>Turn this off to hide the screen from public schedule and booking pages.</p>
+                    </div>
+
+                    <div class="admin-form-note admin-form-note--full">
+                        <strong>Note</strong>
+                        <p>When schedules already exist, theater assignment and seat capacity updates are restricted.</p>
+                    </div>
+
+                    <div class="admin-form-actions">
+                        <a th:href="@{/admin/screens}" class="hero-btn secondary">Back to List</a>
+                        <button type="submit" class="hero-btn primary" th:text="${editMode ? 'Save Changes' : 'Create Screen'}">Create Screen</button>
+                    </div>
+                </form>
+            </article>
+        </div>
+    </section>
+</main>
+</body>
+</html>

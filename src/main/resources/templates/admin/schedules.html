@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>CineFlow | 관리자 회차 현황</title>
+    <title>CineFlow | Admin Schedule Management</title>
     <meta charset="UTF-8">
-    <meta name="description" content="CineFlow 관리자 회차 현황">
+    <meta name="description" content="CineFlow admin schedule management">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone-no">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
@@ -13,48 +13,106 @@
 </head>
 <body>
 <div class="topbar-cinema">
-    <div class="container"><div class="topbar-wrap"><p class="topbar-msg">회차별 좌석 점유 현황을 관리합니다.</p><ul th:replace="~{fragments/auth-menu :: adminTopbarLinks}"></ul></div></div>
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">Manage schedules, inspect seat inventory, and monitor occupancy in one place.</p>
+            <ul th:replace="~{fragments/auth-menu :: adminTopbarLinks}"></ul>
+        </div>
+    </div>
 </div>
 
 <main class="cinema-page admin-page">
     <section class="cinema-page-hero admin-hero">
         <div class="container">
-            <ul class="cinema-breadcrumb"><li><a th:href="@{/admin}">관리자</a></li><li>회차 현황</li></ul>
-            <h1>회차 현황</h1>
-            <p>회차별 잔여 좌석, 총 좌석, 점유율을 확인하고 좌석 현황 상세로 이동할 수 있습니다.</p>
-            <div class="admin-subnav"><a th:href="@{/admin}">대시보드</a><a th:href="@{/admin/bookings}">예매 현황</a><a th:href="@{/admin/schedules}" class="is-active">회차 현황</a></div>
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/admin}">Admin</a></li>
+                <li>Schedules</li>
+            </ul>
+            <h1>Schedule Management</h1>
+            <p>Filter schedules by movie, theater, and date, then open details or update the schedule.</p>
+            <div class="admin-subnav">
+                <a th:href="@{/admin}">Dashboard</a>
+                <a th:href="@{/admin/movies}">Movies</a>
+                <a th:href="@{/admin/theaters}">Theaters</a>
+                <a th:href="@{/admin/screens}">Screens</a>
+                <a th:href="@{/admin/schedules}" class="is-active">Schedules</a>
+                <a th:href="@{/admin/bookings}">Bookings</a>
+            </div>
         </div>
     </section>
 
     <section class="cinema-page-body admin-body">
         <div class="container">
+            <div th:if="${successMessage}" class="booking-feedback-banner is-success">
+                <strong>Completed successfully.</strong>
+                <span th:text="${successMessage}">Schedule data updated.</span>
+            </div>
+            <div th:if="${errorMessage}" class="booking-feedback-banner">
+                <strong>Something went wrong.</strong>
+                <span th:text="${errorMessage}">Please review the request.</span>
+            </div>
+
             <article class="booking-panel admin-section">
-                <div class="panel-head"><h2>필터</h2></div>
+                <div class="panel-head">
+                    <h2>Filters</h2>
+                    <a th:href="@{/admin/schedules/new}" class="detail-link">Create Schedule</a>
+                </div>
                 <form class="admin-filter-form" th:action="@{/admin/schedules}" method="get">
-                    <select name="movieId"><option value="">전체 영화</option><option th:each="movie : ${movies}" th:value="${movie.id}" th:text="${movie.title}" th:selected="${selectedMovieId == movie.id}">영화 제목</option></select>
-                    <select name="theaterId"><option value="">전체 극장</option><option th:each="theater : ${theaters}" th:value="${theater.id}" th:text="${theater.name}" th:selected="${selectedTheaterId == theater.id}">CineFlow 강남</option></select>
+                    <select name="movieId">
+                        <option value="">All Movies</option>
+                        <option th:each="movie : ${movies}" th:value="${movie.id}" th:text="${movie.title}" th:selected="${selectedMovieId == movie.id}">Movie Title</option>
+                    </select>
+                    <select name="theaterId">
+                        <option value="">All Theaters</option>
+                        <option th:each="theater : ${theaters}" th:value="${theater.id}" th:text="${theater.name}" th:selected="${selectedTheaterId == theater.id}">CineFlow Gangnam</option>
+                    </select>
                     <input type="date" name="date" th:value="${selectedDate}">
-                    <button type="submit">조회</button>
+                    <button type="submit">Search</button>
                 </form>
             </article>
 
             <article class="booking-panel admin-section">
-                <div class="panel-head"><h2>회차 목록</h2><span class="input-help" th:text="${#lists.size(schedules) + '건'}">0건</span></div>
+                <div class="panel-head">
+                    <h2>Schedules</h2>
+                    <span class="input-help" th:text="${#lists.size(schedules) + ' items'}">0 items</span>
+                </div>
                 <div class="admin-table-wrap">
                     <table class="admin-table">
-                        <thead><tr><th>영화명</th><th>극장명</th><th>상영관</th><th>시작시간</th><th>잔여좌석</th><th>총좌석</th><th>예매율</th><th>상세</th></tr></thead>
+                        <thead>
+                        <tr>
+                            <th>Movie</th>
+                            <th>Theater</th>
+                            <th>Screen</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Available</th>
+                            <th>Total</th>
+                            <th>Occupancy</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
                         <tbody>
                         <tr th:each="schedule : ${schedules}">
-                            <td th:text="${schedule.movieTitle}">영화 제목</td>
-                            <td th:text="${schedule.theaterName}">CineFlow 강남</td>
-                            <td th:text="${schedule.screenName + ' (' + schedule.screenType + ')'}">2관 (2D)</td>
+                            <td th:text="${schedule.movieTitle}">Movie Title</td>
+                            <td th:text="${schedule.theaterName}">CineFlow Gangnam</td>
+                            <td th:text="${schedule.screenName + ' (' + schedule.screenType + ')'}">Screen 2 (2D)</td>
                             <td th:text="${#temporals.format(schedule.startTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 19:40</td>
-                            <td th:text="${schedule.availableSeats + '석'}">67석</td>
-                            <td th:text="${schedule.totalSeats + '석'}">120석</td>
+                            <td th:text="${#temporals.format(schedule.endTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 21:40</td>
+                            <td th:text="${schedule.availableSeats + ' seats'}">67 seats</td>
+                            <td th:text="${schedule.totalSeats + ' seats'}">120 seats</td>
                             <td th:text="${schedule.occupancyRate + '%'}">44%</td>
-                            <td><a th:href="@{/admin/schedules/{id}(id=${schedule.scheduleId})}">상세보기</a></td>
+                            <td class="admin-actions admin-actions--stack">
+                                <a th:href="@{/admin/schedules/{id}(id=${schedule.scheduleId})}" class="detail-link">Detail</a>
+                                <a th:href="@{/admin/schedules/{id}/edit(id=${schedule.scheduleId})}" class="detail-link">Edit</a>
+                                <form th:action="@{/admin/schedules/{id}/delete(id=${schedule.scheduleId})}" method="post" class="inline-post-form">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button type="submit" class="hero-btn secondary admin-action-btn">Deactivate</button>
+                                </form>
+                            </td>
                         </tr>
-                        <tr th:if="${#lists.isEmpty(schedules)}"><td colspan="8">조건에 맞는 회차가 없습니다.</td></tr>
+                        <tr th:if="${#lists.isEmpty(schedules)}">
+                            <td colspan="9">No schedules match the current filter.</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

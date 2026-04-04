@@ -26,7 +26,8 @@ import java.util.List;
 @Table(
         name = "theaters",
         indexes = {
-                @Index(name = "idx_theaters_region", columnList = "region")
+                @Index(name = "idx_theaters_region", columnList = "region"),
+                @Index(name = "idx_theaters_active", columnList = "active")
         }
 )
 public class Theater {
@@ -46,6 +47,10 @@ public class Theater {
 
     @Column(length = 1000)
     private String description;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean active = true;
 
     @Builder.Default
     @OneToMany(mappedBy = "theater")

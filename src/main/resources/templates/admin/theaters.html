@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CineFlow | Admin Theater Management</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="CineFlow admin theater management">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
+    <link rel="stylesheet" th:href="@{/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
+</head>
+<body>
+<div class="topbar-cinema">
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">Manage theater profile data shown across movie detail and booking flows.</p>
+            <ul th:replace="~{fragments/auth-menu :: adminTopbarLinks}"></ul>
+        </div>
+    </div>
+</div>
+
+<main class="cinema-page admin-page">
+    <section class="cinema-page-hero admin-hero">
+        <div class="container">
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/admin}">Admin</a></li>
+                <li>Theaters</li>
+            </ul>
+            <h1>Theater Management</h1>
+            <p>Update theater name, region, location, description, and public visibility.</p>
+            <div class="admin-subnav">
+                <a th:href="@{/admin}">Dashboard</a>
+                <a th:href="@{/admin/movies}">Movies</a>
+                <a th:href="@{/admin/theaters}" class="is-active">Theaters</a>
+                <a th:href="@{/admin/screens}">Screens</a>
+                <a th:href="@{/admin/schedules}">Schedules</a>
+                <a th:href="@{/admin/bookings}">Bookings</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="cinema-page-body admin-body">
+        <div class="container">
+            <div th:if="${successMessage}" class="booking-feedback-banner is-success">
+                <strong>Completed successfully.</strong>
+                <span th:text="${successMessage}">Theater data updated.</span>
+            </div>
+            <div th:if="${errorMessage}" class="booking-feedback-banner">
+                <strong>Something went wrong.</strong>
+                <span th:text="${errorMessage}">Please review the request.</span>
+            </div>
+
+            <article class="booking-panel admin-section">
+                <div class="panel-head">
+                    <h2>Theaters</h2>
+                    <a th:href="@{/admin/theaters/new}" class="detail-link">Create Theater</a>
+                </div>
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Region</th>
+                            <th>Location</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="theater : ${theaters}">
+                            <td th:text="${theater.name}">CineFlow Gangnam</td>
+                            <td th:text="${theater.region}">Seoul</td>
+                            <td th:text="${theater.location}">410 Teheran-ro, Gangnam-gu, Seoul</td>
+                            <td th:text="${theater.description}">Premium flagship site</td>
+                            <td><span th:class="${theater.active ? 'history-state-chip state-booked' : 'history-state-chip state-cancel'}" th:text="${theater.active ? 'Active' : 'Inactive'}">Active</span></td>
+                            <td class="admin-actions admin-actions--stack">
+                                <a th:href="@{/admin/theaters/{id}/edit(id=${theater.id})}" class="detail-link">Edit</a>
+                                <form th:action="@{/admin/theaters/{id}/delete(id=${theater.id})}" method="post" class="inline-post-form">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button type="submit" class="hero-btn secondary admin-action-btn">Deactivate</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(theaters)}">
+                            <td colspan="6">No theaters registered.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -42,4 +42,6 @@ public interface ScheduleSeatRepository extends JpaRepository<ScheduleSeat, Long
     long countByScheduleIdAndReservedFalse(Long scheduleId);
 
     long countByScheduleIdAndReservedTrue(Long scheduleId);
+
+    void deleteByScheduleId(Long scheduleId);
 }
