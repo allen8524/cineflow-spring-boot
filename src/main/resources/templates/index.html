@@ -22,13 +22,7 @@
     <div class="container">
         <div class="topbar-wrap">
             <p class="topbar-msg">프리미엄 스크린과 빠른 예매를 한 번에, CineFlow</p>
-            <ul class="topbar-links">
-                <li><a href="#">로그인</a></li>
-                <li><a href="#">회원가입</a></li>
-                <li><a href="#">멤버십</a></li>
-                <li><a th:href="@{/support}">고객센터</a></li>
-                <li><a th:href="@{/booking}" class="topbar-booking">빠른예매</a></li>
-            </ul>
+            <ul th:replace="~{fragments/auth-menu :: topbarLinks}"></ul>
         </div>
     </div>
 </div>
@@ -53,11 +47,7 @@
                     <li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">혜택</a></li>
                     <li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li>
                 </ul>
-                <ul class="nav navbar-nav flex-child-menu menu-right">
-                    <li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li>
-                    <li><a th:href="@{/booking/history}" class="menu-link">예매내역 확인</a></li>
-                    <li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li>
-                </ul>
+                <ul th:replace="~{fragments/auth-menu :: headerLinks}"></ul>
             </div>
         </nav>
     </div>

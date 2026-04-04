@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>CineFlow | 로그인</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
+    <link rel="stylesheet" th:href="@{/css/plugins.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
+    <link rel="stylesheet" th:href="@{/css/auth-cinema.css}">
+</head>
+<body>
+<div class="topbar-cinema">
+    <div class="container">
+        <div class="topbar-wrap">
+            <p class="topbar-msg">프리미엄 상영과 빠른 예매를 한 번에, CineFlow</p>
+            <ul th:replace="~{fragments/auth-menu :: topbarLinks}"></ul>
+        </div>
+    </div>
+</div>
+
+<header class="ht-header full-width-hd cinema-header">
+    <div class="row">
+        <nav id="mainNav" class="navbar navbar-default navbar-custom">
+            <div class="navbar-header logo">
+                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a>
+            </div>
+            <div class="collapse navbar-collapse flex-parent">
+                <ul class="nav navbar-nav flex-child-menu menu-left">
+                    <li><a class="btn btn-default lv1" th:href="@{/movies}">영화</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/booking}">예매</a></li>
+                    <li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li>
+                </ul>
+                <ul th:replace="~{fragments/auth-menu :: headerLinks}"></ul>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="auth-page">
+    <section class="cinema-page-body">
+        <div class="container">
+            <div class="auth-layout">
+                <section class="auth-intro-card">
+                    <span class="summary-chip">CineFlow MEMBERSHIP</span>
+                    <h1>로그인</h1>
+                    <p>회원으로 로그인하면 예매내역을 더 편하게 확인하고, 로그인 상태에서 진행한 예매를 계정과 자연스럽게 연결할 수 있습니다.</p>
+                    <ul class="auth-feature-list">
+                        <li>로그인 상태 예매 시 계정과 예매 정보 자동 연결</li>
+                        <li>내 예매내역에서 예정, 지난, 취소 예매 확인</li>
+                        <li>관리자 계정은 백오피스와 대시보드 접근 가능</li>
+                    </ul>
+                </section>
+
+                <section class="booking-panel auth-form-panel">
+                    <div class="panel-head">
+                        <h2>회원 로그인</h2>
+                        <span class="input-help">세션 기반 로그인으로 안전하게 예매를 이어갈 수 있습니다.</span>
+                    </div>
+
+                    <div th:if="${param.error}" class="booking-feedback-banner">
+                        <strong>로그인에 실패했습니다.</strong>
+                        <span>아이디 또는 비밀번호를 다시 확인해 주세요.</span>
+                    </div>
+                    <div th:if="${param.logout}" class="booking-feedback-banner is-success">
+                        <strong>로그아웃되었습니다.</strong>
+                        <span>다음에도 CineFlow를 이용해 주세요.</span>
+                    </div>
+                    <div th:if="${param.registered != null or successMessage != null}" class="booking-feedback-banner is-success">
+                        <strong>회원가입이 완료되었습니다.</strong>
+                        <span>이제 로그인하고 예매를 이어갈 수 있습니다.</span>
+                    </div>
+
+                    <form th:action="@{/login}" method="post" class="auth-form-grid">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <div class="auth-field">
+                            <label for="loginId">아이디</label>
+                            <input id="loginId" name="loginId" type="text" autocomplete="username" placeholder="아이디를 입력해 주세요">
+                        </div>
+                        <div class="auth-field">
+                            <label for="password">비밀번호</label>
+                            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="비밀번호를 입력해 주세요">
+                        </div>
+                        <button type="submit" class="hero-btn primary auth-submit-btn">로그인</button>
+                    </form>
+
+                    <div class="auth-helper-links">
+                        <span>아직 회원이 아니신가요?</span>
+                        <a th:href="@{/signup}">회원가입</a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/plugins.js}"></script>
+<script th:src="@{/js/plugins2.js}"></script>
+<script th:src="@{/js/custom.js}"></script>
+</body>
+</html>

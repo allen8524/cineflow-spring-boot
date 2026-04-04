@@ -4156,3 +4156,76 @@ body {
         font-size: 26px;
     }
 }
+
+.auth-inline-item {
+    display: flex;
+    align-items: center;
+}
+
+.auth-inline-form {
+    margin: 0;
+}
+
+.auth-inline-button {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+}
+
+.auth-inline-form--header .auth-inline-button {
+    padding: 0 15px;
+    line-height: 50px;
+}
+
+.history-lookup-panel {
+    margin-bottom: 24px;
+}
+
+.history-lookup-form {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: minmax(240px, 360px) auto;
+    align-items: end;
+}
+
+.history-lookup-form label {
+    display: grid;
+    gap: 8px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.history-lookup-form input {
+    min-height: 48px;
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.24);
+    background: #0e172f;
+    color: #fff;
+    padding: 0 16px;
+}
+
+.history-lookup-copy {
+    color: #a9bcdd;
+    line-height: 1.7;
+}
+
+.history-mode-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(220, 248, 54, 0.14);
+    color: #dcf836;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .history-lookup-form {
+        grid-template-columns: 1fr;
+    }
+}

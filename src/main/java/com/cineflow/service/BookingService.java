@@ -4,8 +4,10 @@ import com.cineflow.domain.Booking;
 import com.cineflow.domain.BookingSeat;
 import com.cineflow.domain.BookingStatus;
 import com.cineflow.domain.Payment;
+import com.cineflow.domain.PaymentStatus;
 import com.cineflow.domain.Schedule;
 import com.cineflow.domain.ScheduleSeat;
+import com.cineflow.domain.User;
 import com.cineflow.dto.BookingRequestDto;
 import com.cineflow.dto.BookingSummaryDto;
 import com.cineflow.repository.BookingRepository;
@@ -56,6 +58,33 @@ public class BookingService {
         return bookingRepository.findAllByStatusOrderByCanceledAtDesc(BookingStatus.CANCELED);
     }
 
+    public List<Booking> getCurrentBookingsForUser(User user) {
+        if (user == null || user.getId() == null) {
+            return List.of();
+        }
+        return bookingRepository.findAllByUserIdOrderByStartTimeAsc(user.getId()).stream()
+                .filter(booking -> booking.getStatus() != BookingStatus.CANCELED)
+                .filter(this::isUpcomingBooking)
+                .toList();
+    }
+
+    public List<Booking> getPastBookingsForUser(User user) {
+        if (user == null || user.getId() == null) {
+            return List.of();
+        }
+        return bookingRepository.findAllByUserIdOrderByStartTimeDesc(user.getId()).stream()
+                .filter(booking -> booking.getStatus() != BookingStatus.CANCELED)
+                .filter(this::isPastBooking)
+                .toList();
+    }
+
+    public List<Booking> getCanceledBookingsForUser(User user) {
+        if (user == null || user.getId() == null) {
+            return List.of();
+        }
+        return bookingRepository.findAllByUserIdAndStatusOrderByCanceledAtDesc(user.getId(), BookingStatus.CANCELED);
+    }
+
     public List<Booking> getBookingsForAdmin(BookingStatus status, Long movieId, Long theaterId, LocalDate date) {
         return bookingRepository.findAllByOrderByStartTimeDesc().stream()
                 .filter(booking -> status == null || booking.getStatus() == status)
@@ -79,26 +108,40 @@ public class BookingService {
         return bookingRepository.findByBookingCode(bookingCode.trim());
     }
 
-    public Booking getBookingByCodeOrLatest(String bookingCode) {
+    public Optional<Booking> findAccessibleBookingByCode(String bookingCode, User actor) {
+        return findBookingByCode(bookingCode)
+                .filter(booking -> canAccessBooking(booking, actor));
+    }
+
+    public Booking getAccessibleBookingByCodeOrLatest(String bookingCode, User actor) {
         if (StringUtils.hasText(bookingCode)) {
-            return findBookingByCode(bookingCode).orElse(null);
+            return findAccessibleBookingByCode(bookingCode, actor).orElse(null);
         }
-        return bookingRepository.findTopByOrderByCreatedAtDesc().orElse(null);
+        if (actor == null || actor.getId() == null) {
+            return null;
+        }
+        return bookingRepository.findTopByUserIdOrderByCreatedAtDesc(actor.getId()).orElse(null);
     }
 
     public long getTotalRevenue() {
         return bookingRepository.findAllByOrderByStartTimeDesc().stream()
                 .filter(booking -> booking.getPayment() != null)
-                .filter(booking -> booking.getPayment().getPaymentStatus().name().equals("PAID"))
+                .filter(booking -> booking.getPayment().getPaymentStatus() == PaymentStatus.PAID)
                 .mapToLong(booking -> booking.getTotalPrice() != null ? booking.getTotalPrice() : 0)
                 .sum();
     }
 
     public BookingSummaryDto createBookingSummary(BookingRequestDto request) {
-        validateRequest(request, false);
+        return createBookingSummary(request, null);
+    }
 
-        Schedule schedule = getScheduleOrThrow(request.getScheduleId());
+    public BookingSummaryDto createBookingSummary(BookingRequestDto request, User bookingUser) {
+        Schedule schedule = getScheduleOrThrow(request != null ? request.getScheduleId() : null);
         List<String> normalizedSeatCodes = seatService.normalizeSeatCodes(request.getSeatCodes());
+        String customerName = resolveCustomerName(request, bookingUser);
+        String customerPhone = resolveCustomerPhone(request, bookingUser);
+
+        validateRequest(request, false, customerName, customerPhone);
         seatService.validateSeatSelection(request.getScheduleId(), normalizedSeatCodes, request.getPeopleCount());
 
         int totalPrice = seatService.calculateTotalPrice(request.getScheduleId(), normalizedSeatCodes);
@@ -123,18 +166,26 @@ public class BookingService {
                 .totalPrice(totalPrice)
                 .basePrice(schedule.getPrice())
                 .availableSeats(schedule.getAvailableSeats())
-                .customerName(trimToNull(request.getCustomerName()))
-                .customerPhone(trimToNull(request.getCustomerPhone()))
+                .customerName(customerName)
+                .customerPhone(customerPhone)
                 .paymentMethod(request.getPaymentMethod())
                 .build();
     }
 
     @Transactional
     public Booking completeBooking(BookingRequestDto request) {
-        validateRequest(request, true);
+        return completeBooking(request, null);
+    }
 
-        Schedule schedule = getScheduleOrThrow(request.getScheduleId());
+    @Transactional
+    public Booking completeBooking(BookingRequestDto request, User bookingUser) {
+        Schedule schedule = getScheduleOrThrow(request != null ? request.getScheduleId() : null);
         List<String> normalizedSeatCodes = seatService.normalizeSeatCodes(request.getSeatCodes());
+        String customerName = resolveCustomerName(request, bookingUser);
+        String customerPhone = resolveCustomerPhone(request, bookingUser);
+
+        validateRequest(request, true, customerName, customerPhone);
+
         List<ScheduleSeat> lockedSeats = seatService.lockSeatsForReservation(
                 request.getScheduleId(),
                 normalizedSeatCodes,
@@ -147,8 +198,8 @@ public class BookingService {
 
         Booking booking = bookingRepository.save(Booking.builder()
                 .bookingCode(generateBookingCode(schedule.getStartTime()))
-                .customerName(trimToNull(request.getCustomerName()))
-                .customerPhone(trimToNull(request.getCustomerPhone()))
+                .customerName(customerName)
+                .customerPhone(customerPhone)
                 .movieTitle(schedule.getMovie().getTitle())
                 .posterUrl(schedule.getMovie().getPosterUrl())
                 .ageRating(schedule.getMovie().getAgeRating())
@@ -161,6 +212,7 @@ public class BookingService {
                 .startTime(schedule.getStartTime())
                 .endTime(schedule.getEndTime())
                 .schedule(schedule)
+                .user(bookingUser)
                 .status(BookingStatus.BOOKED)
                 .build());
 
@@ -195,9 +247,15 @@ public class BookingService {
 
     @Transactional
     public Booking cancelBooking(String bookingCode, String cancelReason) {
+        return cancelBooking(bookingCode, cancelReason, null);
+    }
+
+    @Transactional
+    public Booking cancelBooking(String bookingCode, String cancelReason, User actor) {
         Booking booking = findBookingByCode(bookingCode)
                 .orElseThrow(() -> new IllegalArgumentException("예매번호에 해당하는 예매를 찾을 수 없습니다."));
 
+        validateCancellationAccess(booking, actor);
         validateCancelable(booking);
 
         Payment payment = paymentService.cancelPayment(booking);
@@ -220,9 +278,31 @@ public class BookingService {
         return booking != null && booking.isCancelable();
     }
 
+    public boolean canAccessBooking(Booking booking, User actor) {
+        if (booking == null) {
+            return false;
+        }
+        if (actor != null && actor.getRole() != null && actor.getRole().name().equals("ADMIN")) {
+            return true;
+        }
+        if (booking.getUser() == null) {
+            return actor == null;
+        }
+        return actor != null && actor.getId() != null && actor.getId().equals(booking.getUser().getId());
+    }
+
     private void refreshScheduleAvailability(Schedule schedule) {
         schedule.setAvailableSeats((int) scheduleSeatRepository.countByScheduleIdAndReservedFalse(schedule.getId()));
         scheduleRepository.save(schedule);
+    }
+
+    private void validateCancellationAccess(Booking booking, User actor) {
+        if (booking.getUser() == null) {
+            return;
+        }
+        if (!canAccessBooking(booking, actor)) {
+            throw new IllegalStateException("본인 예매만 확인하거나 취소할 수 있습니다.");
+        }
     }
 
     private void validateCancelable(Booking booking) {
@@ -236,7 +316,7 @@ public class BookingService {
             throw new IllegalStateException("상영 시작 시간이 없어 취소할 수 없습니다.");
         }
         if (!booking.getStartTime().isAfter(LocalDateTime.now())) {
-            throw new IllegalStateException("상영 시작 후에는 취소할 수 없습니다.");
+            throw new IllegalStateException("상영 시작 전까지만 취소할 수 있습니다.");
         }
         if (booking.getPayment() == null) {
             throw new IllegalStateException("결제 정보가 없어 취소를 진행할 수 없습니다.");
@@ -251,20 +331,20 @@ public class BookingService {
         return booking.getStartTime() != null && !booking.getStartTime().isAfter(LocalDateTime.now());
     }
 
-    private void validateRequest(BookingRequestDto request, boolean requireCustomerInfo) {
+    private void validateRequest(BookingRequestDto request, boolean requireCustomerInfo, String customerName, String customerPhone) {
         if (request == null || request.getScheduleId() == null) {
             throw new IllegalArgumentException("상영 회차 정보가 없습니다.");
         }
         if (request.getPeopleCount() <= 0) {
-            throw new IllegalArgumentException("관람 인원은 1명 이상 선택해 주세요.");
+            throw new IllegalArgumentException("관람 인원을 1명 이상 선택해 주세요.");
         }
         if (seatService.normalizeSeatCodes(request.getSeatCodes()).size() != request.getPeopleCount()) {
             throw new IllegalArgumentException("선택한 좌석 수와 관람 인원이 일치해야 합니다.");
         }
-        if (requireCustomerInfo && !StringUtils.hasText(request.getCustomerName())) {
+        if (requireCustomerInfo && !StringUtils.hasText(customerName)) {
             throw new IllegalArgumentException("예매자 이름을 입력해 주세요.");
         }
-        if (requireCustomerInfo && !StringUtils.hasText(request.getCustomerPhone())) {
+        if (requireCustomerInfo && !StringUtils.hasText(customerPhone)) {
             throw new IllegalArgumentException("연락처를 입력해 주세요.");
         }
     }
@@ -275,8 +355,12 @@ public class BookingService {
     }
 
     private String generateBookingCode(LocalDateTime startTime) {
-        return "CF" + BOOKING_CODE_TIME_FORMATTER.format(startTime)
-                + "-" + UUID.randomUUID().toString().replace("-", "").substring(0, 4).toUpperCase(Locale.ROOT);
+        String prefix = "CF" + BOOKING_CODE_TIME_FORMATTER.format(startTime) + "-";
+        String bookingCode;
+        do {
+            bookingCode = prefix + UUID.randomUUID().toString().replace("-", "").substring(0, 4).toUpperCase(Locale.ROOT);
+        } while (bookingRepository.findByBookingCode(bookingCode).isPresent());
+        return bookingCode;
     }
 
     private int safeCount(Integer count) {
@@ -288,5 +372,21 @@ public class BookingService {
             return null;
         }
         return value.trim();
+    }
+
+    private String resolveCustomerName(BookingRequestDto request, User bookingUser) {
+        String customerName = trimToNull(request != null ? request.getCustomerName() : null);
+        if (customerName == null && bookingUser != null) {
+            return trimToNull(bookingUser.getName());
+        }
+        return customerName;
+    }
+
+    private String resolveCustomerPhone(BookingRequestDto request, User bookingUser) {
+        String customerPhone = trimToNull(request != null ? request.getCustomerPhone() : null);
+        if (customerPhone == null && bookingUser != null) {
+            return trimToNull(bookingUser.getPhone());
+        }
+        return customerPhone;
     }
 }

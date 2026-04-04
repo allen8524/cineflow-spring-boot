@@ -2,11 +2,11 @@ package com.cineflow.controller;
 
 import com.cineflow.domain.Booking;
 import com.cineflow.domain.BookingStatus;
-import com.cineflow.domain.Movie;
-import com.cineflow.domain.Theater;
+import com.cineflow.domain.User;
 import com.cineflow.dto.AdminDashboardDto;
 import com.cineflow.dto.AdminScheduleRowDto;
 import com.cineflow.dto.ScheduleViewDto;
+import com.cineflow.security.AuthenticatedUser;
 import com.cineflow.service.BookingService;
 import com.cineflow.service.MovieService;
 import com.cineflow.service.ScheduleService;
@@ -14,6 +14,7 @@ import com.cineflow.service.SeatService;
 import com.cineflow.service.TheaterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +56,11 @@ public class AdminController {
 
         model.addAttribute("dashboard", dashboard);
         model.addAttribute("recentBookings", bookings.stream().limit(6).toList());
-        model.addAttribute("todaySchedules", schedules.stream().filter(schedule -> schedule.getShowDate().equals(LocalDate.now())).limit(6).map(AdminScheduleRowDto::from).toList());
+        model.addAttribute("todaySchedules", schedules.stream()
+                .filter(schedule -> schedule.getShowDate().equals(LocalDate.now()))
+                .limit(6)
+                .map(AdminScheduleRowDto::from)
+                .toList());
         return "admin/index";
     }
 
@@ -109,13 +114,15 @@ public class AdminController {
 
     @PostMapping("/bookings/{bookingCode}/cancel")
     public String cancelBooking(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @PathVariable String bookingCode,
             @RequestParam(required = false) String cancelReason,
             @RequestParam(required = false) String redirectTo,
             RedirectAttributes redirectAttributes
     ) {
+        User currentUser = authenticatedUser != null ? authenticatedUser.getUser() : null;
         try {
-            Booking booking = bookingService.cancelBooking(bookingCode, cancelReason);
+            Booking booking = bookingService.cancelBooking(bookingCode, cancelReason, currentUser);
             redirectAttributes.addFlashAttribute("successMessage", booking.getBookingCode() + " 예매를 취소했습니다.");
         } catch (IllegalArgumentException | IllegalStateException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
@@ -127,7 +134,10 @@ public class AdminController {
         if (redirectTo == null || redirectTo.isBlank()) {
             return "/admin/bookings";
         }
-        if (redirectTo.startsWith("/admin/schedules/") || redirectTo.startsWith("/admin/schedules") || redirectTo.startsWith("/admin/bookings") || "/admin".equals(redirectTo)) {
+        if (redirectTo.startsWith("/admin/schedules/")
+                || redirectTo.startsWith("/admin/schedules")
+                || redirectTo.startsWith("/admin/bookings")
+                || "/admin".equals(redirectTo)) {
             return redirectTo;
         }
         return "/admin/bookings";

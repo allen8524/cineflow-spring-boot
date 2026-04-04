@@ -4,10 +4,12 @@ import com.cineflow.domain.Booking;
 import com.cineflow.domain.Movie;
 import com.cineflow.domain.PaymentMethod;
 import com.cineflow.domain.Theater;
+import com.cineflow.domain.User;
 import com.cineflow.dto.BookingRequestDto;
 import com.cineflow.dto.BookingSummaryDto;
 import com.cineflow.dto.PaymentResultDto;
 import com.cineflow.dto.ScheduleViewDto;
+import com.cineflow.security.AuthenticatedUser;
 import com.cineflow.service.BookingService;
 import com.cineflow.service.MovieService;
 import com.cineflow.service.ScheduleService;
@@ -15,8 +17,10 @@ import com.cineflow.service.SeatService;
 import com.cineflow.service.TheaterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -93,21 +98,22 @@ public class BookingController {
     }
 
     @GetMapping({"/booking/history", "/booking-history.html"})
-    public String history(Model model) {
-        List<Booking> currentBookings = bookingService.getCurrentBookings();
-        List<Booking> pastBookings = bookingService.getPastBookings();
-        List<Booking> canceledBookings = bookingService.getCanceledBookings();
-        Booking previewBooking = !currentBookings.isEmpty() ? currentBookings.get(0) : bookingService.getBookingByCodeOrLatest(null);
+    public String history(
+            @RequestParam(required = false) String bookingCode,
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            Model model
+    ) {
+        User currentUser = extractUser(authenticatedUser);
+        return renderHistoryPage(currentUser, bookingCode, model, false);
+    }
 
-        model.addAttribute("currentBookings", currentBookings);
-        model.addAttribute("pastBookings", pastBookings);
-        model.addAttribute("canceledBookings", canceledBookings);
-        model.addAttribute("previewBooking", previewBooking);
-        model.addAttribute("currentBookingCount", currentBookings.size());
-        model.addAttribute("todayBookingCount", currentBookings.stream().filter(booking -> booking.getStartTime() != null && booking.getStartTime().toLocalDate().equals(LocalDate.now())).count());
-        model.addAttribute("pastBookingCount", pastBookings.size());
-        model.addAttribute("canceledBookingCount", canceledBookings.size());
-        return "booking/history";
+    @GetMapping("/mypage/bookings")
+    public String myBookings(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            Model model
+    ) {
+        User currentUser = extractUser(authenticatedUser);
+        return renderHistoryPage(currentUser, null, model, true);
     }
 
     @GetMapping({"/booking/seat", "/booking-seat.html"})
@@ -143,9 +149,15 @@ public class BookingController {
     }
 
     @PostMapping("/booking/payment")
-    public String paymentPost(@ModelAttribute BookingRequestDto bookingRequest, RedirectAttributes redirectAttributes) {
+    public String paymentPost(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            @ModelAttribute BookingRequestDto bookingRequest,
+            RedirectAttributes redirectAttributes
+    ) {
+        User currentUser = extractUser(authenticatedUser);
+        applyCurrentUserDefaults(bookingRequest, currentUser);
         try {
-            bookingService.createBookingSummary(bookingRequest);
+            bookingService.createBookingSummary(bookingRequest, currentUser);
             addBookingRequestAttributes(bookingRequest, redirectAttributes);
             return "redirect:/booking/payment";
         } catch (IllegalArgumentException | IllegalStateException ex) {
@@ -157,11 +169,18 @@ public class BookingController {
     }
 
     @GetMapping({"/booking/payment", "/booking-payment.html"})
-    public String payment(@ModelAttribute("bookingRequest") BookingRequestDto bookingRequest, Model model) {
+    public String payment(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            @ModelAttribute("bookingRequest") BookingRequestDto bookingRequest,
+            Model model
+    ) {
+        User currentUser = extractUser(authenticatedUser);
+        applyCurrentUserDefaults(bookingRequest, currentUser);
+
         BookingSummaryDto bookingSummary = null;
         if (bookingRequest.getScheduleId() != null && bookingRequest.getSeatCodes() != null && !bookingRequest.getSeatCodes().isEmpty()) {
             try {
-                bookingSummary = bookingService.createBookingSummary(bookingRequest);
+                bookingSummary = bookingService.createBookingSummary(bookingRequest, currentUser);
             } catch (IllegalArgumentException | IllegalStateException ex) {
                 model.addAttribute("errorMessage", ex.getMessage());
             }
@@ -174,9 +193,15 @@ public class BookingController {
     }
 
     @PostMapping("/booking/complete")
-    public String completePost(@ModelAttribute BookingRequestDto bookingRequest, RedirectAttributes redirectAttributes) {
+    public String completePost(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            @ModelAttribute BookingRequestDto bookingRequest,
+            RedirectAttributes redirectAttributes
+    ) {
+        User currentUser = extractUser(authenticatedUser);
+        applyCurrentUserDefaults(bookingRequest, currentUser);
         try {
-            Booking booking = bookingService.completeBooking(bookingRequest);
+            Booking booking = bookingService.completeBooking(bookingRequest, currentUser);
             redirectAttributes.addFlashAttribute("successMessage", booking.getBookingCode() + " 예매가 완료되었습니다.");
             redirectAttributes.addAttribute("bookingCode", booking.getBookingCode());
             return "redirect:/booking/complete";
@@ -190,16 +215,18 @@ public class BookingController {
 
     @PostMapping("/booking/cancel")
     public String cancel(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @RequestParam(required = false) String bookingCode,
             @RequestParam(required = false) String cancelReason,
             @RequestParam(required = false) String redirectTo,
             RedirectAttributes redirectAttributes
     ) {
+        User currentUser = extractUser(authenticatedUser);
         try {
-            Booking booking = bookingService.cancelBooking(bookingCode, cancelReason);
+            Booking booking = bookingService.cancelBooking(bookingCode, cancelReason, currentUser);
             redirectAttributes.addFlashAttribute("successMessage", booking.getBookingCode() + " 예매가 취소되었습니다.");
-            if (redirectTo != null && !redirectTo.isBlank() && "/booking/history".equals(redirectTo)) {
-                return "redirect:/booking/history";
+            if (redirectTo != null && !redirectTo.isBlank()) {
+                return "redirect:" + redirectTo;
             }
             redirectAttributes.addAttribute("bookingCode", booking.getBookingCode());
             return "redirect:/booking/complete";
@@ -209,25 +236,93 @@ public class BookingController {
                 redirectAttributes.addAttribute("bookingCode", bookingCode);
                 return "redirect:/booking/complete";
             }
-            return "redirect:/booking/history";
+            if (redirectTo != null && !redirectTo.isBlank()) {
+                return "redirect:" + redirectTo;
+            }
+            return currentUser != null ? "redirect:/mypage/bookings" : "redirect:/booking/history";
         }
     }
 
     @GetMapping({"/booking/complete", "/booking-complete.html"})
-    public String complete(@RequestParam(required = false) String bookingCode, Model model) {
-        Booking booking = bookingService.getBookingByCodeOrLatest(bookingCode);
+    public String complete(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            @RequestParam(required = false) String bookingCode,
+            Model model
+    ) {
+        User currentUser = extractUser(authenticatedUser);
+        Booking booking = bookingService.getAccessibleBookingByCodeOrLatest(bookingCode, currentUser);
         PaymentResultDto paymentResult = booking != null && booking.getPayment() != null
                 ? PaymentResultDto.from(booking, booking.getPayment())
                 : null;
 
-        if (bookingCode != null && !bookingCode.isBlank() && booking == null) {
-            model.addAttribute("errorMessage", "예매번호에 해당하는 예매를 찾을 수 없습니다.");
+        if (StringUtils.hasText(bookingCode) && booking == null) {
+            model.addAttribute("errorMessage", "예매번호에 해당하는 예매를 찾을 수 없거나 접근 권한이 없습니다.");
         }
 
         model.addAttribute("booking", booking);
         model.addAttribute("paymentResult", paymentResult);
         model.addAttribute("canCancel", bookingService.canCancel(booking));
+        model.addAttribute("historyUrl", resolveHistoryUrl(currentUser, booking));
         return "booking/complete";
+    }
+
+    private String renderHistoryPage(User currentUser, String bookingCode, Model model, boolean myPage) {
+        List<Booking> currentBookings;
+        List<Booking> pastBookings;
+        List<Booking> canceledBookings;
+        Booking previewBooking;
+        String historyModeLabel;
+
+        if (currentUser != null) {
+            currentBookings = bookingService.getCurrentBookingsForUser(currentUser);
+            pastBookings = bookingService.getPastBookingsForUser(currentUser);
+            canceledBookings = bookingService.getCanceledBookingsForUser(currentUser);
+            previewBooking = !currentBookings.isEmpty()
+                    ? currentBookings.get(0)
+                    : bookingService.getAccessibleBookingByCodeOrLatest(null, currentUser);
+            historyModeLabel = currentUser.getName() + "님의 예매내역";
+            model.addAttribute("guestLookupMode", false);
+        } else if (StringUtils.hasText(bookingCode)) {
+            Booking guestBooking = bookingService.findAccessibleBookingByCode(bookingCode, null).orElse(null);
+            currentBookings = new ArrayList<>();
+            pastBookings = new ArrayList<>();
+            canceledBookings = new ArrayList<>();
+
+            if (guestBooking == null) {
+                model.addAttribute("errorMessage", "예매번호에 해당하는 비회원 예매를 찾을 수 없습니다.");
+            } else if (guestBooking.getStatus() == com.cineflow.domain.BookingStatus.CANCELED) {
+                canceledBookings.add(guestBooking);
+            } else if (guestBooking.getStartTime() != null && guestBooking.getStartTime().isAfter(java.time.LocalDateTime.now())) {
+                currentBookings.add(guestBooking);
+            } else {
+                pastBookings.add(guestBooking);
+            }
+
+            previewBooking = guestBooking;
+            historyModeLabel = "비회원 예매 조회";
+            model.addAttribute("guestLookupMode", true);
+        } else {
+            currentBookings = List.of();
+            pastBookings = List.of();
+            canceledBookings = List.of();
+            previewBooking = null;
+            historyModeLabel = "비회원 예매 조회";
+            model.addAttribute("guestLookupMode", true);
+            model.addAttribute("guestLookupRequired", true);
+        }
+
+        model.addAttribute("currentBookings", currentBookings);
+        model.addAttribute("pastBookings", pastBookings);
+        model.addAttribute("canceledBookings", canceledBookings);
+        model.addAttribute("previewBooking", previewBooking);
+        model.addAttribute("currentBookingCount", currentBookings.size());
+        model.addAttribute("todayBookingCount", currentBookings.stream().filter(booking -> booking.getStartTime() != null && booking.getStartTime().toLocalDate().equals(LocalDate.now())).count());
+        model.addAttribute("pastBookingCount", pastBookings.size());
+        model.addAttribute("canceledBookingCount", canceledBookings.size());
+        model.addAttribute("isMyPage", currentUser != null || myPage);
+        model.addAttribute("historyModeLabel", historyModeLabel);
+        model.addAttribute("lookupBookingCode", bookingCode);
+        return "booking/history";
     }
 
     private void addBookingRequestAttributes(BookingRequestDto bookingRequest, RedirectAttributes redirectAttributes) {
@@ -297,5 +392,31 @@ public class BookingController {
                 .filter(schedule -> schedule.getScheduleId().equals(scheduleId))
                 .findFirst()
                 .orElse(schedules.get(0));
+    }
+
+    private User extractUser(AuthenticatedUser authenticatedUser) {
+        return authenticatedUser != null ? authenticatedUser.getUser() : null;
+    }
+
+    private void applyCurrentUserDefaults(BookingRequestDto bookingRequest, User currentUser) {
+        if (bookingRequest == null || currentUser == null) {
+            return;
+        }
+        if (!StringUtils.hasText(bookingRequest.getCustomerName())) {
+            bookingRequest.setCustomerName(currentUser.getName());
+        }
+        if (!StringUtils.hasText(bookingRequest.getCustomerPhone())) {
+            bookingRequest.setCustomerPhone(currentUser.getPhone());
+        }
+    }
+
+    private String resolveHistoryUrl(User currentUser, Booking booking) {
+        if (currentUser != null) {
+            return "/mypage/bookings";
+        }
+        if (booking != null) {
+            return "/booking/history?bookingCode=" + booking.getBookingCode();
+        }
+        return "/booking/history";
     }
 }

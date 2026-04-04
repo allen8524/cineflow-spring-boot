@@ -39,7 +39,8 @@ import java.util.List;
         indexes = {
                 @Index(name = "idx_bookings_status", columnList = "status"),
                 @Index(name = "idx_bookings_schedule_id", columnList = "schedule_id"),
-                @Index(name = "idx_bookings_start_time", columnList = "start_time")
+                @Index(name = "idx_bookings_start_time", columnList = "start_time"),
+                @Index(name = "idx_bookings_user_id", columnList = "user_id")
         }
 )
 public class Booking {
@@ -91,6 +92,10 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)

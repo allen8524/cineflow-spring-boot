@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<ul th:fragment="topbarLinks" class="topbar-links">
+    <li sec:authorize="isAnonymous()"><a th:href="@{/login}">로그인</a></li>
+    <li sec:authorize="isAnonymous()"><a th:href="@{/signup}">회원가입</a></li>
+    <li sec:authorize="isAuthenticated()"><a th:href="@{/mypage/bookings}">내 예매내역</a></li>
+    <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}">관리자</a></li>
+    <li><a th:href="@{/support}">고객센터</a></li>
+    <li sec:authorize="isAuthenticated()" class="auth-inline-item">
+        <form th:action="@{/logout}" method="post" class="auth-inline-form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit" class="auth-inline-button">로그아웃</button>
+        </form>
+    </li>
+    <li><a th:href="@{/booking}" class="topbar-booking">빠른예매</a></li>
+</ul>
+
+<ul th:fragment="headerLinks" class="nav navbar-nav flex-child-menu menu-right">
+    <li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li>
+    <li sec:authorize="isAnonymous()"><a th:href="@{/booking/history}" class="menu-link">비회원 예매조회</a></li>
+    <li sec:authorize="isAnonymous()"><a th:href="@{/login}" class="menu-link">로그인</a></li>
+    <li sec:authorize="isAuthenticated()"><a th:href="@{/mypage/bookings}" class="menu-link">내 예매내역</a></li>
+    <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin}" class="menu-link">관리자</a></li>
+    <li sec:authorize="isAuthenticated()" class="auth-header-item">
+        <form th:action="@{/logout}" method="post" class="auth-inline-form auth-inline-form--header">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit" class="menu-link auth-inline-button">로그아웃</button>
+        </form>
+    </li>
+    <li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li>
+</ul>
+
+<ul th:fragment="adminTopbarLinks" class="topbar-links">
+    <li><a th:href="@{/admin}">대시보드</a></li>
+    <li><a th:href="@{/admin/bookings}">예매 현황</a></li>
+    <li><a th:href="@{/admin/schedules}">회차 현황</a></li>
+    <li><a th:href="@{/mypage/bookings}">내 예매내역</a></li>
+    <li><a th:href="@{/}">메인</a></li>
+    <li class="auth-inline-item">
+        <form th:action="@{/logout}" method="post" class="auth-inline-form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit" class="auth-inline-button">로그아웃</button>
+        </form>
+    </li>
+</ul>
+</body>
+</html>
