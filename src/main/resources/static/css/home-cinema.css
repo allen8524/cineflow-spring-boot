@@ -777,6 +777,23 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.cinema-footer-attribution {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cinema-footer-attribution p {
+    margin: 0;
+    color: #7f8db2;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.cinema-footer-attribution a {
+    color: #9ec4ff;
+}
+
 .footer-sns {
     list-style: none;
     margin: 0;
@@ -4253,6 +4270,254 @@ body {
     font-size: 12px;
 }
 
+.admin-tmdb-panel {
+    gap: 18px;
+}
+
+.admin-tmdb-panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.admin-tmdb-panel-head p,
+.admin-tmdb-current-head p,
+.admin-tmdb-input-hint {
+    margin: 6px 0 0;
+    color: #9dafd5;
+    line-height: 1.6;
+    font-size: 13px;
+}
+
+.admin-tmdb-clear-btn,
+.admin-tmdb-search-button {
+    min-width: 130px;
+    min-height: 46px;
+}
+
+.admin-tmdb-search-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.admin-tmdb-search-field {
+    margin: 0;
+}
+
+.admin-tmdb-search-field span {
+    color: #f2f6ff;
+    font-weight: 700;
+}
+
+.admin-tmdb-status {
+    min-height: 46px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    color: #cfdbf7;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+}
+
+.admin-tmdb-status.is-loading {
+    border-color: rgba(158, 196, 255, 0.35);
+    background: rgba(158, 196, 255, 0.08);
+    color: #dbe7ff;
+}
+
+.admin-tmdb-status.is-success {
+    border-color: rgba(94, 214, 140, 0.4);
+    background: rgba(94, 214, 140, 0.12);
+    color: #dffff0;
+}
+
+.admin-tmdb-status.is-error {
+    border-color: rgba(246, 99, 123, 0.38);
+    background: rgba(246, 99, 123, 0.12);
+    color: #ffdce4;
+}
+
+.admin-tmdb-status.is-neutral {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-tmdb-results {
+    display: grid;
+    gap: 12px;
+}
+
+.admin-tmdb-result,
+.admin-tmdb-empty {
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #101a33;
+}
+
+.admin-tmdb-result {
+    display: grid;
+    grid-template-columns: 90px minmax(0, 1fr);
+    gap: 14px;
+    padding: 14px;
+}
+
+.admin-tmdb-result-media img,
+.admin-tmdb-preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.admin-tmdb-result-media {
+    height: 126px;
+}
+
+.admin-tmdb-result-placeholder,
+.admin-tmdb-preview-empty {
+    width: 100%;
+    height: 100%;
+    min-height: 126px;
+    border-radius: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.03);
+    color: #8fa0c8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.admin-tmdb-result-body {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+}
+
+.admin-tmdb-result-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.admin-tmdb-result-head h4 {
+    margin: 0;
+    color: #fff;
+    font-size: 20px;
+}
+
+.admin-tmdb-result-head p,
+.admin-tmdb-result-overview {
+    margin: 0;
+    color: #aab8da;
+    line-height: 1.6;
+}
+
+.admin-tmdb-result-select {
+    min-width: 136px;
+    min-height: 42px;
+    flex-shrink: 0;
+}
+
+.admin-tmdb-empty {
+    padding: 16px;
+    color: #c8d6f7;
+}
+
+.admin-tmdb-empty.is-error {
+    color: #ffdce4;
+    border-color: rgba(246, 99, 123, 0.38);
+    background: rgba(246, 99, 123, 0.12);
+}
+
+.admin-tmdb-current {
+    display: grid;
+    gap: 12px;
+}
+
+.admin-tmdb-current-head strong {
+    color: #fff;
+}
+
+.admin-tmdb-preview-card {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 16px;
+}
+
+.admin-tmdb-preview-media {
+    min-height: 250px;
+}
+
+.admin-tmdb-preview-empty {
+    min-height: 250px;
+}
+
+.admin-tmdb-preview-image {
+    display: none;
+    height: 250px;
+}
+
+.admin-tmdb-preview-copy {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+}
+
+.admin-tmdb-preview-copy h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 24px;
+    line-height: 1.25;
+}
+
+.admin-tmdb-preview-copy p {
+    margin: 0;
+    color: #aab8da;
+    line-height: 1.6;
+}
+
+.admin-tmdb-preview-meta {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.admin-tmdb-preview-meta li {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 10px 12px;
+    display: grid;
+    gap: 4px;
+}
+
+.admin-tmdb-preview-meta span {
+    color: #8fa0c8;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.admin-tmdb-preview-meta strong {
+    color: #eef4ff;
+    font-size: 14px;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
 @media (max-width: 1200px) {
     .admin-layout {
         grid-template-columns: 1fr;
@@ -4273,6 +4538,14 @@ body {
     .admin-form-grid {
         grid-template-columns: 1fr;
     }
+
+    .admin-tmdb-preview-card {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-tmdb-preview-media {
+        max-width: 220px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -4285,6 +4558,30 @@ body {
 
     .admin-stat-card strong {
         font-size: 26px;
+    }
+
+    .admin-tmdb-search-row {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-tmdb-panel-head,
+    .admin-tmdb-result-head {
+        flex-direction: column;
+    }
+
+    .admin-tmdb-clear-btn,
+    .admin-tmdb-search-button,
+    .admin-tmdb-result-select {
+        width: 100%;
+    }
+
+    .admin-tmdb-result {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-tmdb-result-media {
+        max-width: 120px;
+        height: 168px;
     }
 }
 
@@ -4358,5 +4655,144 @@ body {
 @media (max-width: 768px) {
     .history-lookup-form {
         grid-template-columns: 1fr;
+    }
+}
+
+.cinema-hero-empty {
+    position: relative;
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    min-height: 510px;
+    background: linear-gradient(135deg, #101a33 0%, #0b1225 100%);
+    box-shadow: 0 20px 36px rgba(0, 0, 0, 0.35);
+}
+
+.quick-booking-recommendation {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+    gap: 18px;
+    align-items: center;
+}
+
+.quick-booking-copy h4 {
+    margin: 8px 0 8px;
+    color: #fff;
+    font-size: 30px;
+}
+
+.quick-booking-copy p {
+    margin: 0;
+    color: #a9b5d6;
+    line-height: 1.6;
+}
+
+.quick-booking-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: rgba(220, 248, 54, 0.14);
+    color: #dcf836;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.quick-booking-meta {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.quick-booking-meta li {
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    color: #edf2ff;
+    padding: 10px 12px;
+    font-size: 13px;
+}
+
+.quick-booking-actions {
+    justify-content: flex-end;
+}
+
+.movie-item-summary,
+.movie-card-summary,
+.recommend-copy,
+.detail-copy {
+    color: #aeb9d8;
+    line-height: 1.6;
+}
+
+.movie-item-summary {
+    margin-top: 10px;
+    min-height: 64px;
+    font-size: 13px;
+}
+
+.movie-card-summary {
+    margin: 12px 0 12px;
+    min-height: 66px;
+    font-size: 14px;
+}
+
+.movie-list-empty {
+    margin-top: 18px;
+}
+
+.movie-detail-top {
+    position: relative;
+    overflow: hidden;
+}
+
+.movie-detail-top::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(7, 11, 23, 0.84) 0%, rgba(7, 11, 23, 0.7) 55%, rgba(7, 11, 23, 0.45) 100%);
+}
+
+.movie-detail-top .container {
+    position: relative;
+    z-index: 1;
+}
+
+.detail-copy {
+    margin: 0;
+    font-size: 15px;
+}
+
+.recommend-copy {
+    min-height: 58px;
+}
+
+@media (max-width: 1199px) {
+    .quick-booking-recommendation {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-booking-actions {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .cinema-hero-empty {
+        min-height: 420px;
+        border-radius: 14px;
+    }
+
+    .quick-booking-copy h4 {
+        font-size: 26px;
+    }
+
+    .movie-card-summary,
+    .movie-item-summary,
+    .recommend-copy {
+        min-height: 0;
     }
 }

@@ -23,73 +23,41 @@
 <section class="slider sliderv2 cinema-hero">
     <div class="container">
         <div class="row">
-            <div class="slick-hero">
-                <div class="hero-slide" style="background-image:url('/images/uploads/slider-bg.jpg');">
+            <div class="slick-hero" th:if="${!#lists.isEmpty(heroMovies)}">
+                <div class="hero-slide" th:each="movie : ${heroMovies}" th:style="|background-image:url('${movie.backdropUrl}');|">
                     <div class="hero-overlay"></div>
                     <div class="hero-content-wrap">
                         <div class="hero-copy-area">
-                            <p class="hero-kicker">지금 가장 많이 찾는 화제작</p>
-                            <h1>시간의 궤도</h1>
-                            <p class="hero-copy">우주 관측소에서 감지된 미확인 신호, 그리고 남겨진 72시간. 인류의 운명을 바꿀 선택 앞에 선 탐사팀의 SF 스릴러를 초대형 스크린으로 만나보세요.</p>
+                            <p class="hero-kicker" th:text="${movie.statusLabel}">현재 상영중</p>
+                            <h1 th:text="${movie.title}">영화 제목</h1>
+                            <p class="hero-copy" th:text="${movie.description}">영화 개요</p>
                             <ul class="hero-meta">
-                                <li>개봉 2026.04.10</li>
-                                <li>SF · 스릴러</li>
-                                <li>132분</li>
-                                <li>12세 이상 관람가</li>
+                                <li th:text="${movie.releaseDateText}">개봉 2026.04.10</li>
+                                <li th:text="${movie.genreText}">SF · 드라마</li>
+                                <li th:text="${movie.runningTimeText}">132분</li>
+                                <li th:text="${movie.ageRatingText}">12세 이상 관람가</li>
                             </ul>
                             <div class="hero-actions">
-                                <a th:href="@{/booking(movieId=1)}" class="hero-btn primary"><i class="ion-ticket"></i> 예매하기</a>
-                                <a th:href="@{/movies/1}" class="hero-btn secondary">상세보기</a>
+                                <a th:href="@{/booking(movieId=${movie.id})}" class="hero-btn primary"><i class="ion-ticket"></i> 예매하기</a>
+                                <a th:href="@{/movies/{id}(id=${movie.id})}" class="hero-btn secondary">상세보기</a>
                             </div>
                         </div>
                         <div class="hero-poster">
-                            <img th:src="@{/images/uploads/movie-single.jpg}" alt="시간의 궤도 포스터">
+                            <img th:src="@{${movie.posterUrl}}" th:alt="${movie.title + ' 포스터'}">
                         </div>
                     </div>
                 </div>
-                <div class="hero-slide" style="background-image:url('/images/uploads/slider-bg2.jpg');">
-                    <div class="hero-overlay"></div>
-                    <div class="hero-content-wrap">
-                        <div class="hero-copy-area">
-                            <p class="hero-kicker">관객 추천작</p>
-                            <h1>보이스 노이즈</h1>
-                            <p class="hero-copy">도시를 뒤덮은 정체불명의 소음, 단서를 좇는 추적 스릴러. 사건 현장을 취재하던 기자가 감춰진 기록과 연결된 비밀을 추적하기 시작합니다.</p>
-                            <ul class="hero-meta">
-                                <li>개봉 2026.04.03</li>
-                                <li>스릴러 · 미스터리</li>
-                                <li>118분</li>
-                                <li>15세 이상 관람가</li>
-                            </ul>
-                            <div class="hero-actions">
-                                <a th:href="@{/booking(movieId=2)}" class="hero-btn primary"><i class="ion-ticket"></i> 예매하기</a>
-                                <a th:href="@{/movies/2}" class="hero-btn secondary">상세보기</a>
-                            </div>
-                        </div>
-                        <div class="hero-poster">
-                            <img th:src="@{/images/uploads/mv-it2.jpg}" alt="보이스 노이즈 포스터">
-                        </div>
-                    </div>
-                </div>
-                <div class="hero-slide" style="background-image:url('/images/uploads/slider-bg.jpg');">
-                    <div class="hero-overlay"></div>
-                    <div class="hero-content-wrap">
-                        <div class="hero-copy-area">
-                            <p class="hero-kicker">이번 주 추천</p>
-                            <h1>블랙아웃 시티</h1>
-                            <p class="hero-copy">정전된 도시에서 벌어지는 하룻밤의 생존 액션. 서로 다른 목적을 가진 인물들이 한 건물에 모이면서 예상치 못한 사건이 시작됩니다.</p>
-                            <ul class="hero-meta">
-                                <li>개봉 2026.03.28</li>
-                                <li>액션 · 범죄</li>
-                                <li>124분</li>
-                                <li>15세 이상 관람가</li>
-                            </ul>
-                            <div class="hero-actions">
-                                <a th:href="@{/booking(movieId=3)}" class="hero-btn primary"><i class="ion-ticket"></i> 예매하기</a>
-                                <a th:href="@{/movies/3}" class="hero-btn secondary">상세보기</a>
-                            </div>
-                        </div>
-                        <div class="hero-poster">
-                            <img th:src="@{/images/uploads/mv-it5.jpg}" alt="블랙아웃 시티 포스터">
+            </div>
+
+            <div class="cinema-hero-empty" th:if="${#lists.isEmpty(heroMovies)}">
+                <div class="hero-overlay"></div>
+                <div class="hero-content-wrap">
+                    <div class="hero-copy-area">
+                        <p class="hero-kicker">대표 영화 준비 중</p>
+                        <h1>CineFlow</h1>
+                        <p class="hero-copy">메인에 노출할 영화 데이터가 아직 없습니다. 관리자에서 영화를 등록하면 저장된 포스터와 개요가 이 영역에 자동 반영됩니다.</p>
+                        <div class="hero-actions">
+                            <a th:href="@{/movies}" class="hero-btn primary">영화 보러가기</a>
                         </div>
                     </div>
                 </div>
@@ -103,14 +71,36 @@
         <div class="quick-booking-inner">
             <div class="quick-booking-head">
                 <h3>빠른 예매</h3>
-                <p>영화, 극장, 날짜, 시간을 선택하고 실제 상영시간표 기준으로 바로 예매해보세요.</p>
+                <p>저장된 로컬 DB 메타데이터를 기준으로 포스터, 개봉일, 러닝타임 정보를 먼저 확인하고 바로 예매 페이지로 이동할 수 있습니다.</p>
             </div>
-            <div class="booking-grid">
-                <div class="booking-field"><label>영화 선택</label><button><span>시간의 궤도</span> <i class="ion-chevron-down"></i></button></div>
-                <div class="booking-field"><label>극장 선택</label><button><span>CineFlow 강남</span> <i class="ion-chevron-down"></i></button></div>
-                <div class="booking-field"><label>날짜 선택</label><button><span>오늘 (04.05)</span> <i class="ion-chevron-down"></i></button></div>
-                <div class="booking-field"><label>시간 선택</label><button><span>19:30</span> <i class="ion-chevron-down"></i></button></div>
-                <div class="booking-action"><a th:href="@{/booking}" class="redbtn">예매하기</a></div>
+
+            <div class="quick-booking-recommendation" th:if="${featuredMovie != null}">
+                <div class="quick-booking-copy">
+                    <span class="quick-booking-badge">추천 영화</span>
+                    <h4 th:text="${featuredMovie.title}">영화 제목</h4>
+                    <p th:text="${featuredMovie.shortDescription}">영화 소개</p>
+                </div>
+                <ul class="quick-booking-meta">
+                    <li th:text="${featuredMovie.releaseDateText}">개봉 2026.04.10</li>
+                    <li th:text="${featuredMovie.runningTimeText}">132분</li>
+                    <li th:text="${featuredMovie.genreText}">SF · 드라마</li>
+                    <li th:text="${featuredMovie.bookingOpenLabel}">예매 가능</li>
+                </ul>
+                <div class="hero-actions quick-booking-actions">
+                    <a th:href="@{/booking(movieId=${featuredMovie.id})}" class="hero-btn primary">바로 예매</a>
+                    <a th:href="@{/movies/{id}(id=${featuredMovie.id})}" class="hero-btn secondary">상세보기</a>
+                </div>
+            </div>
+
+            <div class="quick-booking-recommendation" th:if="${featuredMovie == null}">
+                <div class="quick-booking-copy">
+                    <span class="quick-booking-badge">안내</span>
+                    <h4>추천 영화를 준비 중입니다</h4>
+                    <p>현재 등록된 상영 데이터를 확인한 뒤 메인 추천 섹션이 자동으로 채워집니다.</p>
+                </div>
+                <div class="hero-actions quick-booking-actions">
+                    <a th:href="@{/movies}" class="hero-btn primary">영화 목록 보기</a>
+                </div>
             </div>
         </div>
     </div>
@@ -120,7 +110,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="title-hd">
-                <h2>지금 상영 중인 영화</h2>
+                <h2>지금 CineFlow에서 만나는 영화</h2>
                 <a th:href="@{/movies}" class="viewall">전체보기 <i class="ion-ios-arrow-right"></i></a>
             </div>
             <div class="tabs">
@@ -131,22 +121,75 @@
                 </ul>
                 <div class="tab-content">
                     <div id="tab1-h2" class="tab active">
-                        <div class="row"><div class="slick-multiItem2">
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge rank">1위</span><img th:src="@{/images/uploads/movie-single.jpg}" alt="시간의 궤도"></div><div class="title-in"><h6><a th:href="@{/movies/1}">시간의 궤도</a></h6><p>예매율 <span>31.2%</span></p></div><div class="hvr-inner"><a th:href="@{/booking(movieId=1)}">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge rank">2위</span><img th:src="@{/images/uploads/mv-it2.jpg}" alt="보이스 노이즈"></div><div class="title-in"><h6><a th:href="@{/movies/2}">보이스 노이즈</a></h6><p>예매율 <span>24.8%</span></p></div><div class="hvr-inner"><a th:href="@{/booking(movieId=2)}">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge rank">3위</span><img th:src="@{/images/uploads/mv-it5.jpg}" alt="블랙아웃 시티"></div><div class="title-in"><h6><a th:href="@{/movies/3}">블랙아웃 시티</a></h6><p>예매율 <span>19.7%</span></p></div><div class="hvr-inner"><a th:href="@{/booking(movieId=3)}">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge rank">4위</span><img th:src="@{/images/uploads/mv-it6.jpg}" alt="심해 항로"></div><div class="title-in"><h6><a th:href="@{/movies/4}">심해 항로</a></h6><p>예매율 <span>14.2%</span></p></div><div class="hvr-inner"><a th:href="@{/booking(movieId=4)}">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
-                        </div></div>
+                        <div class="row" th:if="${!#lists.isEmpty(boxOfficeMovies)}">
+                            <div class="slick-multiItem2">
+                                <div class="slide-it" th:each="movie, stat : ${boxOfficeMovies}">
+                                    <div class="movie-item">
+                                        <div class="mv-img">
+                                            <span class="movie-badge rank" th:text="${stat.index + 1} + '위'">1위</span>
+                                            <img th:src="@{${movie.posterUrl}}" th:alt="${movie.title}">
+                                        </div>
+                                        <div class="title-in">
+                                            <h6><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h6>
+                                            <p th:text="${movie.metricName + ' ' + movie.bookingRateText}">예매율 31.2%</p>
+                                            <p class="movie-item-summary" th:text="${movie.overviewSnippet}">영화 요약</p>
+                                        </div>
+                                        <div class="hvr-inner">
+                                            <a th:href="@{/booking(movieId=${movie.id})}">예매하기 <i class="ion-android-arrow-dropright"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="coming-text" th:if="${#lists.isEmpty(boxOfficeMovies)}">노출할 박스오피스 데이터가 없습니다.</div>
                     </div>
+
                     <div id="tab2-h2" class="tab">
-                        <div class="row"><div class="slick-multiItem2">
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge state">상영중</span><img th:src="@{/images/uploads/mv-it2.jpg}" alt="보이스 노이즈"></div><div class="title-in"><h6><a th:href="@{/movies/2}">보이스 노이즈</a></h6><p>평점 <span>8.7</span> · 2D</p></div><div class="hvr-inner"><a th:href="@{/booking(movieId=2)}">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge state">상영중</span><img th:src="@{/images/uploads/mv-it5.jpg}" alt="블랙아웃 시티"></div><div class="title-in"><h6><a th:href="@{/movies/3}">블랙아웃 시티</a></h6><p>평점 <span>8.5</span> · IMAX</p></div><div class="hvr-inner"><a th:href="@{/booking(movieId=3)}">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
-                            <div class="slide-it"><div class="movie-item"><div class="mv-img"><span class="movie-badge state">상영중</span><img th:src="@{/images/uploads/mv-it6.jpg}" alt="심해 항로"></div><div class="title-in"><h6><a th:href="@{/movies/4}">심해 항로</a></h6><p>평점 <span>8.2</span> · LASER</p></div><div class="hvr-inner"><a th:href="@{/booking(movieId=4)}">예매하기 <i class="ion-android-arrow-dropright"></i></a></div></div></div>
-                        </div></div>
+                        <div class="row" th:if="${!#lists.isEmpty(nowShowingMovies)}">
+                            <div class="slick-multiItem2">
+                                <div class="slide-it" th:each="movie : ${nowShowingMovies}">
+                                    <div class="movie-item">
+                                        <div class="mv-img">
+                                            <span class="movie-badge state" th:text="${movie.statusLabel}">현재 상영중</span>
+                                            <img th:src="@{${movie.posterUrl}}" th:alt="${movie.title}">
+                                        </div>
+                                        <div class="title-in">
+                                            <h6><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h6>
+                                            <p th:text="${movie.scoreMetricName + ' ' + movie.scoreText}">평점 8.7</p>
+                                            <p class="movie-item-summary" th:text="${movie.shortDescription}">영화 요약</p>
+                                        </div>
+                                        <div class="hvr-inner">
+                                            <a th:href="@{/booking(movieId=${movie.id})}">예매하기 <i class="ion-android-arrow-dropright"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="coming-text" th:if="${#lists.isEmpty(nowShowingMovies)}">현재 상영 중인 영화가 아직 없습니다.</div>
                     </div>
+
                     <div id="tab3-h2" class="tab">
-                        <div class="coming-text">개봉 예정작 정보는 순차적으로 업데이트됩니다.</div>
+                        <div class="row" th:if="${!#lists.isEmpty(comingSoonMovies)}">
+                            <div class="slick-multiItem2">
+                                <div class="slide-it" th:each="movie : ${comingSoonMovies}">
+                                    <div class="movie-item">
+                                        <div class="mv-img">
+                                            <span class="movie-badge state" th:text="${movie.statusLabel}">개봉 예정</span>
+                                            <img th:src="@{${movie.posterUrl}}" th:alt="${movie.title}">
+                                        </div>
+                                        <div class="title-in">
+                                            <h6><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h6>
+                                            <p th:text="${movie.releaseDateText}">개봉 2026.04.18</p>
+                                            <p class="movie-item-summary" th:text="${movie.shortDescription}">영화 요약</p>
+                                        </div>
+                                        <div class="hvr-inner">
+                                            <a th:href="@{/movies/{id}(id=${movie.id})}">상세보기 <i class="ion-android-arrow-dropright"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="coming-text" th:if="${#lists.isEmpty(comingSoonMovies)}">개봉 예정작 정보가 등록되면 자동으로 이 영역에 반영됩니다.</div>
                     </div>
                 </div>
             </div>
@@ -159,49 +202,49 @@
         <div class="title-hd section-title-row">
             <div>
                 <h2>이벤트 · 프로모션</h2>
-                <p class="section-subtitle">진행 중인 혜택과 시즌 이벤트를 한눈에 확인해보세요.</p>
+                <p class="section-subtitle">영화 관람을 더 즐겁게 만드는 혜택과 프로모션을 확인해 보세요.</p>
             </div>
-            <a th:href="@{/support}" class="viewall">이벤트 보기 <i class="ion-ios-arrow-right"></i></a>
+            <a th:href="@{/support}" class="viewall">고객센터 <i class="ion-ios-arrow-right"></i></a>
         </div>
         <div class="promo-layout">
             <article class="promo-featured-card">
-                <img th:src="@{/images/uploads/ads1.png}" alt="메인 프로모션 배너">
+                <img th:src="@{/images/uploads/ads1.png}" alt="멤버십 더블 적립 위크">
                 <div class="promo-content">
                     <span class="event-badge category-membership">멤버십</span>
                     <h3>멤버십 더블 적립 위크</h3>
-                    <p>주중 첫 예매 시 멤버십 포인트를 2배로 적립해드립니다.</p>
+                    <p>주중 첫 예매 시 포인트를 두 배로 적립해 드립니다. 자주 찾는 영화관에서 더 빠르게 혜택을 누려 보세요.</p>
                     <div class="promo-meta-row">
                         <span class="promo-status">04.01 - 04.30</span>
-                        <a href="#" class="promo-link">자세히 보기</a>
+                        <a th:href="@{/support}" class="promo-link">자세히 보기</a>
                     </div>
                 </div>
             </article>
             <div class="promo-secondary-grid">
                 <article class="promo-secondary-card">
-                    <img th:src="@{/images/uploads/ads2.png}" alt="야간 할인 이벤트">
+                    <img th:src="@{/images/uploads/ads2.png}" alt="심야 특별 할인">
                     <div class="promo-content">
                         <span class="event-badge category-discount">할인</span>
-                        <h4>심야 스페셜 할인</h4>
-                        <p>21시 이후 상영작 2,000원 즉시 할인 혜택을 제공합니다.</p>
-                        <div class="promo-meta-row"><span class="promo-status">진행중</span><a href="#" class="promo-link">자세히 보기</a></div>
+                        <h4>심야 특별 할인</h4>
+                        <p>21시 이후 상영작을 보다 부담 없이 즐길 수 있도록 심야 할인 혜택을 제공합니다.</p>
+                        <div class="promo-meta-row"><span class="promo-status">진행중</span><a th:href="@{/support}" class="promo-link">자세히 보기</a></div>
                     </div>
                 </article>
                 <article class="promo-secondary-card">
-                    <img th:src="@{/images/uploads/ads3.png}" alt="시사회 이벤트">
+                    <img th:src="@{/images/uploads/ads3.png}" alt="프리미어 시사회 초청">
                     <div class="promo-content">
                         <span class="event-badge category-premiere">시사회</span>
-                        <h4>신작 프리미어 시사회 초청</h4>
-                        <p>응모 고객 중 추첨을 통해 1인 2매 티켓을 드립니다.</p>
-                        <div class="promo-meta-row"><span class="promo-status">D-3</span><a href="#" class="promo-link">자세히 보기</a></div>
+                        <h4>프리미어 시사회 초청</h4>
+                        <p>신작 개봉 전 가장 먼저 영화를 만날 수 있는 초청 이벤트를 준비했습니다.</p>
+                        <div class="promo-meta-row"><span class="promo-status">D-3</span><a th:href="@{/support}" class="promo-link">자세히 보기</a></div>
                     </div>
                 </article>
                 <article class="promo-secondary-card">
-                    <img th:src="@{/images/uploads/ads1.png}" alt="굿즈 이벤트">
+                    <img th:src="@{/images/uploads/ads1.png}" alt="굿즈 증정 이벤트">
                     <div class="promo-content">
                         <span class="event-badge category-goods">굿즈</span>
                         <h4>한정 포스터 증정 이벤트</h4>
-                        <p>주말 첫 회차 관람 고객에게 스페셜 포스터를 드립니다.</p>
-                        <div class="promo-meta-row"><span class="promo-status">04.05 - 04.14</span><a href="#" class="promo-link">자세히 보기</a></div>
+                        <p>주말 첫 회차 관람 고객에게 한정 포스터를 증정합니다.</p>
+                        <div class="promo-meta-row"><span class="promo-status">04.05 - 04.14</span><a th:href="@{/support}" class="promo-link">자세히 보기</a></div>
                     </div>
                 </article>
             </div>
@@ -214,45 +257,45 @@
         <div class="title-hd section-title-row">
             <div>
                 <h2>특별관 · 프리미엄관</h2>
-                <p class="section-subtitle">관람 목적과 취향에 맞는 상영 환경을 비교하고 선택해보세요.</p>
+                <p class="section-subtitle">몰입감을 높여 주는 다양한 상영 환경을 비교하고 취향에 맞는 상영관을 선택해 보세요.</p>
             </div>
-            <a th:href="@{/movies}" class="viewall">전체보기 <i class="ion-ios-arrow-right"></i></a>
+            <a th:href="@{/movies}" class="viewall">영화 전체보기 <i class="ion-ios-arrow-right"></i></a>
         </div>
         <div class="special-grid">
             <article class="special-card">
                 <div class="special-thumb" style="background-image:url('/images/uploads/slider-bg.jpg');"></div>
                 <div class="special-body">
-                    <h4>이머스 사운드</h4>
-                    <p>입체 음향과 저역 보강 시스템으로 장면의 긴장감을 더욱 선명하게 전달합니다.</p>
-                    <ul class="special-keywords"><li>360도 사운드</li><li>저역 강화</li><li>몰입 좌석</li></ul>
-                    <div class="special-footer"><span class="point-chip"><i class="ion-ios-star"></i> 추천 장르: 액션 영화</span><a href="#">관 소개</a></div>
+                    <h4>시네마 사운드</h4>
+                    <p>입체 음향과 강화된 저역대로 장면의 긴장감을 더 깊게 전달하는 프리미엄 사운드 환경입니다.</p>
+                    <ul class="special-keywords"><li>입체 음향</li><li>저음 강화</li><li>몰입 좌석</li></ul>
+                    <div class="special-footer"><span class="point-chip"><i class="ion-ios-star"></i> 추천 장르: 액션</span><a th:href="@{/support}">관 안내</a></div>
                 </div>
             </article>
             <article class="special-card">
                 <div class="special-thumb" style="background-image:url('/images/uploads/slider-bg2.jpg');"></div>
                 <div class="special-body">
-                    <h4>울트라 스크린</h4>
-                    <p>와이드 스크린과 고휘도 프로젝션으로 더욱 생생한 장면을 제공합니다.</p>
+                    <h4>와이드 스크린</h4>
+                    <p>큰 화면과 선명한 프로젝션으로 대작 영화의 스케일을 보다 생생하게 경험할 수 있습니다.</p>
                     <ul class="special-keywords"><li>대형 화면</li><li>고해상도</li><li>몰입감 강화</li></ul>
-                    <div class="special-footer"><span class="point-chip"><i class="ion-ios-star"></i> 추천 장르: 블록버스터</span><a href="#">상영관 보기</a></div>
+                    <div class="special-footer"><span class="point-chip"><i class="ion-ios-star"></i> 추천 장르: 블록버스터</span><a th:href="@{/support}">상영관 보기</a></div>
                 </div>
             </article>
             <article class="special-card">
                 <div class="special-thumb" style="background-image:url('/images/uploads/mv-it6.jpg');"></div>
                 <div class="special-body">
                     <h4>프라이빗 라운지</h4>
-                    <p>프라이빗 룸형 좌석과 전용 라운지로 여유로운 관람 경험을 제공합니다.</p>
-                    <ul class="special-keywords"><li>프라이빗 룸</li><li>전용 라운지</li><li>프리미엄 서비스</li></ul>
-                    <div class="special-footer"><span class="point-chip"><i class="ion-ios-star"></i> 추천 장르: 커플 관람</span><a href="#">관 소개</a></div>
+                    <p>프라이빗 좌석과 전용 라운지로 더 여유로운 관람 경험을 제공합니다.</p>
+                    <ul class="special-keywords"><li>프라이빗 좌석</li><li>전용 라운지</li><li>프리미엄 서비스</li></ul>
+                    <div class="special-footer"><span class="point-chip"><i class="ion-ios-star"></i> 추천 장르: 로맨스</span><a th:href="@{/support}">관 안내</a></div>
                 </div>
             </article>
             <article class="special-card">
                 <div class="special-thumb" style="background-image:url('/images/uploads/mv-it5.jpg');"></div>
                 <div class="special-body">
-                    <h4>프리미엄 리클라이너</h4>
-                    <p>전 좌석 리클라이너와 여유로운 간격으로 편안한 관람을 제공합니다.</p>
-                    <ul class="special-keywords"><li>전 좌석 리클라이너</li><li>개인 테이블</li><li>넓은 간격</li></ul>
-                    <div class="special-footer"><span class="point-chip"><i class="ion-ios-star"></i> 추천 장르: 드라마 영화</span><a href="#">상영관 보기</a></div>
+                    <h4>리클라이너 시트</h4>
+                    <p>전 좌석 리클라이너 구성을 통해 편안하게 장시간 상영을 즐길 수 있습니다.</p>
+                    <ul class="special-keywords"><li>리클라이너</li><li>개인 테이블</li><li>편안한 간격</li></ul>
+                    <div class="special-footer"><span class="point-chip"><i class="ion-ios-star"></i> 추천 장르: 드라마</span><a th:href="@{/support}">상영관 보기</a></div>
                 </div>
             </article>
         </div>
@@ -264,40 +307,48 @@
         <div class="title-hd section-title-row">
             <div>
                 <h2>극장 찾기 · 지역 선택</h2>
-                <p class="section-subtitle">원하는 지역을 선택하고 가까운 상영관 정보를 빠르게 확인해보세요.</p>
+                <p class="section-subtitle">가까운 지점과 추천 시설을 미리 확인하고 예매 일정을 계획해 보세요.</p>
             </div>
-            <a th:href="@{/movies}" class="viewall">전체보기 <i class="ion-ios-arrow-right"></i></a>
+            <a th:href="@{/booking}" class="viewall">빠른 예매 <i class="ion-ios-arrow-right"></i></a>
         </div>
         <div class="theater-finder">
             <div class="finder-left">
-                <button class="active">서울</button><button>경기</button><button>인천</button><button>부산</button><button>대구</button><button>광주</button>
+                <button class="active" type="button">서울</button>
+                <button type="button">경기</button>
+                <button type="button">인천</button>
+                <button type="button">부산</button>
+                <button type="button">대구</button>
+                <button type="button">광주</button>
             </div>
             <div class="finder-right">
-                <div class="finder-header"><h4>서울 주요 지점</h4><a href="#">지역별 극장 전체보기</a></div>
+                <div class="finder-header">
+                    <h4>주요 지점 안내</h4>
+                    <a th:href="@{/booking}">예매 가능한 극장 보기</a>
+                </div>
                 <div class="branch-grid">
                     <article class="branch-card">
                         <h5>강남 시네마점</h5>
-                        <p>강남역 도보 5분 · 8개관 · 1,420석</p>
-                        <ul class="branch-tags"><li>리클라이너</li><li>프리미엄관</li><li>주차 가능</li></ul>
-                        <div class="branch-actions"><a th:href="@{/booking}">상영시간표 보기</a><a th:href="@{/support}">상세보기</a></div>
+                        <p>강남역 도보 5분 · 8개관 · 프리미엄 사운드</p>
+                        <ul class="branch-tags"><li>IMAX</li><li>리클라이너</li><li>주차 가능</li></ul>
+                        <div class="branch-actions"><a th:href="@{/booking}">상영시간표</a><a th:href="@{/support}">이용 안내</a></div>
                     </article>
                     <article class="branch-card">
                         <h5>홍대 라이브 스퀘어</h5>
-                        <p>홍대입구역 연결 · 7개관 · 1,180석</p>
-                        <ul class="branch-tags"><li>심야 상영</li><li>주차 가능</li><li>매점 확장</li></ul>
-                        <div class="branch-actions"><a th:href="@{/booking}">상영시간표 보기</a><a th:href="@{/support}">상세보기</a></div>
+                        <p>홍대입구역 인접 · 7개관 · 젊은 관객층 선호</p>
+                        <ul class="branch-tags"><li>심야 상영</li><li>매점 확장</li><li>교통 편리</li></ul>
+                        <div class="branch-actions"><a th:href="@{/booking}">상영시간표</a><a th:href="@{/support}">이용 안내</a></div>
                     </article>
                     <article class="branch-card">
-                        <h5>용산 아이맥스관</h5>
-                        <p>용산역 도보 3분 · 10개관 · 1,860석</p>
-                        <ul class="branch-tags"><li>대형 스크린</li><li>프리미엄관</li><li>가족석</li></ul>
-                        <div class="branch-actions"><a th:href="@{/booking}">상영시간표 보기</a><a th:href="@{/support}">상세보기</a></div>
+                        <h5>용산 프리미엄관</h5>
+                        <p>대형 스크린 중심 · 10개관 · 가족 관람 수요</p>
+                        <ul class="branch-tags"><li>프리미엄관</li><li>가족 좌석</li><li>편의시설</li></ul>
+                        <div class="branch-actions"><a th:href="@{/booking}">상영시간표</a><a th:href="@{/support}">이용 안내</a></div>
                     </article>
                     <article class="branch-card">
-                        <h5>성수 팩토리</h5>
-                        <p>성수 카페거리 인접 · 6개관 · 1,040석</p>
-                        <ul class="branch-tags"><li>리클라이너</li><li>심야 상영</li><li>교통 편리</li></ul>
-                        <div class="branch-actions"><a th:href="@{/booking}">상영시간표 보기</a><a th:href="@{/support}">상세보기</a></div>
+                        <h5>성수 스토리홀</h5>
+                        <p>성수 카페거리 인접 · 6개관 · 트렌디한 공간</p>
+                        <ul class="branch-tags"><li>프라이빗석</li><li>심야 상영</li><li>굿즈존</li></ul>
+                        <div class="branch-actions"><a th:href="@{/booking}">상영시간표</a><a th:href="@{/support}">이용 안내</a></div>
                     </article>
                 </div>
             </div>
@@ -310,24 +361,24 @@
         <div class="title-hd section-title-row">
             <div>
                 <h2>공지사항 · 고객센터</h2>
-                <p class="section-subtitle">서비스 운영 정보를 확인하고 필요한 문의를 빠르게 접수해보세요.</p>
+                <p class="section-subtitle">예매, 결제, 취소 관련 안내와 자주 찾는 도움말을 빠르게 확인해 보세요.</p>
             </div>
             <a th:href="@{/support}" class="viewall">고객센터 <i class="ion-ios-arrow-right"></i></a>
         </div>
         <div class="notice-layout">
             <div class="notice-panel">
                 <ul class="notice-list">
-                    <li><span class="notice-tag">공지</span><a href="#">4월 시스템 정기 점검 일정 안내</a><span class="notice-date">2026.04.01</span></li>
-                    <li><span class="notice-tag">서비스</span><a href="#">간편결제 서비스 일시 중단 안내</a><span class="notice-date">2026.03.30</span></li>
-                    <li><span class="notice-tag">극장안내</span><a href="#">용산 지점 상영관 리뉴얼 공지</a><span class="notice-date">2026.03.27</span></li>
-                    <li><span class="notice-tag">이벤트</span><a href="#">프리미어 시사회 당첨자 발표</a><span class="notice-date">2026.03.25</span></li>
+                    <li><span class="notice-tag">공지</span><a th:href="@{/support}">4월 시스템 점검 일정 안내</a><span class="notice-date">2026.04.01</span></li>
+                    <li><span class="notice-tag">서비스</span><a th:href="@{/support}">간편결제 점검 안내</a><span class="notice-date">2026.03.30</span></li>
+                    <li><span class="notice-tag">극장</span><a th:href="@{/support}">프리미엄관 이용 가이드 업데이트</a><span class="notice-date">2026.03.27</span></li>
+                    <li><span class="notice-tag">이벤트</span><a th:href="@{/support}">프리미어 시사회 당첨자 발표 안내</a><span class="notice-date">2026.03.25</span></li>
                 </ul>
             </div>
             <div class="cs-panel" id="section-store">
-                <a th:href="@{/support#faq}" class="cs-card"><h4>자주 묻는 질문</h4><p>예매, 결제, 취소 관련 주요 문의를 한 번에 확인해보세요.</p></a>
-                <a th:href="@{/support#inquiry}" class="cs-card"><h4>1:1 문의</h4><p>예매 내역, 환불, 멤버십 관련 상담을 접수해보세요.</p></a>
-                <a th:href="@{/support#lost}" class="cs-card"><h4>분실물 문의</h4><p>지점 방문 전 분실물 접수 현황과 확인 일정을 안내해드립니다.</p></a>
-                <a th:href="@{/support#group}" class="cs-card"><h4>단체 · 대관 문의</h4><p>관람 인원과 일정에 맞는 단체 관람을 지원합니다.</p></a>
+                <a th:href="@{/support#faq}" class="cs-card"><h4>자주 묻는 질문</h4><p>예매, 결제, 취소 관련 주요 문의를 빠르게 확인해 보세요.</p></a>
+                <a th:href="@{/support#inquiry}" class="cs-card"><h4>1:1 문의</h4><p>예매내역과 회원 정보에 대한 문의를 접수할 수 있습니다.</p></a>
+                <a th:href="@{/support#lost}" class="cs-card"><h4>분실물 문의</h4><p>지점 방문 전 분실물 접수와 처리 절차를 먼저 안내합니다.</p></a>
+                <a th:href="@{/support#group}" class="cs-card"><h4>단체 관람 문의</h4><p>단체 관람과 대관 일정에 맞춘 상담을 도와드립니다.</p></a>
                 <p class="cs-hours">고객센터 운영시간 09:00 - 18:00 · 대표번호 1544-0000</p>
             </div>
         </div>

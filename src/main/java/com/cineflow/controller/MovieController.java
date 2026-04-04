@@ -2,9 +2,9 @@ package com.cineflow.controller;
 
 import com.cineflow.domain.Movie;
 import com.cineflow.dto.ScheduleViewDto;
+import com.cineflow.service.MovieService;
 import com.cineflow.service.ScheduleService;
 import com.cineflow.service.TheaterService;
-import com.cineflow.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +26,7 @@ public class MovieController {
 
     @GetMapping({"/movies", "/movielist.html"})
     public String list(Model model) {
-        model.addAttribute("movies", movieService.getAllMovies());
+        model.addAttribute("movies", movieService.getAllMovieViews());
         return "movies/list";
     }
 
@@ -43,7 +43,8 @@ public class MovieController {
     private String renderDetail(Movie movie, Model model) {
         List<ScheduleViewDto> schedules = scheduleService.getSchedulesForMovie(movie.getId());
 
-        model.addAttribute("movie", movie);
+        model.addAttribute("movie", movieService.toView(movie));
+        model.addAttribute("relatedMovies", movieService.getRelatedMovieViews(movie.getId(), 4));
         model.addAttribute("theaters", theaterService.getTheatersForMovie(movie.getId()));
         model.addAttribute("schedules", schedules);
         model.addAttribute("theaterScheduleGroups", scheduleService.getTheaterScheduleGroupsByMovie(movie.getId()));

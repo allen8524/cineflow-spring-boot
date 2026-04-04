@@ -32,7 +32,8 @@ import java.util.List;
         indexes = {
                 @Index(name = "idx_movies_status", columnList = "status"),
                 @Index(name = "idx_movies_release_date", columnList = "release_date"),
-                @Index(name = "idx_movies_active_booking_open", columnList = "active, booking_open")
+                @Index(name = "idx_movies_active_booking_open", columnList = "active, booking_open"),
+                @Index(name = "uk_movies_tmdb_id", columnList = "tmdb_id", unique = true)
         }
 )
 public class Movie {
@@ -60,6 +61,21 @@ public class Movie {
 
     @Column(length = 255)
     private String posterUrl;
+
+    @Column(name = "tmdb_id")
+    private Long tmdbId;
+
+    @Column(name = "poster_path", length = 255)
+    private String posterPath;
+
+    @Column(name = "backdrop_path", length = 255)
+    private String backdropPath;
+
+    @Column(length = 2000)
+    private String overview;
+
+    @Column(name = "runtime_minutes")
+    private Integer runtimeMinutes;
 
     private Double bookingRate;
     private Double score;

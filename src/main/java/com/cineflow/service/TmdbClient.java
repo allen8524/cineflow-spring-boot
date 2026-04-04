@@ -20,9 +20,18 @@ public class TmdbClient {
 
     private static final String DEFAULT_POSTER_SIZE = "w500";
     private static final String DEFAULT_BACKDROP_SIZE = "w1280";
+    private static final String TMDB_SETUP_GUIDE = "TMDB integration is not configured. Check tmdb.base-url and set TMDB_BEARER_TOKEN to enable admin TMDB search.";
+    private static final String TMDB_NETWORK_ERROR = "TMDB request failed because the TMDB server could not be reached. Please try again later.";
+    private static final String TMDB_SEARCH_FAILURE = "TMDB movie search request failed. Please try again later.";
+    private static final String TMDB_DETAIL_FAILURE = "TMDB movie detail request failed. Please try again later.";
 
     private final RestClient tmdbRestClient;
     private final TmdbProperties tmdbProperties;
+
+    public boolean isConfigured() {
+        return StringUtils.hasText(tmdbProperties.resolveBaseUrl())
+                && StringUtils.hasText(tmdbProperties.resolveBearerToken());
+    }
 
     public TmdbMovieSearchResponseDto searchMovies(String query) {
         if (!StringUtils.hasText(query)) {
@@ -37,8 +46,8 @@ public class TmdbClient {
                     .headers(this::applyAuthorization)
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, (request, clientResponse) -> {
-                        throw new TmdbClientException(
-                                "TMDB movie search request failed. status=" + clientResponse.getStatusCode().value()
+                        throw TmdbClientException.upstream(
+                                TMDB_SEARCH_FAILURE + " status=" + clientResponse.getStatusCode().value()
                         );
                     })
                     .body(TmdbMovieSearchResponseDto.class);
@@ -48,7 +57,7 @@ public class TmdbClient {
             throw exception;
         } catch (RestClientException exception) {
             log.warn("TMDB movie search request failed. query={}", query, exception);
-            throw new TmdbClientException("TMDB movie search request errored. query=" + query, exception);
+            throw TmdbClientException.network(TMDB_NETWORK_ERROR, exception);
         }
     }
 
@@ -65,22 +74,21 @@ public class TmdbClient {
                     .headers(this::applyAuthorization)
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, (request, clientResponse) -> {
-                        throw new TmdbClientException(
-                                "TMDB movie detail request failed. id=" + movieId
-                                        + ", status=" + clientResponse.getStatusCode().value()
+                        throw TmdbClientException.upstream(
+                                TMDB_DETAIL_FAILURE + " status=" + clientResponse.getStatusCode().value()
                         );
                     })
                     .body(TmdbMovieDetailDto.class);
 
             if (response == null) {
-                throw new TmdbClientException("TMDB movie detail response was empty. id=" + movieId);
+                throw TmdbClientException.upstream(TMDB_DETAIL_FAILURE + " Empty response received.");
             }
             return response;
         } catch (TmdbClientException exception) {
             throw exception;
         } catch (RestClientException exception) {
             log.warn("TMDB movie detail request failed. movieId={}", movieId, exception);
-            throw new TmdbClientException("TMDB movie detail request errored. id=" + movieId, exception);
+            throw TmdbClientException.network(TMDB_NETWORK_ERROR, exception);
         }
     }
 
@@ -113,7 +121,7 @@ public class TmdbClient {
 
     private void ensureApiConfigured() {
         if (!StringUtils.hasText(tmdbProperties.resolveBaseUrl())) {
-            throw new TmdbClientException("TMDB base URL is not configured.");
+            throw TmdbClientException.configuration(TMDB_SETUP_GUIDE);
         }
         resolveBearerToken();
     }
@@ -121,7 +129,7 @@ public class TmdbClient {
     private String resolveBearerToken() {
         String bearerToken = tmdbProperties.resolveBearerToken();
         if (!StringUtils.hasText(bearerToken)) {
-            throw new TmdbClientException("TMDB bearer token is not configured. Check the TMDB_BEARER_TOKEN environment variable.");
+            throw TmdbClientException.configuration(TMDB_SETUP_GUIDE);
         }
         return bearerToken;
     }

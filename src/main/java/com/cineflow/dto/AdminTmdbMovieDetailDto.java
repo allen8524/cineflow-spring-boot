@@ -20,6 +20,8 @@ public class AdminTmdbMovieDetailDto {
     private final Integer runningTime;
     private final String genreText;
     private final List<String> genres;
+    private final String posterPath;
+    private final String backdropPath;
     private final String posterUrl;
     private final String backdropUrl;
 }

@@ -12,5 +12,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     List<Movie> findAllByActiveTrueAndBookingOpenTrueOrderByReleaseDateDescTitleAsc();
 
+    boolean existsByTmdbId(Long tmdbId);
+
+    boolean existsByTmdbIdAndIdNot(Long tmdbId, Long id);
+
     Optional<Movie> findByIdAndActiveTrue(Long id);
 }

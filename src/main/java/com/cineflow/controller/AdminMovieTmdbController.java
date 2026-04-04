@@ -40,7 +40,7 @@ public class AdminMovieTmdbController {
     @ExceptionHandler(TmdbClientException.class)
     public ResponseEntity<AdminTmdbErrorResponseDto> handleTmdbClientException(TmdbClientException exception) {
         log.warn("TMDB admin request failed.", exception);
-        return buildErrorResponse(HttpStatus.BAD_GATEWAY, exception.getMessage());
+        return buildErrorResponse(resolveTmdbFailureStatus(exception), resolveTmdbFailureMessage(exception));
     }
 
     @ExceptionHandler({IllegalArgumentException.class, MethodArgumentTypeMismatchException.class})
@@ -66,6 +66,17 @@ public class AdminMovieTmdbController {
         if (exception instanceof MethodArgumentTypeMismatchException) {
             return "TMDB movie id must be a number.";
         }
-        return exception.getMessage();
+        return exception.getMessage() != null ? exception.getMessage() : "Invalid TMDB admin request.";
+    }
+
+    private HttpStatus resolveTmdbFailureStatus(TmdbClientException exception) {
+        if (exception.isConfigurationError()) {
+            return HttpStatus.SERVICE_UNAVAILABLE;
+        }
+        return HttpStatus.BAD_GATEWAY;
+    }
+
+    private String resolveTmdbFailureMessage(TmdbClientException exception) {
+        return exception.getMessage() != null ? exception.getMessage() : "TMDB request failed.";
     }
 }

@@ -5,6 +5,7 @@ import com.cineflow.domain.MovieStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +47,21 @@ public class AdminMovieForm {
     @Size(max = 255, message = "Poster path must be 255 characters or fewer.")
     private String posterUrl;
 
+    @Positive(message = "TMDB id must be greater than 0.")
+    private Long tmdbId;
+
+    @Size(max = 255, message = "Poster path must be 255 characters or fewer.")
+    private String posterPath;
+
+    @Size(max = 255, message = "Backdrop path must be 255 characters or fewer.")
+    private String backdropPath;
+
+    @Size(max = 2000, message = "Overview must be 2000 characters or fewer.")
+    private String overview;
+
+    @Min(value = 1, message = "Runtime minutes must be at least 1 minute.")
+    private Integer runtimeMinutes;
+
     @NotNull(message = "Please select a movie status.")
     private MovieStatus status;
 
@@ -63,6 +79,11 @@ public class AdminMovieForm {
         form.setRunningTime(movie.getRunningTime());
         form.setReleaseDate(movie.getReleaseDate());
         form.setPosterUrl(movie.getPosterUrl());
+        form.setTmdbId(movie.getTmdbId());
+        form.setPosterPath(movie.getPosterPath());
+        form.setBackdropPath(movie.getBackdropPath());
+        form.setOverview(movie.getOverview());
+        form.setRuntimeMinutes(movie.getRuntimeMinutes());
         form.setStatus(movie.getStatus());
         form.setBookingOpen(movie.isBookingOpen());
         form.setActive(movie.isActive());

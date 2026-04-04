@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +28,7 @@ public class AdminMovieTmdbService {
             return List.of();
         }
 
-        return tmdbClient.searchMovies(query).getResults().stream()
+        return Objects.requireNonNullElse(tmdbClient.searchMovies(query).getResults(), List.<TmdbMovieSummaryDto>of()).stream()
                 .map(this::toSearchResult)
                 .toList();
     }
@@ -45,6 +46,8 @@ public class AdminMovieTmdbService {
                 .runningTime(detail.getRuntime())
                 .genreText(genres.isEmpty() ? null : String.join(", ", genres))
                 .genres(genres)
+                .posterPath(trimToNull(detail.getPosterPath()))
+                .backdropPath(trimToNull(detail.getBackdropPath()))
                 .posterUrl(tmdbClient.buildPosterUrl(detail.getPosterPath()))
                 .backdropUrl(tmdbClient.buildBackdropUrl(detail.getBackdropPath()))
                 .build();

@@ -39,11 +39,61 @@
             <article class="booking-panel admin-form-card">
                 <form th:action="@{${formAction}}" th:object="${movieForm}" method="post" class="admin-form-grid">
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <input id="tmdbId" type="hidden" th:field="*{tmdbId}">
+                    <input id="posterPath" type="hidden" th:field="*{posterPath}">
+                    <input id="backdropPath" type="hidden" th:field="*{backdropPath}">
+                    <input id="overview" type="hidden" th:field="*{overview}">
+                    <input id="runtimeMinutes" type="hidden" th:field="*{runtimeMinutes}">
 
                     <div th:if="${formErrorMessage}" class="booking-feedback-banner admin-form-note--full">
                         <strong>Please review the form.</strong>
                         <span th:text="${formErrorMessage}">Error message</span>
                     </div>
+
+                    <section class="admin-form-note admin-form-note--full admin-tmdb-panel">
+                        <div class="admin-tmdb-panel-head">
+                            <div>
+                                <strong>&#x54;&#x4D;&#x44;&#x42;&#x20;&#xC601;&#xD654;&#x20;&#xAC80;&#xC0C9;</strong>
+                                <p>&#xC601;&#xD654;&#x20;&#xC81C;&#xBAA9;&#xC73C;&#xB85C;&#x20;&#xAC80;&#xC0C9;&#xD55C;&#x20;&#xB4A4;&#x20;&#xC120;&#xD0DD;&#xD558;&#xBA74;&#x20;&#xD604;&#xC7AC;&#x20;&#xD3FC;&#x20;&#xAC12;&#xC774;&#x20;&#x54;&#x4D;&#x44;&#x42;&#x20;&#xC815;&#xBCF4;&#xB85C;&#x20;&#xCC44;&#xC6CC;&#xC9D1;&#xB2C8;&#xB2E4;&#x2E;&#x20;&#xC790;&#xB3D9;&#x20;&#xCC44;&#xC6C0;&#x20;&#xD6C4;&#xC5D0;&#xB3C4;&#x20;&#xC9C1;&#xC811;&#x20;&#xC218;&#xC815;&#xD574;&#xC11C;&#x20;&#xC800;&#xC7A5;&#xD560;&#x20;&#xC218;&#x20;&#xC788;&#xC2B5;&#xB2C8;&#xB2E4;&#x2E;</p>
+                            </div>
+                            <button type="button" id="tmdbClearButton" class="hero-btn secondary admin-tmdb-clear-btn">&#x54;&#x4D;&#x44;&#x42;&#x20;&#xC5F0;&#xACB0;&#x20;&#xD574;&#xC81C;</button>
+                        </div>
+
+                        <div class="admin-tmdb-search-row">
+                            <label class="admin-form-field admin-tmdb-search-field" for="tmdbSearchQuery">
+                                <span>&#xC81C;&#xBAA9;&#x20;&#xAC80;&#xC0C9;</span>
+                                <input id="tmdbSearchQuery" type="text" placeholder="Interstellar, Parasite" th:disabled="${!tmdbFeatureEnabled}">
+                            </label>
+                            <button type="button" id="tmdbSearchButton" class="hero-btn primary admin-tmdb-search-button" th:disabled="${!tmdbFeatureEnabled}">&#xAC80;&#xC0C9;</button>
+                        </div>
+
+                        <div id="tmdbStatusMessage" class="admin-tmdb-status" aria-live="polite" th:text="${tmdbStatusMessage}">&#x54;&#x4D;&#x44;&#x42;&#xC5D0;&#xC11C;&#x20;&#xC601;&#xD654;&#xB97C;&#x20;&#xAC80;&#xC0C9;&#xD574;&#x20;&#xC790;&#xB3D9;&#x20;&#xCC44;&#xC6B0;&#xAE30;&#xB97C;&#x20;&#xC2DC;&#xC791;&#xD558;&#xC138;&#xC694;&#x2E;</div>
+                        <p class="admin-tmdb-input-hint" th:if="${!tmdbFeatureEnabled}">TMDB search/import is disabled until <code>TMDB_BEARER_TOKEN</code> is provided in the local environment.</p>
+                        <div id="tmdbSearchResults" class="admin-tmdb-results" aria-live="polite"></div>
+
+                        <div class="admin-tmdb-current">
+                            <div class="admin-tmdb-current-head">
+                                <strong>&#xD604;&#xC7AC;&#x20;&#x54;&#x4D;&#x44;&#x42;&#x20;&#xC5F0;&#xACB0;&#x20;&#xC815;&#xBCF4;</strong>
+                                <p>&#xC120;&#xD0DD;&#x20;&#xC2DC;&#x20;&#xC81C;&#xBAA9;&#x2C;&#x20;&#xAC1C;&#xC694;&#x2C;&#x20;&#xAC1C;&#xBD09;&#xC77C;&#x2C;&#x20;&#xB7EC;&#xB2DD;&#xD0C0;&#xC784;&#x2C;&#x20;&#xC7A5;&#xB974;&#x2C;&#x20;&#xD3EC;&#xC2A4;&#xD130;&#x20;&#xC815;&#xBCF4;&#xAC00;&#x20;&#xC989;&#xC2DC;&#x20;&#xAC31;&#xC2E0;&#xB429;&#xB2C8;&#xB2E4;&#x2E;</p>
+                            </div>
+                            <div class="admin-tmdb-preview-card">
+                                <div class="admin-tmdb-preview-media">
+                                    <img id="tmdbPosterPreview" class="admin-tmdb-preview-image" src="" alt="TMDB poster preview">
+                                    <div id="tmdbPosterEmpty" class="admin-tmdb-preview-empty">&#xD3EC;&#xC2A4;&#xD130;&#x20;&#xBBF8;&#xB9AC;&#xBCF4;&#xAE30;&#xAC00;&#x20;&#xC5EC;&#xAE30;&#xC5D0;&#x20;&#xD45C;&#xC2DC;&#xB429;&#xB2C8;&#xB2E4;&#x2E;</div>
+                                </div>
+                                <div class="admin-tmdb-preview-copy">
+                                    <h3 id="tmdbSelectedTitle">&#xC544;&#xC9C1;&#x20;&#xC120;&#xD0DD;&#xB41C;&#x20;&#x54;&#x4D;&#x44;&#x42;&#x20;&#xC601;&#xD654;&#xAC00;&#x20;&#xC5C6;&#xC2B5;&#xB2C8;&#xB2E4;&#x2E;</h3>
+                                    <p id="tmdbSelectedSubtitle">&#xC218;&#xB3D9;&#x20;&#xC785;&#xB825;&#xB9CC;&#xC73C;&#xB85C;&#xB3C4;&#x20;&#xC800;&#xC7A5;&#xD560;&#x20;&#xC218;&#x20;&#xC788;&#xC2B5;&#xB2C8;&#xB2E4;&#x2E;&#x20;&#xAC80;&#xC0C9;&#x20;&#xD6C4;&#x20;&#xC120;&#xD0DD;&#xD558;&#xBA74;&#x20;&#xC5F0;&#xACB0;&#x20;&#xC815;&#xBCF4;&#xAC00;&#x20;&#xD568;&#xAED8;&#x20;&#xC800;&#xC7A5;&#xB429;&#xB2C8;&#xB2E4;&#x2E;</p>
+                                    <ul class="admin-tmdb-preview-meta">
+                                        <li><span>TMDB ID</span><strong id="tmdbSelectedId">-</strong></li>
+                                        <li><span>&#xC6D0;&#xC81C;</span><strong id="tmdbSelectedOriginalTitle">-</strong></li>
+                                        <li><span>&#xC7A5;&#xB974;</span><strong id="tmdbSelectedGenres">-</strong></li>
+                                        <li><span>&#xBC31;&#xB4DC;&#xB86D;&#x20;&#xACBD;&#xB85C;</span><strong id="tmdbSelectedBackdropPath">-</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     <div class="admin-form-field">
                         <label for="title">Title</label>
@@ -106,6 +156,7 @@
                         <label for="posterUrl">Poster URL or Path</label>
                         <input id="posterUrl" type="text" th:field="*{posterUrl}" placeholder="/images/uploads/movie-single.jpg">
                         <p class="field-error" th:if="${#fields.hasErrors('posterUrl')}" th:errors="*{posterUrl}">Poster error</p>
+                        <p class="admin-tmdb-input-hint">&#x54;&#x4D;&#x44;&#x42;&#x20;&#xC790;&#xB3D9;&#x20;&#xCC44;&#xC6B0;&#xAE30;&#xB97C;&#x20;&#xC0AC;&#xC6A9;&#xD558;&#xBA74;&#x20;&#xD3EC;&#xC2A4;&#xD130;&#x20;&#x55;&#x52;&#x4C;&#xC740;&#x20;&#xBBF8;&#xB9AC;&#xBCF4;&#xAE30;&#x20;&#xAC00;&#xB2A5;&#xD55C;&#x20;&#xC804;&#xCCB4;&#x20;&#xC774;&#xBBF8;&#xC9C0;&#x20;&#x55;&#x52;&#x4C;&#xB85C;&#x20;&#xCC44;&#xC6CC;&#xC9D1;&#xB2C8;&#xB2E4;&#x2E;</p>
                     </div>
 
                     <div class="admin-form-check">
@@ -127,5 +178,300 @@
         </div>
     </section>
 </main>
+<script>
+    (function () {
+        const text = {
+            requestError: '\u0054\u004d\u0044\u0042\u0020\uc694\uccad\u0020\ucc98\ub9ac\u0020\uc911\u0020\uc624\ub958\uac00\u0020\ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4\u002e',
+            noResults: '\uac80\uc0c9\u0020\uacb0\uacfc\uac00\u0020\uc5c6\uc2b5\ub2c8\ub2e4\u002e\u0020\ub2e4\ub978\u0020\uc81c\ubaa9\uc73c\ub85c\u0020\ub2e4\uc2dc\u0020\uac80\uc0c9\ud574\u0020\ubcf4\uc138\uc694\u002e',
+            noReleaseDate: '\uac1c\ubd09\uc77c\u0020\uc815\ubcf4\u0020\uc5c6\uc74c',
+            noOverview: '\uac1c\uc694\u0020\uc815\ubcf4\uac00\u0020\uc5c6\uc2b5\ub2c8\ub2e4\u002e',
+            movie: '\uc601\ud654',
+            untitled: '\uc81c\ubaa9\u0020\uc5c6\uc74c',
+            selectAndFill: '\uc120\ud0dd\ud574\uc11c\u0020\ucc44\uc6b0\uae30',
+            noOverviewFromTmdb: '\u0054\u004d\u0044\u0042\uc5d0\uc11c\u0020\uac1c\uc694\ub97c\u0020\uc81c\uacf5\ud558\uc9c0\u0020\uc54a\uc558\uc2b5\ub2c8\ub2e4\u002e',
+            noSelectionTitle: '\uc544\uc9c1\u0020\uc120\ud0dd\ub41c\u0020\u0054\u004d\u0044\u0042\u0020\uc601\ud654\uac00\u0020\uc5c6\uc2b5\ub2c8\ub2e4\u002e',
+            noSelectionDescription: '\uc218\ub3d9\u0020\uc785\ub825\ub9cc\uc73c\ub85c\ub3c4\u0020\uc800\uc7a5\ud560\u0020\uc218\u0020\uc788\uc2b5\ub2c8\ub2e4\u002e\u0020\uac80\uc0c9\u0020\ud6c4\u0020\uc120\ud0dd\ud558\uba74\u0020\uc5f0\uacb0\u0020\uc815\ubcf4\uac00\u0020\ud568\uaed8\u0020\uc800\uc7a5\ub429\ub2c8\ub2e4\u002e',
+            cleared: '\u0054\u004d\u0044\u0042\u0020\uc5f0\uacb0\u0020\uc815\ubcf4\ub97c\u0020\ube44\uc6e0\uc2b5\ub2c8\ub2e4\u002e\u0020\ud604\uc7ac\u0020\ud3fc\u0020\uac12\uc740\u0020\uadf8\ub300\ub85c\u0020\uc720\uc9c0\ub429\ub2c8\ub2e4\u002e',
+            emptyQuery: '\uac80\uc0c9\uc5b4\ub97c\u0020\uc785\ub825\ud574\u0020\uc8fc\uc138\uc694\u002e',
+            searching: '\u0054\u004d\u0044\u0042\uc5d0\uc11c\u0020\uc601\ud654\ub97c\u0020\uac80\uc0c9\ud558\uace0\u0020\uc788\uc2b5\ub2c8\ub2e4\u002e\u002e\u002e',
+            noResultsHint: '\uac80\uc0c9\u0020\uacb0\uacfc\uac00\u0020\uc5c6\uc2b5\ub2c8\ub2e4\u002e\u0020\uc81c\ubaa9\uc744\u0020\uc870\uae08\u0020\ub2e4\ub974\uac8c\u0020\uc785\ub825\ud574\u0020\ubcf4\uc138\uc694\u002e',
+            foundResults: '\uac80\uc0c9\u0020\uacb0\uacfc\ub97c\u0020\ucc3e\uc558\uc2b5\ub2c8\ub2e4\u002e\u0020\uc6d0\ud558\ub294\u0020\uc601\ud654\ub97c\u0020\uc120\ud0dd\ud574\u0020\ud3fc\uc744\u0020\ucc44\uc6b0\uc138\uc694\u002e',
+            loadingDetail: '\uc120\ud0dd\ud55c\u0020\uc601\ud654\uc758\u0020\u0054\u004d\u0044\u0042\u0020\uc0c1\uc138\u0020\uc815\ubcf4\ub97c\u0020\ubd88\ub7ec\uc624\ub294\u0020\uc911\uc785\ub2c8\ub2e4\u002e\u002e\u002e',
+            filledForm: '\u0054\u004d\u0044\u0042\u0020\uc815\ubcf4\ub85c\u0020\ud3fc\uc744\u0020\ucc44\uc6e0\uc2b5\ub2c8\ub2e4\u002e\u0020\ud544\uc694\ud55c\u0020\uac12\uc740\u0020\uadf8\ub300\ub85c\u0020\uc218\uc815\ud574\uc11c\u0020\uc800\uc7a5\ud558\uc138\uc694\u002e',
+            loadedDetail: '\u0054\u004d\u0044\u0042\u0020\uc0c1\uc138\u0020\uc815\ubcf4\ub97c\u0020\ubd88\ub7ec\uc654\uc2b5\ub2c8\ub2e4\u002e'
+        };
+
+        const elements = {
+            searchQuery: document.getElementById('tmdbSearchQuery'),
+            searchButton: document.getElementById('tmdbSearchButton'),
+            clearButton: document.getElementById('tmdbClearButton'),
+            results: document.getElementById('tmdbSearchResults'),
+            status: document.getElementById('tmdbStatusMessage'),
+            title: document.getElementById('title'),
+            shortDescription: document.getElementById('shortDescription'),
+            description: document.getElementById('description'),
+            genre: document.getElementById('genre'),
+            runningTime: document.getElementById('runningTime'),
+            releaseDate: document.getElementById('releaseDate'),
+            posterUrl: document.getElementById('posterUrl'),
+            tmdbId: document.getElementById('tmdbId'),
+            posterPath: document.getElementById('posterPath'),
+            backdropPath: document.getElementById('backdropPath'),
+            overview: document.getElementById('overview'),
+            runtimeMinutes: document.getElementById('runtimeMinutes'),
+            previewImage: document.getElementById('tmdbPosterPreview'),
+            previewEmpty: document.getElementById('tmdbPosterEmpty'),
+            selectedTitle: document.getElementById('tmdbSelectedTitle'),
+            selectedSubtitle: document.getElementById('tmdbSelectedSubtitle'),
+            selectedId: document.getElementById('tmdbSelectedId'),
+            selectedOriginalTitle: document.getElementById('tmdbSelectedOriginalTitle'),
+            selectedGenres: document.getElementById('tmdbSelectedGenres'),
+            selectedBackdropPath: document.getElementById('tmdbSelectedBackdropPath')
+        };
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+
+        function setStatus(message, tone) {
+            elements.status.textContent = message;
+            elements.status.className = 'admin-tmdb-status' + (tone ? ' is-' + tone : '');
+        }
+
+        function formatDate(value) {
+            if (!value) {
+                return '-';
+            }
+            return value.replaceAll('-', '.');
+        }
+
+        function buildShortDescription(value) {
+            if (!value) {
+                return '';
+            }
+            return value.length <= 120 ? value : value.slice(0, 120) + '...';
+        }
+
+        async function fetchJson(url) {
+            const response = await fetch(url, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const contentType = response.headers.get('content-type') || '';
+            const payload = contentType.includes('application/json') ? await response.json() : null;
+
+            if (!response.ok) {
+                const message = payload && payload.message ? payload.message : text.requestError;
+                throw new Error(message);
+            }
+
+            return payload;
+        }
+
+        function renderResults(results) {
+            if (!results || results.length === 0) {
+                elements.results.innerHTML = '<div class="admin-tmdb-empty">' + escapeHtml(text.noResults) + '</div>';
+                return;
+            }
+
+            const cards = results.map(function (movie) {
+                const posterAlt = (movie.title || text.movie) + ' poster';
+                const poster = movie.posterPreviewUrl
+                    ? '<img src="' + escapeHtml(movie.posterPreviewUrl) + '" alt="' + escapeHtml(posterAlt) + '">'
+                    : '<div class="admin-tmdb-result-placeholder">NO IMAGE</div>';
+
+                const releaseDate = movie.releaseDate ? formatDate(movie.releaseDate) : text.noReleaseDate;
+                const overview = movie.overviewSnippet || text.noOverview;
+
+                return ''
+                    + '<article class="admin-tmdb-result" data-tmdb-id="' + escapeHtml(movie.tmdbId) + '">'
+                    + '  <div class="admin-tmdb-result-media">' + poster + '</div>'
+                    + '  <div class="admin-tmdb-result-body">'
+                    + '    <div class="admin-tmdb-result-head">'
+                    + '      <div>'
+                    + '        <h4>' + escapeHtml(movie.title || text.untitled) + '</h4>'
+                    + '        <p>' + escapeHtml(releaseDate) + '</p>'
+                    + '      </div>'
+                    + '      <button type="button" class="hero-btn secondary admin-tmdb-result-select" data-tmdb-id="' + escapeHtml(movie.tmdbId) + '">' + escapeHtml(text.selectAndFill) + '</button>'
+                    + '    </div>'
+                    + '    <p class="admin-tmdb-result-overview">' + escapeHtml(overview) + '</p>'
+                    + '  </div>'
+                    + '</article>';
+            }).join('');
+
+            elements.results.innerHTML = cards;
+        }
+
+        function updatePosterPreview(url) {
+            if (url) {
+                elements.previewImage.src = url;
+                elements.previewImage.style.display = 'block';
+                elements.previewEmpty.style.display = 'none';
+            } else {
+                elements.previewImage.removeAttribute('src');
+                elements.previewImage.style.display = 'none';
+                elements.previewEmpty.style.display = 'flex';
+            }
+        }
+
+        function renderSelectedMovie(detail) {
+            const hasTmdbSelection = detail && detail.tmdbId;
+
+            if (!hasTmdbSelection) {
+                elements.selectedTitle.textContent = text.noSelectionTitle;
+                elements.selectedSubtitle.textContent = text.noSelectionDescription;
+                elements.selectedId.textContent = '-';
+                elements.selectedOriginalTitle.textContent = '-';
+                elements.selectedGenres.textContent = elements.genre.value || '-';
+                elements.selectedBackdropPath.textContent = elements.backdropPath.value || '-';
+                updatePosterPreview(elements.posterUrl.value);
+                return;
+            }
+
+            elements.selectedTitle.textContent = detail.title || elements.title.value || text.untitled;
+            elements.selectedSubtitle.textContent = detail.overview || text.noOverviewFromTmdb;
+            elements.selectedId.textContent = detail.tmdbId;
+            elements.selectedOriginalTitle.textContent = detail.originalTitle || '-';
+            elements.selectedGenres.textContent = detail.genreText || elements.genre.value || '-';
+            elements.selectedBackdropPath.textContent = detail.backdropPath || '-';
+            updatePosterPreview(detail.posterUrl || elements.posterUrl.value);
+        }
+
+        function createDetailFromCurrentForm() {
+            const tmdbId = elements.tmdbId.value ? Number(elements.tmdbId.value) : null;
+            if (!tmdbId) {
+                return null;
+            }
+
+            return {
+                tmdbId: tmdbId,
+                title: elements.title.value,
+                originalTitle: '',
+                overview: elements.overview.value || elements.description.value,
+                genreText: elements.genre.value,
+                posterPath: elements.posterPath.value,
+                backdropPath: elements.backdropPath.value,
+                posterUrl: elements.posterUrl.value
+            };
+        }
+
+        function populateForm(detail) {
+            elements.title.value = detail.title || '';
+            elements.description.value = detail.overview || '';
+            elements.genre.value = detail.genreText || '';
+            elements.runningTime.value = detail.runningTime || '';
+            elements.releaseDate.value = detail.releaseDate || '';
+            elements.posterUrl.value = detail.posterUrl || '';
+
+            if (!elements.shortDescription.value.trim()) {
+                elements.shortDescription.value = buildShortDescription(detail.overview);
+            }
+
+            elements.tmdbId.value = detail.tmdbId || '';
+            elements.posterPath.value = detail.posterPath || '';
+            elements.backdropPath.value = detail.backdropPath || '';
+            elements.overview.value = detail.overview || '';
+            elements.runtimeMinutes.value = detail.runningTime || '';
+
+            renderSelectedMovie(detail);
+        }
+
+        function clearTmdbSelection() {
+            elements.tmdbId.value = '';
+            elements.posterPath.value = '';
+            elements.backdropPath.value = '';
+            elements.overview.value = '';
+            elements.runtimeMinutes.value = '';
+            renderSelectedMovie(null);
+            setStatus(text.cleared, 'neutral');
+        }
+
+        async function searchMovies() {
+            const query = elements.searchQuery.value.trim();
+            elements.results.innerHTML = '';
+
+            if (!query) {
+                setStatus(text.emptyQuery, 'error');
+                return;
+            }
+
+            setStatus(text.searching, 'loading');
+
+            try {
+                const results = await fetchJson('/admin/movies/tmdb/search?query=' + encodeURIComponent(query));
+                renderResults(results);
+
+                if (results.length === 0) {
+                    setStatus(text.noResultsHint, 'neutral');
+                    return;
+                }
+
+                setStatus(text.foundResults, 'success');
+            } catch (error) {
+                elements.results.innerHTML = '<div class="admin-tmdb-empty is-error">' + escapeHtml(error.message) + '</div>';
+                setStatus(error.message, 'error');
+            }
+        }
+
+        async function loadMovieDetail(tmdbId, applyToForm, silent) {
+            if (!tmdbId) {
+                return;
+            }
+
+            if (!silent) {
+                setStatus(text.loadingDetail, 'loading');
+            }
+
+            try {
+                const detail = await fetchJson('/admin/movies/tmdb/' + encodeURIComponent(tmdbId));
+                renderSelectedMovie(detail);
+
+                if (applyToForm) {
+                    populateForm(detail);
+                    setStatus(text.filledForm, 'success');
+                } else if (!silent) {
+                    setStatus(text.loadedDetail, 'success');
+                }
+            } catch (error) {
+                if (!silent) {
+                    setStatus(error.message, 'error');
+                }
+            }
+        }
+
+        elements.searchButton.addEventListener('click', searchMovies);
+        elements.clearButton.addEventListener('click', clearTmdbSelection);
+        elements.posterUrl.addEventListener('input', function () {
+            updatePosterPreview(elements.posterUrl.value);
+        });
+        elements.searchQuery.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                searchMovies();
+            }
+        });
+        elements.results.addEventListener('click', function (event) {
+            const button = event.target.closest('.admin-tmdb-result-select');
+            if (!button) {
+                return;
+            }
+            loadMovieDetail(button.getAttribute('data-tmdb-id'), true, false);
+        });
+
+        updatePosterPreview(elements.posterUrl.value);
+        renderSelectedMovie(createDetailFromCurrentForm());
+
+        if (elements.tmdbId.value) {
+            loadMovieDetail(elements.tmdbId.value, false, true);
+        }
+    })();
+</script>
 </body>
 </html>

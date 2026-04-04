@@ -11,6 +11,7 @@ import com.cineflow.service.MovieService;
 import com.cineflow.service.ScheduleService;
 import com.cineflow.service.ScreenService;
 import com.cineflow.service.TheaterService;
+import com.cineflow.service.TmdbClient;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -30,10 +31,14 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminManagementController {
 
+    private static final String TMDB_ENABLED_MESSAGE = "Search TMDB to auto-fill poster, overview, release date, and runtime.";
+    private static final String TMDB_DISABLED_MESSAGE = "TMDB search is optional. Set TMDB_BEARER_TOKEN in local env to enable it. The rest of the app still works without it.";
+
     private final MovieService movieService;
     private final TheaterService theaterService;
     private final ScreenService screenService;
     private final ScheduleService scheduleService;
+    private final TmdbClient tmdbClient;
 
     @GetMapping("/movies")
     public String movies(Model model) {
@@ -370,10 +375,14 @@ public class AdminManagementController {
     }
 
     private void populateMovieFormModel(Model model, boolean editMode, Long movieId) {
+        boolean tmdbFeatureEnabled = tmdbClient.isConfigured();
+
         model.addAttribute("movieStatuses", MovieStatus.values());
         model.addAttribute("editMode", editMode);
         model.addAttribute("formAction", editMode ? "/admin/movies/" + movieId : "/admin/movies");
         model.addAttribute("pageTitle", editMode ? "Edit Movie" : "Create Movie");
+        model.addAttribute("tmdbFeatureEnabled", tmdbFeatureEnabled);
+        model.addAttribute("tmdbStatusMessage", tmdbFeatureEnabled ? TMDB_ENABLED_MESSAGE : TMDB_DISABLED_MESSAGE);
     }
 
     private void populateTheaterFormModel(Model model, boolean editMode, Long theaterId) {
