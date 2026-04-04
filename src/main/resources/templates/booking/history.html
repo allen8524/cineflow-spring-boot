@@ -17,53 +17,7 @@
     <div id="status"><span></span><span></span></div>
 </div>
 
-<div class="topbar-cinema">
-    <div class="container">
-        <div class="topbar-wrap">
-            <p class="topbar-msg">프리미엄 상영과 빠른 예매를 한 번에, CineFlow</p>
-            <ul th:replace="~{fragments/auth-menu :: topbarLinks}"></ul>
-            <ul th:remove="all" class="topbar-links">
-                <li><a href="#">로그인</a></li>
-                <li><a href="#">회원가입</a></li>
-                <li><a href="#">멤버십</a></li>
-                <li><a th:href="@{/support}">고객센터</a></li>
-                <li><a th:href="@{/booking}" class="topbar-booking">빠른예매</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<header class="ht-header full-width-hd cinema-header">
-    <div class="row">
-        <nav id="mainNav" class="navbar navbar-default navbar-custom">
-            <div class="navbar-header logo">
-                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <div id="nav-icon1"><span></span><span></span><span></span></div>
-                </div>
-                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a>
-            </div>
-            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav flex-child-menu menu-left">
-                    <li><a class="btn btn-default lv1" th:href="@{/movies}">영화</a></li>
-                    <li><a class="btn btn-default lv1 active" th:href="@{/booking}">예매</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-events}">이벤트</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-store}">스토어</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">혜택</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li>
-                </ul>
-                <ul th:replace="~{fragments/auth-menu :: headerLinks}"></ul>
-                <ul th:remove="all" class="nav navbar-nav flex-child-menu menu-right">
-                    <li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li>
-                    <li><a th:href="@{/booking/history}" class="menu-link">예매내역 확인</a></li>
-                    <li><a th:href="@{/admin}" class="menu-link">관리자</a></li>
-                    <li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-</header>
+<header th:replace="~{fragments/site-layout :: siteHeader('booking')}"></header>
 
 <main class="cinema-page booking-page booking-history-page">
     <section class="cinema-page-hero booking-hero history-hero">
@@ -85,7 +39,7 @@
                 <span th:text="${successMessage}">예매가 취소되었습니다.</span>
             </div>
             <div th:if="${errorMessage}" class="booking-feedback-banner">
-                <strong>처리를 완료하지 못했습니다.</strong>
+                <strong>작업을 진행하지 못했습니다.</strong>
                 <span th:text="${errorMessage}">이미 취소된 예매입니다.</span>
             </div>
 
@@ -94,7 +48,7 @@
                     <h2>비회원 예매 조회</h2>
                     <span class="history-mode-chip" th:text="${historyModeLabel}">비회원 예매 조회</span>
                 </div>
-                <p class="history-lookup-copy">예매 완료 화면에서 받은 예매번호로 비회원 예매를 조회할 수 있습니다. 회원으로 로그인하면 해당 예매내역과 더 자연스럽게 연결됩니다.</p>
+                <p class="history-lookup-copy">예매 완료 화면에서 받은 예매번호로 비회원 예매를 조회할 수 있습니다. 회원으로 로그인하면 해당 예매내역이 더욱 자연스럽게 연결됩니다.</p>
                 <form th:action="@{/booking/history}" method="get" class="history-lookup-form">
                     <label>
                         <span>예매번호</span>
@@ -115,7 +69,7 @@
                         <strong th:text="${currentBookingCount + '건'}">0건</strong>
                     </div>
                     <div class="history-summary-item">
-                        <span>오늘 관람 예정</span>
+                        <span>오늘 관람 일정</span>
                         <strong th:text="${todayBookingCount + '건'}">0건</strong>
                     </div>
                     <div class="history-summary-item">
@@ -147,7 +101,7 @@
 
                         <div th:if="${#lists.isEmpty(currentBookings)}" class="booking-panel history-empty-card">
                             <h3>예정된 예매가 없습니다</h3>
-                            <p>원하는 영화와 좌석을 선택해 새로운 예매를 진행해 보세요.</p>
+                            <p>원하는 영화와 좌석을 선택한 뒤 새로운 예매를 진행해보세요.</p>
                             <div class="history-card-actions">
                                 <a th:href="@{/booking}" class="hero-btn primary">빠른예매</a>
                                 <a th:href="@{/movies}" class="hero-btn secondary">상영작 보기</a>
@@ -169,7 +123,7 @@
                                             <span th:text="${booking.theaterName + ' | ' + booking.screenName + ' (' + booking.screenType + ')'}">CineFlow 강남 | 1관(IMAX)</span>
                                         </div>
                                     </div>
-                                    <span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">예매완료</span>
+                                    <span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">예매 완료</span>
                                 </div>
                                 <ul class="history-info-grid">
                                     <li><span>상영시간</span><strong th:text="${#temporals.format(booking.startTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 19:40</strong></li>
@@ -179,7 +133,7 @@
                                 </ul>
                                 <div class="history-card-tags">
                                     <em th:text="${booking.screenType}">IMAX</em>
-                                    <em th:text="${booking.cancelAvailabilityLabel}">취소가능</em>
+                                    <em th:text="${booking.cancelAvailabilityLabel}">취소 가능</em>
                                 </div>
                                 <div class="history-card-actions">
                                     <a th:href="@{/booking/complete(bookingCode=${booking.bookingCode})}" class="hero-btn primary">예매상세</a>
@@ -190,7 +144,7 @@
                                         <input type="hidden" name="redirectTo" th:value="${isMyPage ? '/mypage/bookings' : '/booking/history?bookingCode=' + booking.bookingCode}">
                                         <button type="submit" class="hero-btn secondary">예매 취소</button>
                                     </form>
-                                    <span th:if="${!booking.cancelable}" class="history-state-chip state-refund" th:text="${booking.cancelAvailabilityLabel}">취소불가</span>
+                                    <span th:if="${!booking.cancelable}" class="history-state-chip state-refund" th:text="${booking.cancelAvailabilityLabel}">취소 불가</span>
                                 </div>
                             </div>
                         </article>
@@ -199,12 +153,12 @@
                     <section class="history-section" id="past-booking">
                         <div class="section-headline">
                             <h2>지난 예매</h2>
-                            <p>상영이 끝난 예매 내역을 다시 확인하고 동일 회차 기준 재예매도 연결할 수 있습니다.</p>
+                            <p>상영이 종료된 예매 내역을 다시 확인하고 같은 작품 기준으로 재예매할 수 있습니다.</p>
                         </div>
 
                         <div th:if="${#lists.isEmpty(pastBookings)}" class="booking-panel history-empty-card">
                             <h3>지난 예매가 없습니다</h3>
-                            <p>관람이 완료된 예매는 이 영역에서 확인할 수 있습니다.</p>
+                            <p>관람이 완료된 예매가 있으면 이 영역에서 확인할 수 있습니다.</p>
                         </div>
 
                         <article class="booking-panel history-past-card" th:each="booking : ${pastBookings}">
@@ -216,7 +170,7 @@
                                 </ul>
                             </div>
                             <div class="history-past-side">
-                                <span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">상영종료</span>
+                                <span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">상영 종료</span>
                                 <div class="history-inline-actions">
                                     <a th:href="@{/booking/complete(bookingCode=${booking.bookingCode})}">상세 보기</a>
                                     <a th:if="${booking.schedule != null}" th:href="@{/booking(movieId=${booking.schedule.movie.id}, scheduleId=${booking.schedule.id})}">다시 예매하기</a>
@@ -247,7 +201,7 @@
                                 </ul>
                             </div>
                             <div class="history-past-side">
-                                <span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">취소완료</span>
+                                <span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">취소 완료</span>
                                 <div class="history-inline-actions">
                                     <a th:href="@{/booking/complete(bookingCode=${booking.bookingCode})}">상세 보기</a>
                                 </div>
@@ -267,7 +221,7 @@
                                     <li><span>극장 / 상영관</span><em th:text="${previewBooking.theaterName + ' | ' + previewBooking.screenName + ' (' + previewBooking.screenType + ')'}">CineFlow 강남 | 1관(IMAX)</em></li>
                                     <li><span>상영시간</span><em th:text="${#temporals.format(previewBooking.startTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 19:40</em></li>
                                     <li><span>좌석</span><em th:text="${previewBooking.seatNames}">H10, H11</em></li>
-                                    <li><span>상태</span><em th:text="${previewBooking.stateLabel}">예매완료</em></li>
+                                    <li><span>상태</span><em th:text="${previewBooking.stateLabel}">예매 완료</em></li>
                                 </ul>
                             </div>
                         </div>
@@ -296,46 +250,7 @@
     </section>
 </main>
 
-<footer class="ht-footer full-width-ft cinema-footer">
-    <div class="row">
-        <div class="flex-parent-ft">
-            <div class="flex-child-ft item1">
-                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a>
-                <p>CineFlow CINEMA</p>
-                <p>서울 강남구 시네플로우로 100, 4층</p>
-                <p>대표번호 1544-0000 | help@cineflow.co.kr</p>
-            </div>
-            <div class="flex-child-ft item2">
-                <h4>서비스 안내</h4>
-                <ul>
-                    <li><a th:href="@{/movies}">영화</a></li>
-                    <li><a th:href="@{/booking}">예매</a></li>
-                    <li><a th:href="@{/admin}">관리자</a></li>
-                </ul>
-            </div>
-            <div class="flex-child-ft item3">
-                <h4>고객지원</h4>
-                <ul>
-                    <li><a th:href="@{/support}">고객센터</a></li>
-                    <li><a th:href="@{/support#faq}">FAQ 보기</a></li>
-                    <li><a th:href="@{/booking/history}">예매내역 확인</a></li>
-                </ul>
-            </div>
-            <div class="flex-child-ft item4">
-                <h4>정책</h4>
-                <ul>
-                    <li><a th:href="@{/support#cancel-policy}">취소/환불 안내</a></li>
-                    <li><a th:href="@{/support#faq}">이용안내</a></li>
-                    <li><a th:href="@{/support}">서비스 정책</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="ft-copyright">
-            <div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div>
-            <div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div>
-        </div>
-    </div>
-</footer>
+<footer th:replace="~{fragments/site-layout :: siteFooter}"></footer>
 
 <script th:src="@{/js/jquery.js}"></script>
 <script th:src="@{/js/plugins.js}"></script>

@@ -12,32 +12,7 @@
     <link rel="stylesheet" th:href="@{/css/auth-cinema.css}">
 </head>
 <body>
-<div class="topbar-cinema">
-    <div class="container">
-        <div class="topbar-wrap">
-            <p class="topbar-msg">프리미엄 상영과 빠른 예매를 한 번에, CineFlow</p>
-            <ul th:replace="~{fragments/auth-menu :: topbarLinks}"></ul>
-        </div>
-    </div>
-</div>
-
-<header class="ht-header full-width-hd cinema-header">
-    <div class="row">
-        <nav id="mainNav" class="navbar navbar-default navbar-custom">
-            <div class="navbar-header logo">
-                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a>
-            </div>
-            <div class="collapse navbar-collapse flex-parent">
-                <ul class="nav navbar-nav flex-child-menu menu-left">
-                    <li><a class="btn btn-default lv1" th:href="@{/movies}">영화</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/booking}">예매</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li>
-                </ul>
-                <ul th:replace="~{fragments/auth-menu :: headerLinks}"></ul>
-            </div>
-        </nav>
-    </div>
-</header>
+<header th:replace="~{fragments/site-layout :: siteHeader('auth')}"></header>
 
 <main class="auth-page">
     <section class="cinema-page-body">
@@ -46,23 +21,23 @@
                 <section class="auth-intro-card">
                     <span class="summary-chip">CineFlow JOIN</span>
                     <h1>회원가입</h1>
-                    <p>회원가입 후 로그인하면 예매 시 입력한 이름과 연락처를 더 자연스럽게 연결하고, 내 예매내역을 한 곳에서 관리할 수 있습니다.</p>
+                    <p>회원가입 후 로그인하면 예매 시 입력한 이름과 연락처를 더 자연스럽게 이어가고, 내 예매내역을 한곳에서 관리할 수 있습니다.</p>
                     <ul class="auth-feature-list">
-                        <li>아이디와 이메일 중복 검사</li>
-                        <li>비밀번호 BCrypt 암호화 저장</li>
-                        <li>USER / ADMIN 권한 분리 기반 확장 구조</li>
+                        <li>아이디와 이메일은 중복 여부를 검사합니다.</li>
+                        <li>비밀번호는 BCrypt로 안전하게 암호화되어 저장됩니다.</li>
+                        <li>USER / ADMIN 권한 분리 구조를 기반으로 확장됩니다.</li>
                     </ul>
                 </section>
 
                 <section class="booking-panel auth-form-panel">
                     <div class="panel-head">
                         <h2>회원 정보 입력</h2>
-                        <span class="input-help">가입 완료 후 로그인 페이지로 이동합니다.</span>
+                        <span class="input-help">가입이 완료되면 로그인 페이지로 이동합니다.</span>
                     </div>
 
                     <div th:if="${signupError}" class="booking-feedback-banner">
                         <strong>회원가입에 실패했습니다.</strong>
-                        <span th:text="${signupError}">입력값을 다시 확인해 주세요.</span>
+                        <span th:text="${signupError}">입력값을 다시 확인해주세요.</span>
                     </div>
 
                     <form th:action="@{/signup}" th:object="${signupRequest}" method="post" class="auth-form-grid auth-form-grid--two-column">
@@ -79,23 +54,23 @@
                         </div>
                         <div class="auth-field">
                             <label for="password">비밀번호</label>
-                            <input id="password" th:field="*{password}" type="password" autocomplete="new-password" placeholder="8자 이상 입력해 주세요">
+                            <input id="password" th:field="*{password}" type="password" autocomplete="new-password" placeholder="8자 이상 입력해주세요">
                             <p class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">비밀번호 오류</p>
                         </div>
                         <div class="auth-field">
                             <label for="passwordConfirm">비밀번호 확인</label>
-                            <input id="passwordConfirm" th:field="*{passwordConfirm}" type="password" autocomplete="new-password" placeholder="비밀번호를 다시 입력해 주세요">
+                            <input id="passwordConfirm" th:field="*{passwordConfirm}" type="password" autocomplete="new-password" placeholder="비밀번호를 다시 입력해주세요">
                             <p class="field-error" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}">비밀번호 확인 오류</p>
                         </div>
                         <div class="auth-field">
                             <label for="name">이름</label>
-                            <input id="name" th:field="*{name}" type="text" autocomplete="name" placeholder="실명을 입력해 주세요">
+                            <input id="name" th:field="*{name}" type="text" autocomplete="name" placeholder="실명을 입력해주세요">
                             <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">이름 오류</p>
                         </div>
                         <div class="auth-field">
-                            <label for="phone">휴대폰 번호</label>
+                            <label for="phone">휴대전화 번호</label>
                             <input id="phone" th:field="*{phone}" type="text" autocomplete="tel" placeholder="01012345678">
-                            <p class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">휴대폰 번호 오류</p>
+                            <p class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">휴대전화 번호 오류</p>
                         </div>
                         <div class="auth-submit-wrap">
                             <button type="submit" class="hero-btn primary auth-submit-btn">회원가입 완료</button>

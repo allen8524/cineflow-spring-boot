@@ -17,30 +17,7 @@
     <div id="status"><span></span><span></span></div>
 </div>
 
-<div class="topbar-cinema"><div class="container"><div class="topbar-wrap"><p class="topbar-msg">프리미엄 스크린과 빠른 예매를 한 번에, CineFlow</p><ul th:replace="~{fragments/auth-menu :: topbarLinks}"></ul></div></div></div>
-
-<header class="ht-header full-width-hd cinema-header">
-    <div class="row">
-        <nav id="mainNav" class="navbar navbar-default navbar-custom">
-            <div class="navbar-header logo">
-                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><div id="nav-icon1"><span></span><span></span><span></span></div></div>
-                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a>
-            </div>
-            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav flex-child-menu menu-left">
-                    <li><a class="btn btn-default lv1 active" th:href="@{/movies}">영화</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/booking}">예매</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-events}">이벤트</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-store}">스토어</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">혜택</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li>
-                </ul>
-                <ul th:replace="~{fragments/auth-menu :: headerLinks}"></ul>
-            </div>
-        </nav>
-    </div>
-</header>
+<header th:replace="~{fragments/site-layout :: siteHeader('movies')}"></header>
 
 <main class="cinema-page">
     <section class="cinema-page-hero">
@@ -98,7 +75,7 @@
                             <li th:text="${'개봉 ' + #temporals.format(movie.releaseDate, 'yyyy.MM.dd')}">개봉 2026.04.10</li>
                         </ul>
                         <div class="movie-card-actions">
-                            <a th:href="@{/booking}" class="book-btn">바로예매</a>
+                            <a th:href="@{/booking(movieId=${movie.id})}" class="book-btn">바로예매</a>
                             <a th:href="@{/movies/{id}(id=${movie.id})}" class="detail-link">상세보기</a>
                         </div>
                     </div>
@@ -108,25 +85,7 @@
     </section>
 </main>
 
-<footer class="ht-footer full-width-ft cinema-footer">
-    <div class="row">
-        <div class="flex-parent-ft">
-            <div class="flex-child-ft item1">
-                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a>
-                <p>CineFlow CINEMA</p>
-                <p>서울특별시 시네마로 100, 4층</p>
-                <p>대표번호 1544-0000 · help@cineflow.co.kr</p>
-            </div>
-            <div class="flex-child-ft item2"><h4>서비스 안내</h4><ul><li><a th:href="@{/movies}">영화</a></li><li><a th:href="@{/booking}">예매</a></li><li><a th:href="@{/#section-theaters}">극장</a></li><li><a th:href="@{/#section-events}">이벤트</a></li></ul></div>
-            <div class="flex-child-ft item3"><h4>고객지원</h4><ul><li><a th:href="@{/support}">고객센터</a></li><li><a th:href="@{/support#faq}">FAQ 보기</a></li><li><a th:href="@{/booking/history}">예매내역 확인</a></li></ul></div>
-            <div class="flex-child-ft item4"><h4>정책</h4><ul><li><a th:href="@{/support#cancel-policy}">취소/환불 안내</a></li><li><a th:href="@{/support#faq}">이용안내</a></li><li><a th:href="@{/support}">서비스 정책</a></li></ul></div>
-        </div>
-        <div class="ft-copyright">
-            <div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div>
-            <div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div>
-        </div>
-    </div>
-</footer>
+<footer th:replace="~{fragments/site-layout :: siteFooter}"></footer>
 
 <script th:src="@{/js/jquery.js}"></script>
 <script th:src="@{/js/plugins.js}"></script>

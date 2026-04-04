@@ -13,17 +13,14 @@
 </head>
 <body>
 <div id="preloader"><img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58"><div id="status"><span></span><span></span></div></div>
-<div class="topbar-cinema"><div class="container"><div class="topbar-wrap"><p class="topbar-msg">프리미엄 스크린과 빠른 예매를 한 번에, CineFlow</p><ul th:replace="~{fragments/auth-menu :: topbarLinks}"></ul>
-            <ul th:remove="all" class="topbar-links"><li><a href="#">로그인</a></li><li><a href="#">회원가입</a></li><li><a href="#">멤버십</a></li><li><a th:href="@{/support}">고객센터</a></li><li><a th:href="@{/booking}" class="topbar-booking">빠른예매</a></li></ul></div></div></div>
-<header class="ht-header full-width-hd cinema-header"><div class="row"><nav id="mainNav" class="navbar navbar-default navbar-custom"><div class="navbar-header logo"><div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"><span class="sr-only">Toggle navigation</span><div id="nav-icon1"><span></span><span></span><span></span></div></div><a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a></div><div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1"><ul class="nav navbar-nav flex-child-menu menu-left"><li><a class="btn btn-default lv1" th:href="@{/movies}">영화</a></li><li><a class="btn btn-default lv1 active" th:href="@{/booking}">예매</a></li><li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-events}">이벤트</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-store}">스토어</a></li><li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">혜택</a></li><li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li></ul><ul th:replace="~{fragments/auth-menu :: headerLinks}"></ul>
-                <ul th:remove="all" class="nav navbar-nav flex-child-menu menu-right"><li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li><li><a th:href="@{/booking/history}" class="menu-link">예매내역 확인</a></li><li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li></ul></div></nav></div></header>
+<header th:replace="~{fragments/site-layout :: siteHeader('booking')}"></header>
 
 <main class="cinema-page booking-page">
     <section class="cinema-page-hero booking-hero">
         <div class="container">
             <ul class="cinema-breadcrumb"><li><a th:href="@{/}">홈</a></li><li>예매</li><li>빠른예매</li></ul>
             <h1>빠른예매</h1>
-            <p>영화, 극장, 날짜, 시간을 선택하고 실제 상영시간표 기준으로 예매를 진행하세요.</p>
+            <p>영화, 극장, 날짜, 시간을 선택하고 실제 상영시간표 기준으로 예매를 진행해보세요.</p>
             <ul class="booking-mode-tabs">
                 <li><button class="is-active" type="button">영화별 예매</button></li>
                 <li><button type="button">극장별 예매</button></li>
@@ -38,7 +35,7 @@
                 <div class="booking-main-grid">
                     <section class="booking-panel movie-panel">
                         <div class="panel-head"><h2>1. 영화 선택</h2><a th:href="@{/movies}" class="detail-link">전체보기</a></div>
-                        <ul class="booking-subtabs"><li><button class="is-active" type="button">현재 상영/예매</button></li><li><button type="button">예매 가능한 작품</button></li></ul>
+                        <ul class="booking-subtabs"><li><button class="is-active" type="button">현재 상영 / 예매</button></li><li><button type="button">예매 가능한 작품</button></li></ul>
                         <ul class="selection-list movie-selection-list">
                             <li th:each="movie : ${movies}" th:classappend="${selectedMovie != null and movie.id == selectedMovie.id} ? ' is-selected' : ''">
                                 <a th:href="@{/booking(movieId=${movie.id})}">
@@ -64,7 +61,7 @@
                             <li th:each="theater : ${theaters}" th:classappend="${selectedTheater != null and theater.id == selectedTheater.id} ? ' is-selected' : ''">
                                 <a th:href="@{/booking(movieId=${selectedMovie != null ? selectedMovie.id : null}, theaterId=${theater.id}, date=${selectedDate})}">
                                     <span class="movie-title" th:text="${theater.name}">CineFlow 강남</span>
-                                    <span class="meta-line"><span th:text="${theater.location}">서울특별시 강남구 테헤란로 410</span></span>
+                                    <span class="meta-line"><span th:text="${theater.location}">서울 강남구 테헤란로 410</span></span>
                                 </a>
                             </li>
                         </ul>
@@ -77,7 +74,7 @@
                                 <a th:href="@{/booking(movieId=${selectedMovie != null ? selectedMovie.id : null}, theaterId=${selectedTheater != null ? selectedTheater.id : null}, date=${dateItem})}">
                                     <span class="day-label" th:text="${dateItem == T(java.time.LocalDate).now() ? '오늘' : (dateItem == T(java.time.LocalDate).now().plusDays(1) ? '내일' : '상영일')}">상영일</span>
                                     <strong th:text="${#temporals.format(dateItem, 'MM.dd')}">04.04</strong>
-                                    <span class="weekday" th:classappend="${dateItem.dayOfWeek.name() == 'SATURDAY'} ? ' sat' : (${dateItem.dayOfWeek.name() == 'SUNDAY'} ? ' sun' : '')" th:text="${#temporals.format(dateItem, 'E')}">토</span>
+                                    <span class="weekday" th:classappend="${dateItem.dayOfWeek.name() == 'SATURDAY'} ? ' sat' : (${dateItem.dayOfWeek.name() == 'SUNDAY'} ? ' sun' : '')" th:text="${#temporals.format(dateItem, 'E')}">금</span>
                                 </a>
                             </li>
                         </ul>
@@ -102,7 +99,7 @@
                                     </div>
                                     <div class="time-tags">
                                         <em th:text="${schedule.screenType}">IMAX</em>
-                                        <em th:text="${schedule.seatAvailabilityLabel}">여유 많음</em>
+                                        <em th:text="${schedule.seatAvailabilityLabel}">예매 가능</em>
                                     </div>
                                 </a>
                             </li>
@@ -117,11 +114,11 @@
                         <img th:if="${selectedMovie != null}" th:src="@{${selectedMovie.posterUrl}}" th:alt="${selectedMovie.title + ' 포스터'}">
                         <img th:if="${selectedMovie == null}" th:src="@{/images/uploads/movie-single.jpg}" alt="영화 포스터">
                         <div class="summary-text">
-                            <p class="summary-movie" th:text="${selectedMovie != null ? selectedMovie.title : '영화를 선택해 주세요'}">시간의 궤도</p>
+                            <p class="summary-movie" th:text="${selectedMovie != null ? selectedMovie.title : '영화를 선택해주세요'}">시간의 궤도</p>
                             <ul>
                                 <li><span>선택한 영화</span><strong th:text="${selectedMovie != null ? selectedMovie.title : '미선택'}">시간의 궤도</strong></li>
                                 <li><span>선택한 극장</span><strong th:text="${selectedTheater != null ? selectedTheater.name : (selectedSchedule != null ? selectedSchedule.theaterName : '전체 극장')}">CineFlow 강남</strong></li>
-                                <li><span>선택한 날짜</span><strong th:text="${selectedDate != null ? #temporals.format(selectedDate, 'yyyy.MM.dd (E)') : '날짜 선택'}">2026.04.04 (토)</strong></li>
+                                <li><span>선택한 날짜</span><strong th:text="${selectedDate != null ? #temporals.format(selectedDate, 'yyyy.MM.dd (E)') : '날짜 선택'}">2026.04.04 (금)</strong></li>
                                 <li><span>선택한 시간</span><strong th:text="${selectedSchedule != null ? #temporals.format(selectedSchedule.startTime, 'HH:mm') + ' ~ ' + #temporals.format(selectedSchedule.endTime, 'HH:mm') : '시간 선택'}">19:40 ~ 21:38</strong></li>
                                 <li><span>상영관</span><strong th:text="${selectedSchedule != null ? selectedSchedule.theaterName + ' · ' + selectedSchedule.screenDisplayName : '상영관 선택'}">CineFlow 강남 · 1관(IMAX)</strong></li>
                                 <li><span>잔여 좌석</span><strong th:text="${selectedSchedule != null ? selectedSchedule.availableSeats + ' / ' + selectedSchedule.totalSeats + '석' : '좌석 확인 중'}">58 / 220석</strong></li>
@@ -135,23 +132,23 @@
                         <a th:if="${selectedMovie != null}" th:href="@{/movies/{id}(id=${selectedMovie.id})}" class="hero-btn secondary">영화 상세 보기</a>
                         <a th:if="${selectedMovie == null}" th:href="@{/movies}" class="hero-btn secondary">영화 목록 보기</a>
                     </div>
-                    <p class="summary-note">상영시간표는 실시간 좌석 상황에 따라 달라질 수 있습니다. 좌석 선택 단계에서 최종 정보를 다시 확인해 주세요.</p>
+                    <p class="summary-note">상영시간표는 실시간 좌석 상황에 따라 달라질 수 있습니다. 좌석 선택 단계에서 최종 정보를 다시 확인해주세요.</p>
                 </aside>
             </div>
 
             <section class="booking-notice-section">
                 <h2>예매 안내</h2>
                 <div class="booking-notice-grid">
-                    <article class="notice-card"><h3>예매 취소 / 변경</h3><p>상영 시작 전까지 취소 및 변경이 가능하며, 일부 특별관은 지점 정책에 따라 제한될 수 있습니다.</p><a th:href="@{/support#cancel-policy}" class="detail-link">상세보기</a></article>
+                    <article class="notice-card"><h3>예매 취소 / 변경</h3><p>상영 시작 전까지 취소 및 변경이 가능하며, 특별관과 지점 정책에 따라 제한이 있을 수 있습니다.</p><a th:href="@{/support#cancel-policy}" class="detail-link">상세보기</a></article>
                     <article class="notice-card"><h3>관람권 / 할인 적용</h3><p>관람권, 쿠폰, 제휴 할인은 결제 단계에서 선택할 수 있습니다.</p><a th:href="@{/support#faq}" class="detail-link">FAQ 보기</a></article>
-                    <article class="notice-card"><h3>지점별 이용 안내</h3><p>상영 포맷, 주차, 매점 운영 시간은 지점별로 상이할 수 있습니다.</p><a th:href="@{/support}" class="detail-link">고객센터</a></article>
+                    <article class="notice-card"><h3>지점별 이용 안내</h3><p>상영 포맷, 주소, 매점 운영 시간은 지점 안내에서 확인할 수 있습니다.</p><a th:href="@{/support}" class="detail-link">고객센터</a></article>
                 </div>
             </section>
         </div>
     </section>
 </main>
 
-<footer class="ht-footer full-width-ft cinema-footer"><div class="row"><div class="flex-parent-ft"><div class="flex-child-ft item1"><a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a><p>CineFlow CINEMA</p><p>서울특별시 시네마로 100, 4층</p><p>대표번호 1544-0000 · help@cineflow.co.kr</p></div><div class="flex-child-ft item2"><h4>서비스 안내</h4><ul><li><a th:href="@{/movies}">영화</a></li><li><a th:href="@{/booking}">예매</a></li><li><a th:href="@{/#section-theaters}">극장</a></li><li><a th:href="@{/#section-events}">이벤트</a></li></ul></div><div class="flex-child-ft item3"><h4>고객지원</h4><ul><li><a th:href="@{/support}">고객센터</a></li><li><a th:href="@{/support#faq}">FAQ 보기</a></li><li><a th:href="@{/booking/history}">예매내역 확인</a></li></ul></div><div class="flex-child-ft item4"><h4>정책</h4><ul><li><a th:href="@{/support#cancel-policy}">취소/환불 안내</a></li><li><a th:href="@{/support#faq}">이용안내</a></li><li><a th:href="@{/support}">서비스 정책</a></li></ul></div></div><div class="ft-copyright"><div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div><div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div></div></div></footer>
+<footer th:replace="~{fragments/site-layout :: siteFooter}"></footer>
 <script th:src="@{/js/jquery.js}"></script><script th:src="@{/js/plugins.js}"></script><script th:src="@{/js/plugins2.js}"></script><script th:src="@{/js/custom.js}"></script>
 </body>
 </html>

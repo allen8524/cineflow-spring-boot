@@ -58,9 +58,28 @@ body {
     padding-top: 6px;
 }
 
+.cinema-header--unified {
+    padding-top: 0;
+}
+
 .cinema-header .navbar {
     min-height: 72px;
     margin-bottom: 0;
+}
+
+.cinema-brand-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.cinema-brand-copy {
+    display: inline-block;
+    color: #91a3cf;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
 }
 
 .menu-left {
@@ -93,6 +112,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-left: auto;
 }
 
 .menu-link {
@@ -822,6 +842,10 @@ body {
 
     .cinema-header .navbar {
         min-height: 64px;
+    }
+
+    .cinema-brand-copy {
+        display: none;
     }
 
     .menu-left .lv1 {

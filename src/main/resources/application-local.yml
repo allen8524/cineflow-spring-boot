@@ -25,3 +25,9 @@ spring:
 app:
   seed:
     enabled: ${APP_SEED_ENABLED:false}
+
+tmdb:
+  base-url: https://api.themoviedb.org/3
+  image-base-url: https://image.tmdb.org/t/p
+  language: ko-KR
+  bearer-token: ${TMDB_BEARER_TOKEN:}

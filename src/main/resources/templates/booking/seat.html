@@ -17,52 +17,7 @@
     <div id="status"><span></span><span></span></div>
 </div>
 
-<div class="topbar-cinema">
-    <div class="container">
-        <div class="topbar-wrap">
-            <p class="topbar-msg">프리미엄 상영과 빠른 예매를 한 번에, CineFlow</p>
-            <ul th:replace="~{fragments/auth-menu :: topbarLinks}"></ul>
-            <ul th:remove="all" class="topbar-links">
-                <li><a href="#">로그인</a></li>
-                <li><a href="#">회원가입</a></li>
-                <li><a href="#">멤버십</a></li>
-                <li><a th:href="@{/support}">고객센터</a></li>
-                <li><a th:href="@{/booking}" class="topbar-booking">빠른예매</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<header class="ht-header full-width-hd cinema-header">
-    <div class="row">
-        <nav id="mainNav" class="navbar navbar-default navbar-custom">
-            <div class="navbar-header logo">
-                <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <div id="nav-icon1"><span></span><span></span><span></span></div>
-                </div>
-                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58"></a>
-            </div>
-            <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav flex-child-menu menu-left">
-                    <li><a class="btn btn-default lv1" th:href="@{/movies}">영화</a></li>
-                    <li><a class="btn btn-default lv1 active" th:href="@{/booking}">예매</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/booking}">극장</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-events}">이벤트</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-store}">스토어</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/#section-benefits}">혜택</a></li>
-                    <li><a class="btn btn-default lv1" th:href="@{/support}">고객센터</a></li>
-                </ul>
-                <ul th:replace="~{fragments/auth-menu :: headerLinks}"></ul>
-                <ul th:remove="all" class="nav navbar-nav flex-child-menu menu-right">
-                    <li><a th:href="@{/booking}" class="menu-link">상영시간표 보기</a></li>
-                    <li><a th:href="@{/booking/history}" class="menu-link">예매내역 확인</a></li>
-                    <li><a th:href="@{/booking}" class="menu-cta">빠른예매</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-</header>
+<header th:replace="~{fragments/site-layout :: siteHeader('booking')}"></header>
 
 <main class="cinema-page booking-page booking-seat-page">
     <section class="cinema-page-hero booking-hero seat-hero">
@@ -74,10 +29,10 @@
                 <li>좌석 선택</li>
             </ul>
             <h1>좌석 선택</h1>
-            <p>선택한 상영 회차의 좌석 현황을 확인하고 원하는 좌석을 선택해 주세요.</p>
+            <p>선택한 상영 회차의 좌석 배치도와 잔여 좌석을 확인하고 원하는 좌석을 선택해주세요.</p>
             <ol class="booking-stepper">
                 <li><span>01</span><strong>상영정보</strong></li>
-                <li class="is-active"><span>02</span><strong>인원/좌석</strong></li>
+                <li class="is-active"><span>02</span><strong>인원 / 좌석</strong></li>
                 <li><span>03</span><strong>결제</strong></li>
                 <li><span>04</span><strong>완료</strong></li>
             </ol>
@@ -87,12 +42,12 @@
     <section class="cinema-page-body booking-body">
         <div class="container">
             <div th:if="${errorMessage}" class="booking-feedback-banner">
-                <strong>좌석 정보를 다시 확인해 주세요.</strong>
+                <strong>좌석 정보를 다시 확인해주세요.</strong>
                 <span th:text="${errorMessage}">이미 예약된 좌석이 포함되어 있습니다.</span>
             </div>
 
             <div th:if="${selectedSchedule == null}" class="empty-state-card">
-                선택한 상영 회차를 찾을 수 없습니다. 상영시간표에서 다시 선택해 주세요.
+                선택한 상영 회차를 찾을 수 없습니다. 상영시간표에서 다시 선택해주세요.
             </div>
 
             <form th:if="${selectedSchedule != null}" id="seat-selection-form" th:action="@{/booking/payment}" method="post">
@@ -169,7 +124,7 @@
                                 <li>
                                     <div class="people-type">
                                         <strong>우대</strong>
-                                        <span>경로·장애인·국가유공자</span>
+                                        <span>경로 · 장애 · 국가유공자</span>
                                     </div>
                                     <div class="people-counter" data-target="senior">
                                         <button type="button" data-action="decrease" aria-label="우대 인원 감소">-</button>
@@ -178,7 +133,7 @@
                                     </div>
                                 </li>
                             </ul>
-                            <p class="people-picker-note">관람 인원 수와 같은 수의 좌석을 선택해야 다음 단계로 이동할 수 있습니다.</p>
+                            <p class="people-picker-note">관람 인원 수와 동일한 수의 좌석을 선택해야 다음 단계로 이동할 수 있습니다.</p>
                         </article>
 
                         <article class="booking-panel seat-map-panel">
@@ -210,9 +165,9 @@
                                 </div>
                             </div>
                             <ul class="seat-guide-list">
-                                <li>회차별 좌석 상태가 반영된 실시간 좌석도입니다.</li>
+                                <li>회차별 좌석 상태가 반영되는 실시간 좌석도입니다.</li>
                                 <li>프리미엄석과 커플석은 기본 가격에 추가 금액이 반영될 수 있습니다.</li>
-                                <li>결제 직전에 동일 좌석에 대한 중복 예매를 한 번 더 확인합니다.</li>
+                                <li>결제 직전에도 동일 좌석에 대한 중복 예매를 다시 검증합니다.</li>
                             </ul>
                         </article>
                     </section>
@@ -258,11 +213,11 @@
                 <div class="booking-notice-grid">
                     <article class="notice-card">
                         <h3>중복 예매 방지</h3>
-                        <p>이미 예약된 좌석은 선택할 수 없으며, 결제 직전에도 동일 좌석을 다시 검증합니다.</p>
+                        <p>이미 예약된 좌석은 선택할 수 없으며, 결제 직전에도 동일 좌석 여부를 다시 확인합니다.</p>
                     </article>
                     <article class="notice-card">
                         <h3>좌석별 금액 차이</h3>
-                        <p>프리미엄석과 커플석은 일반석과 다른 금액이 적용될 수 있도록 구조를 반영했습니다.</p>
+                        <p>프리미엄석과 커플석은 일반석과 다른 금액이 적용되도록 구조가 준비되어 있습니다.</p>
                     </article>
                     <article class="notice-card">
                         <h3>다음 단계</h3>
@@ -274,47 +229,7 @@
     </section>
 </main>
 
-<footer class="ht-footer full-width-ft cinema-footer">
-    <div class="row">
-        <div class="flex-parent-ft">
-            <div class="flex-child-ft item1">
-                <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a>
-                <p>CineFlow CINEMA</p>
-                <p>서울 강남구 시네플로우로 100, 4층</p>
-                <p>대표번호 1544-0000 | help@cineflow.co.kr</p>
-            </div>
-            <div class="flex-child-ft item2">
-                <h4>서비스 안내</h4>
-                <ul>
-                    <li><a th:href="@{/movies}">영화</a></li>
-                    <li><a th:href="@{/booking}">예매</a></li>
-                    <li><a th:href="@{/#section-theaters}">극장</a></li>
-                    <li><a th:href="@{/#section-events}">이벤트</a></li>
-                </ul>
-            </div>
-            <div class="flex-child-ft item3">
-                <h4>고객지원</h4>
-                <ul>
-                    <li><a th:href="@{/support}">고객센터</a></li>
-                    <li><a th:href="@{/support#faq}">FAQ 보기</a></li>
-                    <li><a th:href="@{/booking/history}">예매내역 확인</a></li>
-                </ul>
-            </div>
-            <div class="flex-child-ft item4">
-                <h4>정책</h4>
-                <ul>
-                    <li><a th:href="@{/support#cancel-policy}">취소/환불 안내</a></li>
-                    <li><a th:href="@{/support#faq}">이용안내</a></li>
-                    <li><a th:href="@{/support}">서비스 정책</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="ft-copyright">
-            <div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div>
-            <div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div>
-        </div>
-    </div>
-</footer>
+<footer th:replace="~{fragments/site-layout :: siteFooter}"></footer>
 
 <script th:src="@{/js/jquery.js}"></script>
 <script th:src="@{/js/plugins.js}"></script>

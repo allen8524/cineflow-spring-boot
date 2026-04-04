@@ -94,7 +94,7 @@ public class Movie {
 
     @Transient
     public String getStatusLabel() {
-        return status == MovieStatus.NOW_SHOWING ? "Now Showing" : "Coming Soon";
+        return status == MovieStatus.NOW_SHOWING ? "현재 상영중" : "개봉 예정";
     }
 
     @Transient
@@ -104,21 +104,21 @@ public class Movie {
 
     @Transient
     public String getMetricName() {
-        return status == MovieStatus.NOW_SHOWING ? "Booking Rate" : "Advance Rate";
+        return status == MovieStatus.NOW_SHOWING ? "예매율" : "사전 관심도";
     }
 
     @Transient
     public String getScoreMetricName() {
-        return status == MovieStatus.NOW_SHOWING ? "Score" : "Interest";
+        return status == MovieStatus.NOW_SHOWING ? "평점" : "기대지수";
     }
 
     @Transient
     public String getBookingOpenLabel() {
-        return bookingOpen ? "Open" : "Closed";
+        return bookingOpen ? "예매 가능" : "예매 마감";
     }
 
     @Transient
     public String getActiveLabel() {
-        return active ? "Visible" : "Hidden";
+        return active ? "노출 중" : "비노출";
     }
 }

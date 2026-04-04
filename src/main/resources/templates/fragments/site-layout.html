@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="siteHeader(activeMenu)">
+    <header class="ht-header full-width-hd cinema-header cinema-header--unified">
+        <div class="row">
+            <nav id="mainNav" class="navbar navbar-default navbar-custom">
+                <div class="navbar-header logo">
+                    <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <div id="nav-icon1"><span></span><span></span><span></span></div>
+                    </div>
+                    <a th:href="@{/}" class="cinema-brand-mark">
+                        <img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58">
+                        <span class="cinema-brand-copy">프리미엄 영화 예매 서비스</span>
+                    </a>
+                </div>
+                <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav flex-child-menu menu-left">
+                        <li><a class="btn btn-default lv1" th:classappend="${activeMenu == 'home'} ? ' active' : ''" th:href="@{/}">홈</a></li>
+                        <li><a class="btn btn-default lv1" th:classappend="${activeMenu == 'movies'} ? ' active' : ''" th:href="@{/movies}">영화</a></li>
+                        <li><a class="btn btn-default lv1" th:classappend="${activeMenu == 'booking'} ? ' active' : ''" th:href="@{/booking}">상영시간표</a></li>
+                        <li><a class="btn btn-default lv1" th:classappend="${activeMenu == 'support'} ? ' active' : ''" th:href="@{/support}">고객센터</a></li>
+                    </ul>
+                    <ul th:replace="~{fragments/auth-menu :: headerLinks}"></ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+</th:block>
+
+<th:block th:fragment="siteFooter">
+    <footer class="ht-footer full-width-ft cinema-footer">
+        <div class="row">
+            <div class="flex-parent-ft">
+                <div class="flex-child-ft item1">
+                    <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a>
+                    <p>CineFlow CINEMA</p>
+                    <p>서울 강남구 시네마로 100, 4층</p>
+                    <p>대표번호 1544-0000 | help@cineflow.co.kr</p>
+                </div>
+                <div class="flex-child-ft item2">
+                    <h4>서비스 안내</h4>
+                    <ul>
+                        <li><a th:href="@{/movies}">영화</a></li>
+                        <li><a th:href="@{/booking}">빠른예매</a></li>
+                        <li><a th:href="@{/booking/history}">예매내역 조회</a></li>
+                        <li><a th:href="@{/support}">고객센터</a></li>
+                    </ul>
+                </div>
+                <div class="flex-child-ft item3">
+                    <h4>이용 안내</h4>
+                    <ul>
+                        <li><a th:href="@{/support#faq}">자주 묻는 질문</a></li>
+                        <li><a th:href="@{/support#cancel-policy}">취소·환불 안내</a></li>
+                        <li><a th:href="@{/support#inquiry}">1:1 문의</a></li>
+                        <li><a th:href="@{/support#group}">단체 관람 문의</a></li>
+                    </ul>
+                </div>
+                <div class="flex-child-ft item4">
+                    <h4>CineFlow 안내</h4>
+                    <ul>
+                        <li><a th:href="@{/}">서비스 소개</a></li>
+                        <li><a th:href="@{/booking}">상영시간표</a></li>
+                        <li><a th:href="@{/movies}">현재 상영작</a></li>
+                        <li><a th:href="@{/support}">운영 정책</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ft-copyright">
+                <div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div>
+                <div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div>
+            </div>
+        </div>
+    </footer>
+</th:block>
+</body>
+</html>
