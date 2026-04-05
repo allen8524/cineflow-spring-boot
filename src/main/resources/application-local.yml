@@ -33,4 +33,4 @@ tmdb:
   # Public movie pages use TMDB live metadata with a short in-memory TTL cache.
   # When TMDB_BEARER_TOKEN is unset, the app still runs and public pages render with local fallback metadata.
   # Successful live lookups are cached briefly, while fallback results are kept much shorter and retried soon.
-  bearer-token: ${TMDB_BEARER_TOKEN:}
+  bearer-token: ${TMDB_BEARER_TOKEN:eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhYmY3M2RiMzg4NTk2NzQ1MjQ3NmY0MmMyNGEwNmI3OSIsIm5iZiI6MTc3NTM2NzY4Mi4xMDksInN1YiI6IjY5ZDFmNjAyYmM2YTk3NGRjZTRmZDg4NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.cpc75_MX8v7XdbmDxzjd7gsfayeNFXFTV9g3o8Y0eFA}
