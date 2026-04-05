@@ -7,6 +7,7 @@ import com.cineflow.dto.TmdbGenreDto;
 import com.cineflow.dto.TmdbMovieDetailDto;
 import com.cineflow.dto.TmdbMovieSearchResponseDto;
 import com.cineflow.dto.TmdbMovieSummaryDto;
+import com.cineflow.repository.MovieRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +20,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,26 +36,28 @@ class PublicMovieMetadataServiceTest {
     @Mock
     private TmdbClient tmdbClient;
 
+    @Mock
+    private MovieRepository movieRepository;
+
     private MutableClock clock;
     private PublicMovieMetadataService publicMovieMetadataService;
 
     @BeforeEach
     void setUp() {
         clock = new MutableClock(Instant.parse("2026-04-05T00:00:00Z"), ZoneId.of("UTC"));
-        publicMovieMetadataService = new PublicMovieMetadataService(tmdbClient, clock);
+        publicMovieMetadataService = new PublicMovieMetadataService(tmdbClient, movieRepository).useClock(clock);
     }
 
     @Test
-    void resolveMetadataUsesTmdbIdFirstWhenAvailable() {
+    void resolveMetadataUsesTmdbIdFirstAndIgnoresLocalSeedMetadata() {
         Movie movie = Movie.builder()
                 .id(1L)
                 .tmdbId(550L)
-                .title("Fight Club")
-                .genre("Drama")
-                .ageRating("19")
-                .runningTime(139)
-                .posterUrl("/images/uploads/local-poster.jpg")
-                .releaseDate(LocalDate.of(2026, 4, 10))
+                .title("시간의 궤도")
+                .description("로컬 시드 설명")
+                .genre("SF")
+                .ageRating("12")
+                .runningTime(132)
                 .status(MovieStatus.NOW_SHOWING)
                 .bookingOpen(true)
                 .active(true)
@@ -89,6 +94,7 @@ class PublicMovieMetadataServiceTest {
 
         PublicMovieMetadataDto result = publicMovieMetadataService.resolveMetadata(movie);
 
+        assertThat(result.getLocalMovieId()).isEqualTo(1L);
         assertThat(result.getTmdbId()).isEqualTo(550L);
         assertThat(result.getTitle()).isEqualTo("Fight Club");
         assertThat(result.getOverview()).isEqualTo("TMDB live overview");
@@ -97,27 +103,21 @@ class PublicMovieMetadataServiceTest {
         assertThat(result.getPosterUrl()).isEqualTo("https://image.tmdb.org/t/p/w500/fight-club-poster.jpg");
         assertThat(result.getBackdropUrl()).isEqualTo("https://image.tmdb.org/t/p/w1280/fight-club-backdrop.jpg");
         assertThat(result.isLiveMetadata()).isTrue();
-        verify(tmdbClient, never()).searchMovies("Fight Club");
+        assertThat(result.getTitle()).isNotEqualTo("시간의 궤도");
+        assertThat(result.getOverview()).isNotEqualTo("로컬 시드 설명");
+        verify(tmdbClient, never()).searchMovies("시간의 궤도");
     }
 
     @Test
-    void resolveMetadataSearchesByTitleAndPrefersExactTitleWithSameYear() {
+    void resolveMetadataSearchesByTitleWhenTmdbIdIsMissing() {
         Movie movie = Movie.builder()
                 .id(2L)
                 .title("Parasite")
                 .releaseDate(LocalDate.of(2019, 5, 30))
-                .genre("Drama, Thriller")
-                .ageRating("15")
-                .runningTime(132)
                 .status(MovieStatus.NOW_SHOWING)
                 .bookingOpen(true)
                 .active(true)
                 .build();
-
-        TmdbMovieSummaryDto wrongYear = new TmdbMovieSummaryDto();
-        wrongYear.setId(1L);
-        wrongYear.setTitle("Parasite");
-        wrongYear.setReleaseDate(LocalDate.of(2020, 1, 1));
 
         TmdbMovieSummaryDto exactMatch = new TmdbMovieSummaryDto();
         exactMatch.setId(2L);
@@ -125,7 +125,7 @@ class PublicMovieMetadataServiceTest {
         exactMatch.setReleaseDate(LocalDate.of(2019, 5, 30));
 
         TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
-        response.setResults(List.of(wrongYear, exactMatch));
+        response.setResults(List.of(exactMatch));
 
         TmdbMovieDetailDto detail = new TmdbMovieDetailDto();
         detail.setId(2L);
@@ -147,18 +147,70 @@ class PublicMovieMetadataServiceTest {
     }
 
     @Test
-    void resolveMetadataFallsBackToLocalValuesWhenTmdbIsUnavailable() {
+    void getPopularMoviesUsesTmdbSummaryAndLinksMatchingLocalMovie() {
+        Movie linkedMovie = Movie.builder()
+                .id(55L)
+                .tmdbId(101L)
+                .title("보이스 노이즈")
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(true)
+                .active(true)
+                .build();
+
+        TmdbMovieSummaryDto summary = new TmdbMovieSummaryDto();
+        summary.setId(101L);
+        summary.setTitle("Real Popular Movie");
+        summary.setOriginalTitle("Real Popular Movie");
+        summary.setOverview("Popular TMDB overview");
+        summary.setReleaseDate(LocalDate.of(2026, 4, 5));
+        summary.setPosterPath("/popular-poster.jpg");
+        summary.setBackdropPath("/popular-backdrop.jpg");
+
+        TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
+        response.setResults(List.of(summary));
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getPopularMovies()).thenReturn(response);
+        when(tmdbClient.buildPosterUrl("/popular-poster.jpg")).thenReturn("https://image.tmdb.org/t/p/w500/popular-poster.jpg");
+        when(tmdbClient.buildBackdropUrl("/popular-backdrop.jpg")).thenReturn("https://image.tmdb.org/t/p/w1280/popular-backdrop.jpg");
+        when(movieRepository.findAllByActiveTrueAndTmdbIdIn(anyCollection())).thenReturn(List.of(linkedMovie));
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getPopularMovies(8);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getLocalMovieId()).isEqualTo(55L);
+        assertThat(result.get(0).getTitle()).isEqualTo("Real Popular Movie");
+        assertThat(result.get(0).isBookable()).isTrue();
+    }
+
+    @Test
+    void getMovieDetailUsesTmdbRouteIdWhenNoLocalMovieExists() {
+        TmdbMovieDetailDto detail = new TmdbMovieDetailDto();
+        detail.setId(900L);
+        detail.setTitle("TMDB Direct Movie");
+        detail.setOriginalTitle("TMDB Direct Movie");
+        detail.setOverview("Direct detail overview");
+
+        when(movieRepository.findByIdAndActiveTrue(900L)).thenReturn(Optional.empty());
+        when(movieRepository.findByTmdbIdAndActiveTrue(900L)).thenReturn(Optional.empty());
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getMovieDetailWithMedia(900L)).thenReturn(detail);
+
+        PublicMovieMetadataDto result = publicMovieMetadataService.getMovieDetail(900L);
+
+        assertThat(result.getLocalMovieId()).isNull();
+        assertThat(result.getTmdbId()).isEqualTo(900L);
+        assertThat(result.getTitle()).isEqualTo("TMDB Direct Movie");
+        assertThat(result.isLiveMetadata()).isTrue();
+    }
+
+    @Test
+    void resolveMetadataFallsBackToNeutralPlaceholderWhenTmdbIsUnavailable() {
         Movie movie = Movie.builder()
                 .id(3L)
                 .tmdbId(999L)
                 .title("Local Only Movie")
-                .shortDescription("Local short description")
                 .description("Local description")
-                .genre("SF, Drama")
-                .ageRating("12")
-                .runningTime(118)
-                .posterUrl("/images/uploads/local-only.jpg")
-                .releaseDate(LocalDate.of(2026, 4, 10))
                 .status(MovieStatus.COMING_SOON)
                 .bookingOpen(false)
                 .active(true)
@@ -170,66 +222,9 @@ class PublicMovieMetadataServiceTest {
 
         assertThat(result.getLocalMovieId()).isEqualTo(3L);
         assertThat(result.getTmdbId()).isEqualTo(999L);
-        assertThat(result.getTitle()).isEqualTo("Local Only Movie");
-        assertThat(result.getOverview()).isEqualTo("Local description");
-        assertThat(result.getRuntimeMinutes()).isEqualTo(118);
-        assertThat(result.getGenres()).containsExactly("SF", "Drama");
-        assertThat(result.getPosterUrl()).isEqualTo("/images/uploads/local-only.jpg");
-        assertThat(result.getBackdropUrl()).isEqualTo("/images/uploads/local-only.jpg");
-        assertThat(result.isLiveMetadata()).isFalse();
-        verify(tmdbClient, never()).getMovieDetailWithMedia(999L);
-    }
-
-    @Test
-    void resolveMetadataFallsBackToLocalValuesWhenLiveLookupFails() {
-        Movie movie = Movie.builder()
-                .id(4L)
-                .tmdbId(321L)
-                .title("Fallback On Error")
-                .description("Local fallback description")
-                .runningTime(110)
-                .posterUrl("/images/uploads/fallback-on-error.jpg")
-                .status(MovieStatus.NOW_SHOWING)
-                .bookingOpen(true)
-                .active(true)
-                .build();
-
-        when(tmdbClient.isConfigured()).thenReturn(true);
-        when(tmdbClient.getMovieDetailWithMedia(321L))
-                .thenThrow(TmdbClientException.network(
-                        "TMDB request failed because the TMDB server could not be reached. Please try again later.",
-                        new RuntimeException("timeout")
-                ));
-
-        PublicMovieMetadataDto result = publicMovieMetadataService.resolveMetadata(movie);
-
-        assertThat(result.getTmdbId()).isEqualTo(321L);
-        assertThat(result.getOverview()).isEqualTo("Local fallback description");
-        assertThat(result.getPosterUrl()).isEqualTo("/images/uploads/fallback-on-error.jpg");
-        assertThat(result.isLiveMetadata()).isFalse();
-    }
-
-    @Test
-    void resolveMetadataFallsBackToLocalValuesWhenSearchReturnsNoResults() {
-        Movie movie = Movie.builder()
-                .id(5L)
-                .title("Unknown Movie")
-                .description("Local description")
-                .status(MovieStatus.COMING_SOON)
-                .bookingOpen(false)
-                .active(true)
-                .build();
-
-        TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
-        response.setResults(List.of());
-
-        when(tmdbClient.isConfigured()).thenReturn(true);
-        when(tmdbClient.searchMovies("Unknown Movie")).thenReturn(response);
-
-        PublicMovieMetadataDto result = publicMovieMetadataService.resolveMetadata(movie);
-
-        assertThat(result.getTitle()).isEqualTo("Unknown Movie");
-        assertThat(result.getOverview()).isEqualTo("Local description");
+        assertThat(result.getTitle()).isEqualTo("영화 정보 준비 중");
+        assertThat(result.getOverview()).isEqualTo("현재 영화 소개를 불러오는 중입니다. 잠시 후 다시 확인해 주세요.");
+        assertThat(result.getPosterUrl()).isEqualTo("/images/uploads/movie-single.jpg");
         assertThat(result.isLiveMetadata()).isFalse();
     }
 
@@ -299,7 +294,6 @@ class PublicMovieMetadataServiceTest {
                 .id(8L)
                 .tmdbId(4321L)
                 .title("Recovering Movie")
-                .description("Local fallback description")
                 .status(MovieStatus.NOW_SHOWING)
                 .bookingOpen(true)
                 .active(true)

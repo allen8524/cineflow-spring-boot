@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -49,28 +50,16 @@ class MovieControllerPageTest {
     }
 
     @Test
-    void listRendersSuccessfullyWhenLiveMetadataResolutionFails() throws Exception {
-        Movie movie = Movie.builder()
-                .id(1L)
-                .title("Fallback Movie")
+    void listRendersSuccessfullyWithTmdbPublicMovies() throws Exception {
+        PublicMovieMetadataDto publicMovie = PublicMovieMetadataDto.builder()
+                .tmdbId(100L)
+                .title("TMDB Public Movie")
                 .status(MovieStatus.NOW_SHOWING)
-                .bookingOpen(true)
-                .active(true)
+                .bookingOpen(false)
+                .active(false)
                 .build();
 
-        PublicMovieMetadataDto fallbackMetadata = PublicMovieMetadataDto.builder()
-                .localMovieId(1L)
-                .title("Fallback Movie")
-                .status(MovieStatus.NOW_SHOWING)
-                .bookingOpen(true)
-                .active(true)
-                .build();
-
-        when(movieService.getAllMovies()).thenReturn(List.of(movie));
-        when(publicMovieMetadataService.resolveMetadata(List.of(movie)))
-                .thenThrow(new RuntimeException("TMDB timeout"));
-        when(publicMovieMetadataService.resolveLocalMetadata(List.of(movie)))
-                .thenReturn(List.of(fallbackMetadata));
+        when(publicMovieMetadataService.getMovieList(24)).thenReturn(List.of(publicMovie));
 
         mockMvc.perform(get("/movies"))
                 .andExpect(status().isOk())
@@ -79,45 +68,56 @@ class MovieControllerPageTest {
     }
 
     @Test
-    void detailRendersSuccessfullyWhenLiveMetadataResolutionFails() throws Exception {
-        Movie movie = Movie.builder()
+    void detailRendersSuccessfullyForTmdbOnlyMovie() throws Exception {
+        PublicMovieMetadataDto movie = PublicMovieMetadataDto.builder()
+                .tmdbId(101L)
+                .title("TMDB Only Movie")
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(false)
+                .active(false)
+                .build();
+
+        PublicMovieMetadataDto relatedMovie = PublicMovieMetadataDto.builder()
+                .tmdbId(202L)
+                .title("Related TMDB Movie")
+                .status(MovieStatus.COMING_SOON)
+                .bookingOpen(false)
+                .active(false)
+                .build();
+
+        when(publicMovieMetadataService.getMovieDetail(101L)).thenReturn(movie);
+        when(publicMovieMetadataService.getRelatedMovies(101L, 4)).thenReturn(List.of(relatedMovie));
+
+        mockMvc.perform(get("/movies/101"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("movies/detail"))
+                .andExpect(model().attributeExists("movie"))
+                .andExpect(model().attributeExists("relatedMovies"))
+                .andExpect(model().attributeExists("schedules"));
+    }
+
+    @Test
+    void detailRendersSchedulesWhenTmdbMovieIsLinkedToLocalBookingMovie() throws Exception {
+        Movie linkedMovie = Movie.builder()
                 .id(1L)
-                .title("Main Movie")
+                .title("Linked Movie")
                 .status(MovieStatus.NOW_SHOWING)
                 .bookingOpen(true)
                 .active(true)
                 .build();
 
-        Movie relatedMovie = Movie.builder()
-                .id(2L)
-                .title("Related Movie")
-                .status(MovieStatus.COMING_SOON)
-                .bookingOpen(false)
-                .active(true)
-                .build();
-
-        PublicMovieMetadataDto movieFallback = PublicMovieMetadataDto.builder()
+        PublicMovieMetadataDto movie = PublicMovieMetadataDto.builder()
                 .localMovieId(1L)
-                .title("Main Movie")
+                .tmdbId(301L)
+                .title("TMDB Linked Movie")
                 .status(MovieStatus.NOW_SHOWING)
                 .bookingOpen(true)
                 .active(true)
                 .build();
 
-        PublicMovieMetadataDto relatedFallback = PublicMovieMetadataDto.builder()
-                .localMovieId(2L)
-                .title("Related Movie")
-                .status(MovieStatus.COMING_SOON)
-                .bookingOpen(false)
-                .active(true)
-                .build();
-
-        when(movieService.getMovie(1L)).thenReturn(movie);
-        when(movieService.getRelatedMovies(1L, 4)).thenReturn(List.of(relatedMovie));
-        when(publicMovieMetadataService.resolveMetadata(List.of(movie, relatedMovie)))
-                .thenThrow(new RuntimeException("TMDB timeout"));
-        when(publicMovieMetadataService.resolveLocalMetadata(List.of(movie, relatedMovie)))
-                .thenReturn(List.of(movieFallback, relatedFallback));
+        when(publicMovieMetadataService.getMovieDetail(1L)).thenReturn(movie);
+        when(publicMovieMetadataService.getRelatedMovies(301L, 4)).thenReturn(List.of());
+        when(movieService.findActiveMovie(1L)).thenReturn(Optional.of(linkedMovie));
         when(scheduleService.getSchedulesForMovie(1L)).thenReturn(List.of());
         when(scheduleService.getTheaterScheduleGroupsByMovie(1L)).thenReturn(List.of());
         when(theaterService.getTheatersForMovie(1L)).thenReturn(List.of());
@@ -126,7 +126,7 @@ class MovieControllerPageTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("movies/detail"))
                 .andExpect(model().attributeExists("movie"))
-                .andExpect(model().attributeExists("relatedMovies"))
+                .andExpect(model().attributeExists("theaters"))
                 .andExpect(model().attributeExists("schedules"));
     }
 }

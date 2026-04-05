@@ -46,7 +46,23 @@ public class PublicMovieMetadataDto {
     private final boolean liveMetadata;
 
     public Long getId() {
+        return localMovieId != null ? localMovieId : tmdbId;
+    }
+
+    public Long getBookingMovieId() {
         return localMovieId;
+    }
+
+    public boolean hasLocalMovieLink() {
+        return localMovieId != null;
+    }
+
+    public boolean hasBookingLink() {
+        return localMovieId != null && active;
+    }
+
+    public boolean isBookable() {
+        return hasBookingLink() && bookingOpen;
     }
 
     public String getDescription() {
@@ -146,6 +162,9 @@ public class PublicMovieMetadataDto {
     }
 
     public String getBookingOpenLabel() {
+        if (!hasBookingLink()) {
+            return "예매 정보 준비 중";
+        }
         return bookingOpen ? "\uC608\uB9E4 \uAC00\uB2A5" : "\uC608\uB9E4 \uC624\uD508 \uC608\uC815";
     }
 

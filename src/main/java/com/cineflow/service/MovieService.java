@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -101,6 +102,20 @@ public class MovieService {
     public Movie getMovie(Long id) {
         return movieRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new IllegalArgumentException("Movie not found. id=" + id));
+    }
+
+    public Optional<Movie> findActiveMovie(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return movieRepository.findByIdAndActiveTrue(id);
+    }
+
+    public Optional<Movie> findActiveMovieByTmdbId(Long tmdbId) {
+        if (tmdbId == null) {
+            return Optional.empty();
+        }
+        return movieRepository.findByTmdbIdAndActiveTrue(tmdbId);
     }
 
     public MovieViewDto getMovieView(Long id) {

@@ -16,6 +16,7 @@ import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -44,25 +45,18 @@ class MovieControllerDetailTest {
     }
 
     @Test
-    void detailUsesPublicMetadataForMainAndRelatedMovies() {
-        Movie movie = Movie.builder()
+    void detailUsesTmdbMetadataAndKeepsLocalScheduleConnectionWhenAvailable() {
+        Movie linkedMovie = Movie.builder()
                 .id(1L)
-                .title("Main Movie")
+                .title("Linked Movie")
                 .status(MovieStatus.NOW_SHOWING)
                 .bookingOpen(true)
                 .active(true)
                 .build();
 
-        Movie relatedMovie = Movie.builder()
-                .id(2L)
-                .title("Related Movie")
-                .status(MovieStatus.COMING_SOON)
-                .bookingOpen(false)
-                .active(true)
-                .build();
-
         PublicMovieMetadataDto movieMetadata = PublicMovieMetadataDto.builder()
                 .localMovieId(1L)
+                .tmdbId(700L)
                 .title("TMDB Main Movie")
                 .status(MovieStatus.NOW_SHOWING)
                 .bookingOpen(true)
@@ -70,17 +64,16 @@ class MovieControllerDetailTest {
                 .build();
 
         PublicMovieMetadataDto relatedMovieMetadata = PublicMovieMetadataDto.builder()
-                .localMovieId(2L)
+                .tmdbId(701L)
                 .title("TMDB Related Movie")
                 .status(MovieStatus.COMING_SOON)
                 .bookingOpen(false)
-                .active(true)
+                .active(false)
                 .build();
 
-        when(movieService.getMovie(1L)).thenReturn(movie);
-        when(movieService.getRelatedMovies(1L, 4)).thenReturn(List.of(relatedMovie));
-        when(publicMovieMetadataService.resolveMetadata(List.of(movie, relatedMovie)))
-                .thenReturn(List.of(movieMetadata, relatedMovieMetadata));
+        when(publicMovieMetadataService.getMovieDetail(1L)).thenReturn(movieMetadata);
+        when(publicMovieMetadataService.getRelatedMovies(700L, 4)).thenReturn(List.of(relatedMovieMetadata));
+        when(movieService.findActiveMovie(1L)).thenReturn(Optional.of(linkedMovie));
         when(scheduleService.getSchedulesForMovie(1L)).thenReturn(List.of());
         when(scheduleService.getTheaterScheduleGroupsByMovie(1L)).thenReturn(List.of());
         when(theaterService.getTheatersForMovie(1L)).thenReturn(List.of());
@@ -92,6 +85,7 @@ class MovieControllerDetailTest {
         assertThat(model.getAttribute("movie")).isSameAs(movieMetadata);
         assertThat(model.getAttribute("relatedMovies")).isEqualTo(List.of(relatedMovieMetadata));
         assertThat(model.getAttribute("schedules")).isEqualTo(List.of());
-        verify(publicMovieMetadataService).resolveMetadata(List.of(movie, relatedMovie));
+        verify(publicMovieMetadataService).getMovieDetail(1L);
+        verify(publicMovieMetadataService).getRelatedMovies(700L, 4);
     }
 }

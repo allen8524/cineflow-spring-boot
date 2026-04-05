@@ -24,7 +24,9 @@ public class TmdbClient {
     private static final String TMDB_NETWORK_ERROR = "TMDB request failed because the TMDB server could not be reached. Please try again later.";
     private static final String TMDB_SEARCH_FAILURE = "TMDB movie search request failed. Please try again later.";
     private static final String TMDB_DETAIL_FAILURE = "TMDB movie detail request failed. Please try again later.";
+    private static final String TMDB_LIST_FAILURE = "TMDB movie list request failed. Please try again later.";
     private static final String DETAIL_APPEND_TO_RESPONSE = "images,videos";
+    private static final int DEFAULT_LIST_PAGE = 1;
 
     private final RestClient tmdbRestClient;
     private final TmdbProperties tmdbProperties;
@@ -64,6 +66,18 @@ public class TmdbClient {
 
     public TmdbMovieDetailDto getMovieDetail(Long movieId) {
         return getMovieDetail(movieId, false);
+    }
+
+    public TmdbMovieSearchResponseDto getNowPlayingMovies() {
+        return getMovieCollection("/movie/now_playing");
+    }
+
+    public TmdbMovieSearchResponseDto getPopularMovies() {
+        return getMovieCollection("/movie/popular");
+    }
+
+    public TmdbMovieSearchResponseDto getUpcomingMovies() {
+        return getMovieCollection("/movie/upcoming");
     }
 
     public TmdbMovieDetailDto getMovieDetailWithMedia(Long movieId) {
@@ -114,6 +128,38 @@ public class TmdbClient {
                 .path("/search/movie")
                 .queryParam("language", tmdbProperties.resolveLanguage())
                 .queryParam("query", query)
+                .build();
+    }
+
+    private TmdbMovieSearchResponseDto getMovieCollection(String path) {
+        ensureApiConfigured();
+
+        try {
+            TmdbMovieSearchResponseDto response = tmdbRestClient.get()
+                    .uri(uriBuilder -> buildListUri(uriBuilder, path))
+                    .headers(this::applyAuthorization)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError, (request, clientResponse) -> {
+                        throw TmdbClientException.upstream(
+                                TMDB_LIST_FAILURE + " status=" + clientResponse.getStatusCode().value()
+                        );
+                    })
+                    .body(TmdbMovieSearchResponseDto.class);
+
+            return response != null ? response : new TmdbMovieSearchResponseDto();
+        } catch (TmdbClientException exception) {
+            throw exception;
+        } catch (RestClientException exception) {
+            log.warn("TMDB movie list request failed. path={}", path, exception);
+            throw TmdbClientException.network(TMDB_NETWORK_ERROR, exception);
+        }
+    }
+
+    private java.net.URI buildListUri(UriBuilder uriBuilder, String path) {
+        return uriBuilder
+                .path(path)
+                .queryParam("language", tmdbProperties.resolveLanguage())
+                .queryParam("page", DEFAULT_LIST_PAGE)
                 .build();
     }
 

@@ -3,7 +3,7 @@
 <head>
     <title>CineFlow | 전체 영화</title>
     <meta charset="UTF-8">
-    <meta name="description" content="CineFlow 전체 영화 목록">
+    <meta name="description" content="TMDB 공개 영화 메타데이터를 기준으로 보여주는 CineFlow 영화 목록">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone-no">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
@@ -28,7 +28,7 @@
                 <li>전체 영화</li>
             </ul>
             <h1>전체 영화</h1>
-            <p>TMDB 실시간 메타데이터를 우선 반영해 포스터, 개봉일, 러닝타임, 개요를 더 자연스럽게 확인할 수 있습니다.</p>
+            <p>영화 제목, 개요, 포스터, 배경 이미지는 TMDB 공개 영화 메타데이터를 기준으로 표시합니다.</p>
         </div>
     </section>
 
@@ -36,14 +36,14 @@
         <div class="container">
             <div class="movie-list-controls">
                 <div class="movie-tabs-filter">
-                    <span class="movie-filter-chip is-active">전체 영화</span>
-                    <span class="movie-filter-chip">TMDB 실시간 메타데이터 우선</span>
-                    <span class="movie-filter-chip subtle">실패 시 로컬 정보 표시</span>
+                    <span class="movie-filter-chip is-active">공개 영화 목록</span>
+                    <span class="movie-filter-chip">TMDB 메타데이터 기준</span>
+                    <span class="movie-filter-chip subtle">예매 가능한 작품만 CineFlow 연결</span>
                 </div>
                 <div class="movie-utility-controls">
                     <div class="movie-search-dummy">
                         <i class="ion-ios-film-outline"></i>
-                        <span th:text="|총 ${#lists.size(movies)}편 · 실시간 메타데이터 기반 표시|">총 0편 · 실시간 메타데이터 기반 표시</span>
+                        <span th:text="|총 ${#lists.size(movies)}편의 TMDB 영화 표시|">총 0편의 TMDB 영화 표시</span>
                     </div>
                 </div>
             </div>
@@ -52,7 +52,9 @@
                 <article class="cinema-movie-card" th:each="movie, stat : ${movies}" th:classappend="' ' + ${movie.statusCssClass}">
                     <a class="poster-wrap" th:href="@{/movies/{id}(id=${movie.id})}">
                         <span class="rank-badge" th:if="${stat.index < 3}" th:text="${stat.index + 1} + '위'">1위</span>
-                        <span class="status-badge" th:if="${stat.index >= 3}" th:classappend="${movie.comingSoon} ? ' upcoming' : ''" th:text="${movie.statusLabel}">현재 상영중</span>
+                        <span class="status-badge" th:if="${stat.index >= 3}"
+                              th:classappend="${movie.comingSoon} ? ' upcoming' : ''"
+                              th:text="${movie.statusLabel}">현재 상영중</span>
                         <img th:src="@{${movie.posterUrl}}"
                              th:alt="${movie.title + ' 포스터'}"
                              th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
@@ -60,18 +62,21 @@
                     <div class="movie-card-body">
                         <div class="movie-card-head">
                             <h3><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h3>
-                            <span th:class="${movie.ageBadgeCssClass}" th:text="${movie.ageBadgeText}">12</span>
+                            <span th:class="${movie.ageBadgeCssClass}" th:text="${movie.ageBadgeText}">?</span>
                         </div>
                         <p class="movie-card-summary" th:text="${movie.overviewSnippet}">영화 소개 문구</p>
                         <ul class="movie-meta-mini">
-                            <li th:text="${movie.metricName + ' ' + movie.bookingRateText}">예매율 31.2%</li>
-                            <li th:text="${movie.scoreMetricName + ' ' + movie.scoreText}">평점 9.1</li>
                             <li th:text="${movie.releaseDateText}">개봉 2026.04.10</li>
-                            <li th:text="${movie.runningTimeText}">132분</li>
-                            <li th:text="${movie.genreText}">SF · 드라마</li>
+                            <li th:text="${movie.runningTimeText}">상영시간 추후 안내</li>
+                            <li th:text="${movie.genreText}">장르 정보 준비 중</li>
+                            <li th:text="${movie.statusLabel}">현재 상영중</li>
+                            <li th:text="${movie.bookingOpenLabel}">예매 정보 준비 중</li>
                         </ul>
                         <div class="movie-card-actions">
-                            <a th:href="@{/booking(movieId=${movie.id})}" class="book-btn">바로예매</a>
+                            <a th:if="${movie.bookable}"
+                               th:href="@{/booking(movieId=${movie.bookingMovieId})}"
+                               class="book-btn">바로예매</a>
+                            <span th:if="${!movie.bookable}" class="book-btn">예매 준비 중</span>
                             <a th:href="@{/movies/{id}(id=${movie.id})}" class="detail-link">상세보기</a>
                         </div>
                     </div>
@@ -79,7 +84,7 @@
             </div>
 
             <div class="empty-state-card movie-list-empty" th:if="${#lists.isEmpty(movies)}">
-                현재 노출 중인 영화가 없습니다. 관리자에서 영화를 등록한 뒤 다시 확인해 주세요.
+                TMDB 공개 영화 목록을 아직 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
             </div>
         </div>
     </section>

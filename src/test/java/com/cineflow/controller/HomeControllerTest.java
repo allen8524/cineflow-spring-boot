@@ -1,9 +1,7 @@
 package com.cineflow.controller;
 
-import com.cineflow.domain.Movie;
 import com.cineflow.domain.MovieStatus;
 import com.cineflow.dto.PublicMovieMetadataDto;
-import com.cineflow.service.MovieService;
 import com.cineflow.service.PublicMovieMetadataService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,45 +23,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class HomeControllerTest {
 
     @Mock
-    private MovieService movieService;
-
-    @Mock
     private PublicMovieMetadataService publicMovieMetadataService;
 
     private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new HomeController(movieService, publicMovieMetadataService))
+        mockMvc = MockMvcBuilders.standaloneSetup(new HomeController(publicMovieMetadataService))
                 .build();
     }
 
     @Test
-    void homeRendersSuccessfullyWhenLiveMetadataResolutionFails() throws Exception {
-        Movie movie = Movie.builder()
-                .id(1L)
-                .title("Fallback Movie")
+    void homeRendersSuccessfullyWithTmdbPublicLists() throws Exception {
+        PublicMovieMetadataDto heroMovie = PublicMovieMetadataDto.builder()
+                .tmdbId(550L)
+                .title("TMDB Hero Movie")
                 .status(MovieStatus.NOW_SHOWING)
-                .bookingOpen(true)
-                .active(true)
+                .bookingOpen(false)
+                .active(false)
+                .liveMetadata(true)
                 .build();
 
-        PublicMovieMetadataDto fallbackMetadata = PublicMovieMetadataDto.builder()
-                .localMovieId(1L)
-                .title("Fallback Movie")
-                .status(MovieStatus.NOW_SHOWING)
-                .bookingOpen(true)
-                .active(true)
-                .build();
-
-        when(movieService.getFeaturedMovies(3)).thenReturn(List.of(movie));
-        when(movieService.getBoxOfficeMovies(8)).thenReturn(List.of(movie));
-        when(movieService.getNowShowingMovies(8)).thenReturn(List.of(movie));
-        when(movieService.getComingSoonMovies(8)).thenReturn(List.of());
-        when(publicMovieMetadataService.resolveMetadata(List.of(movie)))
-                .thenThrow(new RuntimeException("TMDB timeout"));
-        when(publicMovieMetadataService.resolveLocalMetadata(List.of(movie)))
-                .thenReturn(List.of(fallbackMetadata));
+        when(publicMovieMetadataService.getHeroMovies(3)).thenReturn(List.of(heroMovie));
+        when(publicMovieMetadataService.getPopularMovies(8)).thenReturn(List.of(heroMovie));
+        when(publicMovieMetadataService.getNowShowingMovies(8)).thenReturn(List.of(heroMovie));
+        when(publicMovieMetadataService.getComingSoonMovies(8)).thenReturn(List.of());
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
