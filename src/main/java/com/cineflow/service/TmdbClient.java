@@ -24,6 +24,7 @@ public class TmdbClient {
     private static final String TMDB_NETWORK_ERROR = "TMDB request failed because the TMDB server could not be reached. Please try again later.";
     private static final String TMDB_SEARCH_FAILURE = "TMDB movie search request failed. Please try again later.";
     private static final String TMDB_DETAIL_FAILURE = "TMDB movie detail request failed. Please try again later.";
+    private static final String DETAIL_APPEND_TO_RESPONSE = "images,videos";
 
     private final RestClient tmdbRestClient;
     private final TmdbProperties tmdbProperties;
@@ -62,6 +63,14 @@ public class TmdbClient {
     }
 
     public TmdbMovieDetailDto getMovieDetail(Long movieId) {
+        return getMovieDetail(movieId, false);
+    }
+
+    public TmdbMovieDetailDto getMovieDetailWithMedia(Long movieId) {
+        return getMovieDetail(movieId, true);
+    }
+
+    private TmdbMovieDetailDto getMovieDetail(Long movieId, boolean includeRelatedMedia) {
         if (movieId == null || movieId <= 0) {
             throw new IllegalArgumentException("TMDB movie id is invalid. id=" + movieId);
         }
@@ -70,7 +79,7 @@ public class TmdbClient {
 
         try {
             TmdbMovieDetailDto response = tmdbRestClient.get()
-                    .uri(uriBuilder -> buildDetailUri(uriBuilder, movieId))
+                    .uri(uriBuilder -> buildDetailUri(uriBuilder, movieId, includeRelatedMedia))
                     .headers(this::applyAuthorization)
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, (request, clientResponse) -> {
@@ -108,11 +117,16 @@ public class TmdbClient {
                 .build();
     }
 
-    private java.net.URI buildDetailUri(UriBuilder uriBuilder, Long movieId) {
-        return uriBuilder
+    private java.net.URI buildDetailUri(UriBuilder uriBuilder, Long movieId, boolean includeRelatedMedia) {
+        UriBuilder configuredUriBuilder = uriBuilder
                 .path("/movie/{movieId}")
-                .queryParam("language", tmdbProperties.resolveLanguage())
-                .build(movieId);
+                .queryParam("language", tmdbProperties.resolveLanguage());
+
+        if (includeRelatedMedia) {
+            configuredUriBuilder = configuredUriBuilder.queryParam("append_to_response", DETAIL_APPEND_TO_RESPONSE);
+        }
+
+        return configuredUriBuilder.build(movieId);
     }
 
     private void applyAuthorization(HttpHeaders headers) {

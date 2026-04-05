@@ -54,6 +54,38 @@ public class MovieService {
                 .toList();
     }
 
+    public List<Movie> getFeaturedMovies(int limit) {
+        return getAllMovies().stream()
+                .sorted(FEATURED_MOVIE_COMPARATOR)
+                .limit(limit)
+                .toList();
+    }
+
+    public List<Movie> getBoxOfficeMovies(int limit) {
+        return getAllMovies().stream()
+                .sorted(BOX_OFFICE_COMPARATOR)
+                .limit(limit)
+                .toList();
+    }
+
+    public List<Movie> getNowShowingMovies(int limit) {
+        return getAllMovies().stream()
+                .filter(movie -> movie.getStatus() == MovieStatus.NOW_SHOWING)
+                .sorted(FEATURED_MOVIE_COMPARATOR)
+                .limit(limit)
+                .toList();
+    }
+
+    public List<Movie> getComingSoonMovies(int limit) {
+        return getAllMovies().stream()
+                .filter(movie -> movie.getStatus() == MovieStatus.COMING_SOON)
+                .sorted(Comparator
+                        .comparing(Movie::getReleaseDate, Comparator.nullsLast(Comparator.naturalOrder()))
+                        .thenComparing(Movie::getTitle, String.CASE_INSENSITIVE_ORDER))
+                .limit(limit)
+                .toList();
+    }
+
     public List<Movie> getBookableMovies() {
         return movieRepository.findAllByActiveTrueAndBookingOpenTrueOrderByReleaseDateDescTitleAsc();
     }
@@ -95,37 +127,25 @@ public class MovieService {
     }
 
     public List<MovieViewDto> getFeaturedMovieViews(int limit) {
-        return getAllMovies().stream()
-                .sorted(FEATURED_MOVIE_COMPARATOR)
-                .limit(limit)
+        return getFeaturedMovies(limit).stream()
                 .map(this::toView)
                 .toList();
     }
 
     public List<MovieViewDto> getBoxOfficeMovieViews(int limit) {
-        return getAllMovies().stream()
-                .sorted(BOX_OFFICE_COMPARATOR)
-                .limit(limit)
+        return getBoxOfficeMovies(limit).stream()
                 .map(this::toView)
                 .toList();
     }
 
     public List<MovieViewDto> getNowShowingMovieViews(int limit) {
-        return getAllMovies().stream()
-                .filter(movie -> movie.getStatus() == MovieStatus.NOW_SHOWING)
-                .sorted(FEATURED_MOVIE_COMPARATOR)
-                .limit(limit)
+        return getNowShowingMovies(limit).stream()
                 .map(this::toView)
                 .toList();
     }
 
     public List<MovieViewDto> getComingSoonMovieViews(int limit) {
-        return getAllMovies().stream()
-                .filter(movie -> movie.getStatus() == MovieStatus.COMING_SOON)
-                .sorted(Comparator
-                        .comparing(Movie::getReleaseDate, Comparator.nullsLast(Comparator.naturalOrder()))
-                        .thenComparing(Movie::getTitle, String.CASE_INSENSITIVE_ORDER))
-                .limit(limit)
+        return getComingSoonMovies(limit).stream()
                 .map(this::toView)
                 .toList();
     }

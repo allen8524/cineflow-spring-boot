@@ -3,6 +3,7 @@ package com.cineflow.controller;
 import com.cineflow.domain.Movie;
 import com.cineflow.dto.ScheduleViewDto;
 import com.cineflow.service.MovieService;
+import com.cineflow.service.PublicMovieMetadataService;
 import com.cineflow.service.ScheduleService;
 import com.cineflow.service.TheaterService;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,13 @@ import java.util.List;
 public class MovieController {
 
     private final MovieService movieService;
+    private final PublicMovieMetadataService publicMovieMetadataService;
     private final TheaterService theaterService;
     private final ScheduleService scheduleService;
 
     @GetMapping({"/movies", "/movielist.html"})
     public String list(Model model) {
-        model.addAttribute("movies", movieService.getAllMovieViews());
+        model.addAttribute("movies", publicMovieMetadataService.resolveMetadata(movieService.getAllMovies()));
         return "movies/list";
     }
 
