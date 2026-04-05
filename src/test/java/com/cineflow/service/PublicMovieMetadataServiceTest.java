@@ -200,9 +200,33 @@ class PublicMovieMetadataServiceTest {
     }
 
     @Test
+    void resolveMetadataFallsBackToLocalValuesWhenSearchReturnsNoResults() {
+        Movie movie = Movie.builder()
+                .id(5L)
+                .title("Unknown Movie")
+                .description("Local description")
+                .status(MovieStatus.COMING_SOON)
+                .bookingOpen(false)
+                .active(true)
+                .build();
+
+        TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
+        response.setResults(List.of());
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.searchMovies("Unknown Movie")).thenReturn(response);
+
+        PublicMovieMetadataDto result = publicMovieMetadataService.resolveMetadata(movie);
+
+        assertThat(result.getTitle()).isEqualTo("Unknown Movie");
+        assertThat(result.getOverview()).isEqualTo("Local description");
+        assertThat(result.isLiveMetadata()).isFalse();
+    }
+
+    @Test
     void resolveMetadataListAvoidsDuplicateLiveLookupWithinSingleRender() {
         Movie first = Movie.builder()
-                .id(5L)
+                .id(6L)
                 .tmdbId(777L)
                 .title("Duplicated Movie")
                 .status(MovieStatus.NOW_SHOWING)
@@ -211,7 +235,7 @@ class PublicMovieMetadataServiceTest {
                 .build();
 
         Movie second = Movie.builder()
-                .id(6L)
+                .id(7L)
                 .tmdbId(777L)
                 .title("Duplicated Movie")
                 .status(MovieStatus.NOW_SHOWING)
@@ -230,8 +254,8 @@ class PublicMovieMetadataServiceTest {
         List<PublicMovieMetadataDto> results = publicMovieMetadataService.resolveMetadata(List.of(first, second));
 
         assertThat(results).hasSize(2);
-        assertThat(results.get(0).getLocalMovieId()).isEqualTo(5L);
-        assertThat(results.get(1).getLocalMovieId()).isEqualTo(6L);
+        assertThat(results.get(0).getLocalMovieId()).isEqualTo(6L);
+        assertThat(results.get(1).getLocalMovieId()).isEqualTo(7L);
         assertThat(results.get(0).getTmdbId()).isEqualTo(777L);
         assertThat(results.get(1).getTmdbId()).isEqualTo(777L);
         assertThat(results.get(0).isLiveMetadata()).isTrue();

@@ -30,5 +30,6 @@ tmdb:
   base-url: https://api.themoviedb.org/3
   image-base-url: https://image.tmdb.org/t/p
   language: ko-KR
-  # Optional for local startup. When unset, the app still runs and only the admin TMDB search/import helper is unavailable.
+  # Optional for local startup. When unset, the app still runs, public movie pages render with local fallback metadata,
+  # and only TMDB live lookup features fall back or stay unavailable.
   bearer-token: ${TMDB_BEARER_TOKEN:}

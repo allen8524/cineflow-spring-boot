@@ -8,6 +8,7 @@ import com.cineflow.service.PublicMovieMetadataService;
 import com.cineflow.service.ScheduleService;
 import com.cineflow.service.TheaterService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping
@@ -34,7 +36,8 @@ public class MovieController {
 
     @GetMapping({"/movies", "/movielist.html"})
     public String list(Model model) {
-        model.addAttribute("movies", publicMovieMetadataService.resolveMetadata(movieService.getAllMovies()));
+        List<Movie> sourceMovies = movieService.getAllMovies();
+        model.addAttribute("movies", resolveMetadataSafely(sourceMovies, "movie list"));
         return "movies/list";
     }
 
@@ -65,7 +68,7 @@ public class MovieController {
     private Map<Long, PublicMovieMetadataDto> resolveMetadataByMovieId(Movie movie, List<Movie> relatedMovies) {
         List<Movie> sourceMovies = Stream.concat(Stream.of(movie), relatedMovies.stream()).toList();
 
-        return publicMovieMetadataService.resolveMetadata(sourceMovies).stream()
+        return resolveMetadataSafely(sourceMovies, "movie detail").stream()
                 .filter(metadata -> metadata.getLocalMovieId() != null)
                 .collect(Collectors.toMap(
                         PublicMovieMetadataDto::getLocalMovieId,
@@ -79,7 +82,7 @@ public class MovieController {
         if (movie.getId() != null && metadataByMovieId.containsKey(movie.getId())) {
             return metadataByMovieId.get(movie.getId());
         }
-        return publicMovieMetadataService.resolveMetadata(movie);
+        return publicMovieMetadataService.resolveLocalMetadata(movie);
     }
 
     private List<PublicMovieMetadataDto> mapRelatedMovies(
@@ -91,8 +94,18 @@ public class MovieController {
                     if (relatedMovie.getId() != null && metadataByMovieId.containsKey(relatedMovie.getId())) {
                         return metadataByMovieId.get(relatedMovie.getId());
                     }
-                    return publicMovieMetadataService.resolveMetadata(relatedMovie);
+                    return publicMovieMetadataService.resolveLocalMetadata(relatedMovie);
                 })
                 .toList();
+    }
+
+    private List<PublicMovieMetadataDto> resolveMetadataSafely(List<Movie> sourceMovies, String pageName) {
+        try {
+            return publicMovieMetadataService.resolveMetadata(sourceMovies);
+        } catch (RuntimeException exception) {
+            log.warn("Failed to resolve live movie metadata for {}. Falling back to local data. movieCount={}, reason={}",
+                    pageName, sourceMovies.size(), exception.getMessage());
+            return publicMovieMetadataService.resolveLocalMetadata(sourceMovies);
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.cineflow.dto.PublicMovieMetadataDto;
 import com.cineflow.service.MovieService;
 import com.cineflow.service.PublicMovieMetadataService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
@@ -66,7 +68,10 @@ public class HomeController {
             }
         }
 
-        return publicMovieMetadataService.resolveMetadata(List.copyOf(uniqueMovies.values())).stream()
+        List<Movie> sourceMovies = List.copyOf(uniqueMovies.values());
+        List<PublicMovieMetadataDto> resolvedMetadata = resolveMetadataSafely(sourceMovies);
+
+        return resolvedMetadata.stream()
                 .filter(metadata -> metadata.getLocalMovieId() != null)
                 .collect(Collectors.toMap(
                         PublicMovieMetadataDto::getLocalMovieId,
@@ -90,8 +95,18 @@ public class HomeController {
                     if (movie.getId() != null && metadataByMovieId.containsKey(movie.getId())) {
                         return metadataByMovieId.get(movie.getId());
                     }
-                    return publicMovieMetadataService.resolveMetadata(movie);
+                    return publicMovieMetadataService.resolveLocalMetadata(movie);
                 })
                 .toList();
+    }
+
+    private List<PublicMovieMetadataDto> resolveMetadataSafely(List<Movie> sourceMovies) {
+        try {
+            return publicMovieMetadataService.resolveMetadata(sourceMovies);
+        } catch (RuntimeException exception) {
+            log.warn("Failed to resolve live movie metadata for the home page. Falling back to local data. movieCount={}, reason={}",
+                    sourceMovies.size(), exception.getMessage());
+            return publicMovieMetadataService.resolveLocalMetadata(sourceMovies);
+        }
     }
 }

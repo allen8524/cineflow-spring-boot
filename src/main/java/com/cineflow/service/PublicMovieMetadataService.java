@@ -47,11 +47,15 @@ public class PublicMovieMetadataService {
         try {
             return resolveLiveMetadata(movie).orElse(localFallback);
         } catch (TmdbClientException exception) {
-            log.warn("TMDB live metadata lookup failed. Falling back to local data. movieId={}, tmdbId={}",
-                    movie.getId(), movie.getTmdbId(), exception);
+            log.warn("TMDB live metadata lookup failed. Falling back to local data. movieId={}, tmdbId={}, reason={}",
+                    movie.getId(), movie.getTmdbId(), exception.getMessage());
             return localFallback;
         } catch (IllegalArgumentException exception) {
-            log.warn("TMDB metadata matching failed. Falling back to local data. movieId={}, tmdbId={}",
+            log.warn("TMDB metadata matching failed. Falling back to local data. movieId={}, tmdbId={}, reason={}",
+                    movie.getId(), movie.getTmdbId(), exception.getMessage());
+            return localFallback;
+        } catch (RuntimeException exception) {
+            log.warn("Unexpected TMDB metadata error. Falling back to local data. movieId={}, tmdbId={}",
                     movie.getId(), movie.getTmdbId(), exception);
             return localFallback;
         }
@@ -66,6 +70,24 @@ public class PublicMovieMetadataService {
         return movies.stream()
                 .filter(Objects::nonNull)
                 .map(movie -> resolveMetadata(movie, perRequestCache))
+                .toList();
+    }
+
+    public PublicMovieMetadataDto resolveLocalMetadata(Movie movie) {
+        if (movie == null) {
+            throw new IllegalArgumentException("Movie is required.");
+        }
+        return toLocalFallback(movie);
+    }
+
+    public List<PublicMovieMetadataDto> resolveLocalMetadata(List<Movie> movies) {
+        if (movies == null || movies.isEmpty()) {
+            return List.of();
+        }
+
+        return movies.stream()
+                .filter(Objects::nonNull)
+                .map(this::toLocalFallback)
                 .toList();
     }
 
@@ -87,7 +109,10 @@ public class PublicMovieMetadataService {
             return Optional.empty();
         }
 
-        List<TmdbMovieSummaryDto> results = Objects.requireNonNullElse(tmdbClient.searchMovies(query).getResults(), List.of());
+        var searchResponse = tmdbClient.searchMovies(query);
+        List<TmdbMovieSummaryDto> results = searchResponse != null
+                ? Objects.requireNonNullElse(searchResponse.getResults(), List.of())
+                : List.of();
         if (results.isEmpty()) {
             return Optional.empty();
         }
@@ -194,14 +219,22 @@ public class PublicMovieMetadataService {
 
     private PublicMovieMetadataDto resolveMetadata(Movie movie, Map<String, PublicMovieMetadataDto> perRequestCache) {
         String lookupKey = buildLookupKey(movie);
-        PublicMovieMetadataDto cachedMetadata = perRequestCache.get(lookupKey);
-        if (cachedMetadata != null) {
-            return adaptCachedMetadata(movie, cachedMetadata);
-        }
+        try {
+            PublicMovieMetadataDto cachedMetadata = perRequestCache.get(lookupKey);
+            if (cachedMetadata != null) {
+                return adaptCachedMetadata(movie, cachedMetadata);
+            }
 
-        PublicMovieMetadataDto resolvedMetadata = resolveMetadata(movie);
-        perRequestCache.put(lookupKey, resolvedMetadata);
-        return resolvedMetadata;
+            PublicMovieMetadataDto resolvedMetadata = resolveMetadata(movie);
+            perRequestCache.put(lookupKey, resolvedMetadata);
+            return resolvedMetadata;
+        } catch (RuntimeException exception) {
+            PublicMovieMetadataDto localFallback = toLocalFallback(movie);
+            perRequestCache.putIfAbsent(lookupKey, localFallback);
+            log.warn("Failed to resolve public metadata within the current render pass. Falling back to local data. movieId={}, tmdbId={}",
+                    movie.getId(), movie.getTmdbId(), exception);
+            return localFallback;
+        }
     }
 
     private String buildLookupKey(Movie movie) {
