@@ -18,11 +18,12 @@ import java.util.stream.Collectors;
 public class PublicMovieMetadataDto {
 
     private static final DateTimeFormatter RELEASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-    private static final String DEFAULT_GENRE_TEXT = "\uC7A5\uB974 \uC815\uBCF4 \uC5C5\uB370\uC774\uD2B8 \uC608\uC815";
-    private static final String DEFAULT_RELEASE_DATE_TEXT = "\uAC1C\uBD09\uC77C \uC5C5\uB370\uC774\uD2B8 \uC608\uC815";
-    private static final String DEFAULT_RUNNING_TIME_TEXT = "\uC0C1\uC601\uC2DC\uAC04 \uC5C5\uB370\uC774\uD2B8 \uC608\uC815";
-    private static final String DEFAULT_AGE_RATING_TEXT = "\uAD00\uB78C\uB4F1\uAE09 \uC815\uBCF4 \uC5C5\uB370\uC774\uD2B8 \uC608\uC815";
+    private static final String DEFAULT_GENRE_TEXT = "\uC7A5\uB974 \uC815\uBCF4 \uC900\uBE44 \uC911";
+    private static final String DEFAULT_RELEASE_DATE_TEXT = "\uAC1C\uBD09\uC77C \uCD94\uD6C4 \uC548\uB0B4";
+    private static final String DEFAULT_RUNNING_TIME_TEXT = "\uC0C1\uC601\uC2DC\uAC04 \uCD94\uD6C4 \uC548\uB0B4";
+    private static final String DEFAULT_AGE_RATING_TEXT = "\uAD00\uB78C\uB4F1\uAE09 \uCD94\uD6C4 \uC548\uB0B4";
     private static final String DEFAULT_METRIC_TEXT = "\uC9D1\uACC4\uC911";
+    private static final int HERO_COPY_LIMIT = 220;
     private static final int OVERVIEW_SNIPPET_LIMIT = 150;
 
     private final Long localMovieId;
@@ -52,8 +53,26 @@ public class PublicMovieMetadataDto {
         return overview;
     }
 
+    public String getHeroCopy() {
+        return abbreviate(firstNonBlank(overview, shortDescription), HERO_COPY_LIMIT);
+    }
+
     public String getOverviewSnippet() {
         return abbreviate(firstNonBlank(shortDescription, overview), OVERVIEW_SNIPPET_LIMIT);
+    }
+
+    public boolean isOriginalTitleVisible() {
+        String normalizedOriginalTitle = trimToNull(originalTitle);
+        String normalizedTitle = trimToNull(title);
+
+        if (normalizedOriginalTitle == null) {
+            return false;
+        }
+        if (normalizedTitle == null) {
+            return true;
+        }
+
+        return !normalizedOriginalTitle.equalsIgnoreCase(normalizedTitle);
     }
 
     public String getGenreText() {

@@ -30,11 +30,14 @@
             </ul>
             <div class="detail-hero-grid">
                 <div class="detail-poster-col">
-                    <img th:src="@{${movie.posterUrl}}" th:alt="${movie.title + ' 포스터'}">
+                    <img th:src="@{${movie.posterUrl}}"
+                         th:alt="${movie.title + ' 포스터'}"
+                         th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                 </div>
                 <div class="detail-info-col">
                     <p class="hero-kicker" th:text="${movie.statusLabel}">현재 상영중</p>
                     <h1 th:text="${movie.title}">영화 제목</h1>
+                    <p class="detail-original-title" th:if="${movie.originalTitleVisible}" th:text="${movie.originalTitle}">Original Title</p>
                     <p class="detail-tagline" th:text="${movie.shortDescription}">영화 소개</p>
                     <ul class="detail-meta-list">
                         <li>
@@ -200,7 +203,9 @@
                 <div class="recommend-grid" th:if="${!#lists.isEmpty(relatedMovies)}">
                     <article class="recommend-card" th:each="relatedMovie : ${relatedMovies}">
                         <a th:href="@{/movies/{id}(id=${relatedMovie.id})}">
-                            <img th:src="@{${relatedMovie.posterUrl}}" th:alt="${relatedMovie.title + ' 포스터'}">
+                            <img th:src="@{${relatedMovie.posterUrl}}"
+                                 th:alt="${relatedMovie.title + ' 포스터'}"
+                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                         </a>
                         <h4>
                             <a th:href="@{/movies/{id}(id=${relatedMovie.id})}" th:text="${relatedMovie.title}">추천 영화</a>

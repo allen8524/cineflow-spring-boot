@@ -30,7 +30,7 @@
                         <div class="hero-copy-area">
                             <p class="hero-kicker" th:text="${movie.statusLabel}">현재 상영중</p>
                             <h1 th:text="${movie.title}">영화 제목</h1>
-                            <p class="hero-copy" th:text="${movie.description}">영화 개요</p>
+                            <p class="hero-copy" th:text="${movie.heroCopy}">영화 개요</p>
                             <ul class="hero-meta">
                                 <li th:text="${movie.releaseDateText}">개봉 2026.04.10</li>
                                 <li th:text="${movie.genreText}">SF · 드라마</li>
@@ -43,7 +43,9 @@
                             </div>
                         </div>
                         <div class="hero-poster">
-                            <img th:src="@{${movie.posterUrl}}" th:alt="${movie.title + ' 포스터'}">
+                            <img th:src="@{${movie.posterUrl}}"
+                                 th:alt="${movie.title + ' 포스터'}"
+                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                         </div>
                     </div>
                 </div>
@@ -71,7 +73,7 @@
         <div class="quick-booking-inner">
             <div class="quick-booking-head">
                 <h3>빠른 예매</h3>
-                <p>저장된 로컬 DB 메타데이터를 기준으로 포스터, 개봉일, 러닝타임 정보를 먼저 확인하고 바로 예매 페이지로 이동할 수 있습니다.</p>
+                <p>TMDB 실시간 메타데이터를 우선 반영하고, 실패 시에는 로컬 상영 정보로 자연스럽게 이어집니다.</p>
             </div>
 
             <div class="quick-booking-recommendation" th:if="${featuredMovie != null}">
@@ -127,7 +129,9 @@
                                     <div class="movie-item">
                                         <div class="mv-img">
                                             <span class="movie-badge rank" th:text="${stat.index + 1} + '위'">1위</span>
-                                            <img th:src="@{${movie.posterUrl}}" th:alt="${movie.title}">
+                                            <img th:src="@{${movie.posterUrl}}"
+                                                 th:alt="${movie.title}"
+                                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                                         </div>
                                         <div class="title-in">
                                             <h6><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h6>
@@ -151,7 +155,9 @@
                                     <div class="movie-item">
                                         <div class="mv-img">
                                             <span class="movie-badge state" th:text="${movie.statusLabel}">현재 상영중</span>
-                                            <img th:src="@{${movie.posterUrl}}" th:alt="${movie.title}">
+                                            <img th:src="@{${movie.posterUrl}}"
+                                                 th:alt="${movie.title}"
+                                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                                         </div>
                                         <div class="title-in">
                                             <h6><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h6>
@@ -175,7 +181,9 @@
                                     <div class="movie-item">
                                         <div class="mv-img">
                                             <span class="movie-badge state" th:text="${movie.statusLabel}">개봉 예정</span>
-                                            <img th:src="@{${movie.posterUrl}}" th:alt="${movie.title}">
+                                            <img th:src="@{${movie.posterUrl}}"
+                                                 th:alt="${movie.title}"
+                                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                                         </div>
                                         <div class="title-in">
                                             <h6><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h6>
@@ -263,7 +271,7 @@
         </div>
         <div class="special-grid">
             <article class="special-card">
-                <div class="special-thumb" style="background-image:url('/images/uploads/slider-bg.jpg');"></div>
+                <div class="special-thumb special-thumb--sound"></div>
                 <div class="special-body">
                     <h4>시네마 사운드</h4>
                     <p>입체 음향과 강화된 저역대로 장면의 긴장감을 더 깊게 전달하는 프리미엄 사운드 환경입니다.</p>
@@ -272,7 +280,7 @@
                 </div>
             </article>
             <article class="special-card">
-                <div class="special-thumb" style="background-image:url('/images/uploads/slider-bg2.jpg');"></div>
+                <div class="special-thumb special-thumb--screen"></div>
                 <div class="special-body">
                     <h4>와이드 스크린</h4>
                     <p>큰 화면과 선명한 프로젝션으로 대작 영화의 스케일을 보다 생생하게 경험할 수 있습니다.</p>
@@ -281,7 +289,7 @@
                 </div>
             </article>
             <article class="special-card">
-                <div class="special-thumb" style="background-image:url('/images/uploads/mv-it6.jpg');"></div>
+                <div class="special-thumb special-thumb--lounge"></div>
                 <div class="special-body">
                     <h4>프라이빗 라운지</h4>
                     <p>프라이빗 좌석과 전용 라운지로 더 여유로운 관람 경험을 제공합니다.</p>
@@ -290,7 +298,7 @@
                 </div>
             </article>
             <article class="special-card">
-                <div class="special-thumb" style="background-image:url('/images/uploads/mv-it5.jpg');"></div>
+                <div class="special-thumb special-thumb--recline"></div>
                 <div class="special-body">
                     <h4>리클라이너 시트</h4>
                     <p>전 좌석 리클라이너 구성을 통해 편안하게 장시간 상영을 즐길 수 있습니다.</p>

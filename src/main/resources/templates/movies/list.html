@@ -28,7 +28,7 @@
                 <li>전체 영화</li>
             </ul>
             <h1>전체 영화</h1>
-            <p>로컬 DB에 저장된 포스터, 개봉일, 러닝타임, 개요 메타데이터를 기준으로 현재 상영작과 개봉 예정작을 확인할 수 있습니다.</p>
+            <p>TMDB 실시간 메타데이터를 우선 반영해 포스터, 개봉일, 러닝타임, 개요를 더 자연스럽게 확인할 수 있습니다.</p>
         </div>
     </section>
 
@@ -36,14 +36,14 @@
         <div class="container">
             <div class="movie-list-controls">
                 <div class="movie-tabs-filter">
-                    <button class="is-active" type="button">전체 영화</button>
-                    <button type="button">포스터 우선 반영</button>
-                    <button type="button">TMDB 메타 반영</button>
+                    <span class="movie-filter-chip is-active">전체 영화</span>
+                    <span class="movie-filter-chip">TMDB 실시간 메타데이터 우선</span>
+                    <span class="movie-filter-chip subtle">실패 시 로컬 정보 표시</span>
                 </div>
                 <div class="movie-utility-controls">
                     <div class="movie-search-dummy">
                         <i class="ion-ios-film-outline"></i>
-                        <span th:text="|총 ${#lists.size(movies)}편 · 로컬 DB 기준 최신 메타데이터|">총 0편 · 로컬 DB 기준 최신 메타데이터</span>
+                        <span th:text="|총 ${#lists.size(movies)}편 · 실시간 메타데이터 기반 표시|">총 0편 · 실시간 메타데이터 기반 표시</span>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,9 @@
                     <a class="poster-wrap" th:href="@{/movies/{id}(id=${movie.id})}">
                         <span class="rank-badge" th:if="${stat.index < 3}" th:text="${stat.index + 1} + '위'">1위</span>
                         <span class="status-badge" th:if="${stat.index >= 3}" th:classappend="${movie.comingSoon} ? ' upcoming' : ''" th:text="${movie.statusLabel}">현재 상영중</span>
-                        <img th:src="@{${movie.posterUrl}}" th:alt="${movie.title + ' 포스터'}">
+                        <img th:src="@{${movie.posterUrl}}"
+                             th:alt="${movie.title + ' 포스터'}"
+                             th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                     </a>
                     <div class="movie-card-body">
                         <div class="movie-card-head">

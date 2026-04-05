@@ -27,8 +27,8 @@ public class PublicMovieMetadataService {
 
     private static final String DEFAULT_POSTER_URL = "/images/uploads/movie-single.jpg";
     private static final String DEFAULT_BACKDROP_URL = "/images/uploads/slider-bg.jpg";
-    private static final String DEFAULT_OVERVIEW = "\uC0C1\uC138 \uC124\uBA85\uC744 \uC900\uBE44 \uC911\uC785\uB2C8\uB2E4.";
-    private static final String DEFAULT_SHORT_DESCRIPTION = "\uC601\uD654 \uC18C\uAC1C\uB97C \uC900\uBE44 \uC911\uC785\uB2C8\uB2E4.";
+    private static final String DEFAULT_OVERVIEW = "\uC544\uC9C1 \uACF5\uAC1C\uB41C \uC904\uAC70\uB9AC \uC815\uBCF4\uAC00 \uC5C6\uC5B4 \uC0C1\uC601 \uC815\uBCF4 \uC911\uC2EC\uC73C\uB85C \uC548\uB0B4\uD574\uB4DC\uB9AC\uACE0 \uC788\uC2B5\uB2C8\uB2E4.";
+    private static final String DEFAULT_SHORT_DESCRIPTION = "\uC0C1\uC138 \uC18C\uAC1C\uB294 \uC900\uBE44 \uC911\uC774\uC9C0\uB9CC \uC0C1\uC601 \uC815\uBCF4\uC640 \uC608\uB9E4\uB294 \uC815\uC0C1\uC801\uC73C\uB85C \uC774\uC6A9\uD558\uC2E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4.";
     private static final int SHORT_DESCRIPTION_LIMIT = 120;
     private static final Pattern GENRE_SPLITTER = Pattern.compile("\\s*(?:,|/|\u00B7)\\s*");
 
