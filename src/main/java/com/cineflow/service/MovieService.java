@@ -150,11 +150,16 @@ public class MovieService {
                 .toList();
     }
 
-    public List<MovieViewDto> getRelatedMovieViews(Long currentMovieId, int limit) {
+    public List<Movie> getRelatedMovies(Long currentMovieId, int limit) {
         return getAllMovies().stream()
                 .filter(movie -> !movie.getId().equals(currentMovieId))
                 .sorted(FEATURED_MOVIE_COMPARATOR)
                 .limit(limit)
+                .toList();
+    }
+
+    public List<MovieViewDto> getRelatedMovieViews(Long currentMovieId, int limit) {
+        return getRelatedMovies(currentMovieId, limit).stream()
                 .map(this::toView)
                 .toList();
     }

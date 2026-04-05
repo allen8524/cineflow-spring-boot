@@ -1,6 +1,7 @@
 package com.cineflow.controller;
 
 import com.cineflow.domain.Movie;
+import com.cineflow.dto.PublicMovieMetadataDto;
 import com.cineflow.dto.ScheduleViewDto;
 import com.cineflow.service.MovieService;
 import com.cineflow.service.PublicMovieMetadataService;
@@ -14,7 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @RequiredArgsConstructor
@@ -44,13 +50,49 @@ public class MovieController {
 
     private String renderDetail(Movie movie, Model model) {
         List<ScheduleViewDto> schedules = scheduleService.getSchedulesForMovie(movie.getId());
+        List<Movie> relatedSourceMovies = movieService.getRelatedMovies(movie.getId(), 4);
+        Map<Long, PublicMovieMetadataDto> metadataByMovieId = resolveMetadataByMovieId(movie, relatedSourceMovies);
 
-        model.addAttribute("movie", movieService.toView(movie));
-        model.addAttribute("relatedMovies", movieService.getRelatedMovieViews(movie.getId(), 4));
+        model.addAttribute("movie", resolveDetailMovie(movie, metadataByMovieId));
+        model.addAttribute("relatedMovies", mapRelatedMovies(relatedSourceMovies, metadataByMovieId));
         model.addAttribute("theaters", theaterService.getTheatersForMovie(movie.getId()));
         model.addAttribute("schedules", schedules);
         model.addAttribute("theaterScheduleGroups", scheduleService.getTheaterScheduleGroupsByMovie(movie.getId()));
         model.addAttribute("nextSchedule", schedules.stream().findFirst().orElse(null));
         return "movies/detail";
+    }
+
+    private Map<Long, PublicMovieMetadataDto> resolveMetadataByMovieId(Movie movie, List<Movie> relatedMovies) {
+        List<Movie> sourceMovies = Stream.concat(Stream.of(movie), relatedMovies.stream()).toList();
+
+        return publicMovieMetadataService.resolveMetadata(sourceMovies).stream()
+                .filter(metadata -> metadata.getLocalMovieId() != null)
+                .collect(Collectors.toMap(
+                        PublicMovieMetadataDto::getLocalMovieId,
+                        Function.identity(),
+                        (first, second) -> first,
+                        LinkedHashMap::new
+                ));
+    }
+
+    private PublicMovieMetadataDto resolveDetailMovie(Movie movie, Map<Long, PublicMovieMetadataDto> metadataByMovieId) {
+        if (movie.getId() != null && metadataByMovieId.containsKey(movie.getId())) {
+            return metadataByMovieId.get(movie.getId());
+        }
+        return publicMovieMetadataService.resolveMetadata(movie);
+    }
+
+    private List<PublicMovieMetadataDto> mapRelatedMovies(
+            List<Movie> relatedSourceMovies,
+            Map<Long, PublicMovieMetadataDto> metadataByMovieId
+    ) {
+        return relatedSourceMovies.stream()
+                .map(relatedMovie -> {
+                    if (relatedMovie.getId() != null && metadataByMovieId.containsKey(relatedMovie.getId())) {
+                        return metadataByMovieId.get(relatedMovie.getId());
+                    }
+                    return publicMovieMetadataService.resolveMetadata(relatedMovie);
+                })
+                .toList();
     }
 }
