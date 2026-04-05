@@ -19,38 +19,63 @@
 
 <header th:replace="~{fragments/site-layout :: siteHeader('movies')}"></header>
 
-<main class="cinema-page">
-    <section class="cinema-page-hero">
+<main class="cinema-page storefront-catalog-page">
+    <section class="cinema-page-hero catalog-hero">
         <div class="container">
             <ul class="cinema-breadcrumb">
                 <li><a th:href="@{/}">홈</a></li>
                 <li>영화</li>
                 <li>전체 영화</li>
             </ul>
-            <h1>전체 영화</h1>
-            <p>영화 제목, 개요, 포스터, 배경 이미지는 TMDB 공개 영화 메타데이터를 기준으로 표시합니다.</p>
-        </div>
-    </section>
 
-    <section class="cinema-page-body">
-        <div class="container">
-            <div class="movie-list-controls">
-                <div class="movie-tabs-filter">
-                    <span class="movie-filter-chip is-active">공개 영화 목록</span>
-                    <span class="movie-filter-chip">TMDB 메타데이터 기준</span>
-                    <span class="movie-filter-chip subtle">예매 가능한 작품만 CineFlow 연결</span>
+            <div class="catalog-hero__content">
+                <div>
+                    <span class="section-chip">MOVIES</span>
+                    <h1>전체 영화</h1>
+                    <p>공개 영화 메타데이터를 중심으로 포스터, 개봉일, 러닝타임, 장르와 예매 진입점을 한 눈에 확인할 수 있는 카탈로그 화면입니다.</p>
                 </div>
-                <div class="movie-utility-controls">
-                    <div class="movie-search-dummy">
-                        <i class="ion-ios-film-outline"></i>
-                        <span th:text="|총 ${#lists.size(movies)}편의 TMDB 영화 표시|">총 0편의 TMDB 영화 표시</span>
-                    </div>
+                <div class="catalog-hero__actions">
+                    <a th:href="@{/booking}" class="hero-btn primary">빠른예매</a>
+                    <a th:href="@{/booking/history}" class="hero-btn secondary">예매내역</a>
                 </div>
             </div>
 
-            <div class="cinema-movie-grid" th:if="${!#lists.isEmpty(movies)}">
-                <article class="cinema-movie-card" th:each="movie, stat : ${movies}" th:classappend="' ' + ${movie.statusCssClass}">
-                    <a class="poster-wrap" th:href="@{/movies/{id}(id=${movie.id})}">
+            <div class="catalog-summary-strip">
+                <div>
+                    <span>노출 작품 수</span>
+                    <strong th:text="${#lists.size(movies)} + '편'">0편</strong>
+                </div>
+                <div>
+                    <span>데이터 원천</span>
+                    <strong>TMDB 실시간 공개 메타데이터</strong>
+                </div>
+                <div>
+                    <span>예매 연결</span>
+                    <strong>예매 가능한 작품만 CineFlow 흐름 연결</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cinema-page-body catalog-body">
+        <div class="container">
+            <div class="catalog-toolbar">
+                <div class="catalog-chip-row">
+                    <span class="movie-filter-chip is-active">현재 노출 중인 공개 영화</span>
+                    <span class="movie-filter-chip">포스터 · 개요 · 장르 자동 반영</span>
+                    <span class="movie-filter-chip subtle">예매 가능한 작품은 바로 예매 CTA 노출</span>
+                </div>
+                <div class="catalog-toolbar__meta">
+                    <i class="ion-ios-film-outline"></i>
+                    <span th:text="|총 ${#lists.size(movies)}편의 공개 영화가 표시 중입니다.|">총 0편의 공개 영화가 표시 중입니다.</span>
+                </div>
+            </div>
+
+            <div class="cinema-movie-grid catalog-grid" th:if="${!#lists.isEmpty(movies)}">
+                <article class="cinema-movie-card catalog-card"
+                         th:each="movie, stat : ${movies}"
+                         th:classappend="' ' + ${movie.statusCssClass}">
+                    <a class="poster-wrap catalog-card__poster" th:href="@{/movies/{id}(id=${movie.id})}">
                         <span class="rank-badge" th:if="${stat.index < 3}" th:text="${stat.index + 1} + '위'">1위</span>
                         <span class="status-badge" th:if="${stat.index >= 3}"
                               th:classappend="${movie.comingSoon} ? ' upcoming' : ''"
@@ -59,23 +84,28 @@
                              th:alt="${movie.title + ' 포스터'}"
                              th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                     </a>
-                    <div class="movie-card-body">
-                        <div class="movie-card-head">
-                            <h3><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h3>
-                            <span th:class="${movie.ageBadgeCssClass}" th:text="${movie.ageBadgeText}">?</span>
+
+                    <div class="movie-card-body catalog-card__body">
+                        <div class="movie-card-head catalog-card__head">
+                            <div>
+                                <h3><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h3>
+                                <p class="catalog-card__subline" th:text="${movie.statusLabel + ' · ' + movie.releaseDateText}">현재 상영중 · 개봉 2026.04.10</p>
+                            </div>
+                            <span th:class="${movie.ageBadgeCssClass}" th:text="${movie.ageBadgeText}">12</span>
                         </div>
-                        <p class="movie-card-summary" th:text="${movie.overviewSnippet}">영화 소개 문구</p>
-                        <ul class="movie-meta-mini">
-                            <li th:text="${movie.releaseDateText}">개봉 2026.04.10</li>
-                            <li th:text="${movie.runningTimeText}">상영시간 추후 안내</li>
+
+                        <ul class="movie-meta-mini catalog-card__meta">
+                            <li th:text="${movie.runningTimeText}">132분</li>
                             <li th:text="${movie.genreText}">장르 정보 준비 중</li>
-                            <li th:text="${movie.statusLabel}">현재 상영중</li>
-                            <li th:text="${movie.bookingOpenLabel}">예매 정보 준비 중</li>
+                            <li th:text="${movie.bookingOpenLabel}">예매 오픈</li>
                         </ul>
-                        <div class="movie-card-actions">
+
+                        <p class="movie-card-summary" th:text="${movie.overviewSnippet}">영화 소개 문구</p>
+
+                        <div class="movie-card-actions catalog-card__actions">
                             <a th:if="${movie.bookable}"
                                th:href="@{/booking(movieId=${movie.bookingMovieId})}"
-                               class="book-btn">바로예매</a>
+                               class="book-btn">예매하기</a>
                             <span th:if="${!movie.bookable}" class="book-btn">예매 준비 중</span>
                             <a th:href="@{/movies/{id}(id=${movie.id})}" class="detail-link">상세보기</a>
                         </div>
@@ -84,7 +114,7 @@
             </div>
 
             <div class="empty-state-card movie-list-empty" th:if="${#lists.isEmpty(movies)}">
-                TMDB 공개 영화 목록을 아직 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+                지금 표시할 공개 영화 목록을 준비 중입니다. 잠시 후 다시 시도해주세요.
             </div>
         </div>
     </section>

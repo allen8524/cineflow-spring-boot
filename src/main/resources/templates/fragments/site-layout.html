@@ -2,75 +2,142 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="siteHeader(activeMenu)">
-    <header class="ht-header full-width-hd cinema-header cinema-header--unified">
-        <div class="row">
-            <nav id="mainNav" class="navbar navbar-default navbar-custom">
-                <div class="navbar-header logo">
+    <header class="ht-header full-width-hd cinema-header storefront-header">
+        <div class="storefront-header__utility">
+            <div class="container">
+                <div class="storefront-header__utility-inner">
+                    <p class="storefront-header__utility-copy">영화 탐색부터 예매 완료까지 한 흐름으로 이어지는 CineFlow 시네마 서비스</p>
+                    <div class="storefront-header__utility-links">
+                        <a th:href="@{/movies}">현재 상영작</a>
+                        <a th:href="@{/booking}">상영시간표</a>
+                        <a th:href="@{/support}">고객센터</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <nav id="mainNav" class="navbar navbar-default navbar-custom storefront-navbar">
+                <div class="navbar-header logo storefront-brand-shell">
                     <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                        <span class="sr-only">Toggle navigation</span>
+                        <span class="sr-only">메뉴 열기</span>
                         <div id="nav-icon1"><span></span><span></span><span></span></div>
                     </div>
-                    <a th:href="@{/}" class="cinema-brand-mark">
+                    <a th:href="@{/}" class="cinema-brand-mark storefront-brand">
                         <img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58">
-                        <span class="cinema-brand-copy">프리미엄 영화 예매 서비스</span>
+                        <span class="cinema-brand-copy">BOOKING FIRST CINEMA SERVICE</span>
                     </a>
                 </div>
-                <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav flex-child-menu menu-left">
-                        <li><a class="btn btn-default lv1" th:classappend="${activeMenu == 'home'} ? ' active' : ''" th:href="@{/}">홈</a></li>
-                        <li><a class="btn btn-default lv1" th:classappend="${activeMenu == 'movies'} ? ' active' : ''" th:href="@{/movies}">영화</a></li>
-                        <li><a class="btn btn-default lv1" th:classappend="${activeMenu == 'booking'} ? ' active' : ''" th:href="@{/booking}">상영시간표</a></li>
-                        <li><a class="btn btn-default lv1" th:classappend="${activeMenu == 'support'} ? ' active' : ''" th:href="@{/support}">고객센터</a></li>
-                    </ul>
-                    <ul th:replace="~{fragments/auth-menu :: headerLinks}"></ul>
+
+                <div class="collapse navbar-collapse storefront-navbar__collapse" id="bs-example-navbar-collapse-1">
+                    <div class="storefront-navbar__content">
+                        <ul class="nav navbar-nav flex-child-menu menu-left storefront-primary-nav">
+                            <li>
+                                <a class="btn btn-default lv1"
+                                   th:classappend="${activeMenu == 'movies'} ? ' active' : ''"
+                                   th:href="@{/movies}">영화</a>
+                            </li>
+                            <li>
+                                <a class="btn btn-default lv1"
+                                   th:classappend="${activeMenu == 'booking'} ? ' active' : ''"
+                                   th:href="@{/booking}">예매</a>
+                            </li>
+                            <li>
+                                <a class="btn btn-default lv1"
+                                   th:classappend="${activeMenu == 'booking'} ? ' active' : ''"
+                                   th:href="@{/booking}">상영시간표</a>
+                            </li>
+                            <li>
+                                <a class="btn btn-default lv1"
+                                   th:href="@{/support#faq}">혜택안내</a>
+                            </li>
+                            <li>
+                                <a class="btn btn-default lv1"
+                                   th:classappend="${activeMenu == 'support'} ? ' active' : ''"
+                                   th:href="@{/support}">고객센터</a>
+                            </li>
+                        </ul>
+                        <ul th:replace="~{fragments/auth-menu :: headerLinks}"></ul>
+                    </div>
                 </div>
             </nav>
+        </div>
+
+        <div class="storefront-header__shortcut">
+            <div class="container">
+                <div class="storefront-shortcut-grid">
+                    <a th:href="@{/booking}" class="storefront-shortcut-card">
+                        <span>빠른예매</span>
+                        <strong>영화, 극장, 날짜를 바로 선택</strong>
+                    </a>
+                    <a th:href="@{/movies}" class="storefront-shortcut-card">
+                        <span>상영작 탐색</span>
+                        <strong>지금 보고 싶은 영화 찾기</strong>
+                    </a>
+                    <a th:href="@{/booking/history}" class="storefront-shortcut-card">
+                        <span>예매내역</span>
+                        <strong>예매번호와 관람 일정 확인</strong>
+                    </a>
+                    <a th:href="@{/support}" class="storefront-shortcut-card">
+                        <span>고객센터</span>
+                        <strong>취소, 환불, FAQ 바로가기</strong>
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
 </th:block>
 
 <th:block th:fragment="siteFooter">
-    <footer class="ht-footer full-width-ft cinema-footer">
-        <div class="row">
-            <div class="flex-parent-ft">
-                <div class="flex-child-ft item1">
-                    <a th:href="@{/}"><img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow"></a>
-                    <p>CineFlow CINEMA</p>
+    <footer class="ht-footer full-width-ft cinema-footer storefront-footer">
+        <div class="container">
+            <div class="storefront-footer__grid">
+                <div class="storefront-footer__brand">
+                    <a th:href="@{/}" class="storefront-footer__logo">
+                        <img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow">
+                    </a>
+                    <p class="storefront-footer__headline">CineFlow CINEMA</p>
                     <p>서울 강남구 시네마로 100, 4층</p>
-                    <p>대표번호 1544-0000 | help@cineflow.co.kr</p>
+                    <p>대표번호 1544-0000</p>
+                    <p>help@cineflow.co.kr</p>
                 </div>
-                <div class="flex-child-ft item2">
-                    <h4>서비스 안내</h4>
+
+                <div class="storefront-footer__menu">
+                    <h4>예매 서비스</h4>
                     <ul>
                         <li><a th:href="@{/movies}">영화</a></li>
                         <li><a th:href="@{/booking}">빠른예매</a></li>
-                        <li><a th:href="@{/booking/history}">예매내역 조회</a></li>
+                        <li><a th:href="@{/booking/history}">예매내역</a></li>
                         <li><a th:href="@{/support}">고객센터</a></li>
                     </ul>
                 </div>
-                <div class="flex-child-ft item3">
+
+                <div class="storefront-footer__menu">
                     <h4>이용 안내</h4>
                     <ul>
                         <li><a th:href="@{/support#faq}">자주 묻는 질문</a></li>
-                        <li><a th:href="@{/support#cancel-policy}">취소·환불 안내</a></li>
+                        <li><a th:href="@{/support#cancel-policy}">취소 · 환불 안내</a></li>
                         <li><a th:href="@{/support#inquiry}">1:1 문의</a></li>
-                        <li><a th:href="@{/support#group}">단체 관람 문의</a></li>
+                        <li><a th:href="@{/support#group}">단체 · 대관 문의</a></li>
                     </ul>
                 </div>
-                <div class="flex-child-ft item4">
-                    <h4>CineFlow 안내</h4>
+
+                <div class="storefront-footer__menu">
+                    <h4>바로가기</h4>
                     <ul>
-                        <li><a th:href="@{/}">서비스 소개</a></li>
                         <li><a th:href="@{/booking}">상영시간표</a></li>
                         <li><a th:href="@{/movies}">현재 상영작</a></li>
-                        <li><a th:href="@{/support}">운영 정책</a></li>
+                        <li><a th:href="@{/support#lost}">분실물 문의</a></li>
+                        <li><a th:href="@{/support}">고객지원</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="ft-copyright">
-                <div class="ft-left"><p>© 2026 CineFlow. All rights reserved.</p></div>
-                <div class="backtotop"><p><a href="#" id="back-to-top">맨 위로 <i class="ion-ios-arrow-thin-up"></i></a></p></div>
+
+            <div class="storefront-footer__bottom">
+                <p>© 2026 CineFlow. All rights reserved.</p>
+                <a href="#" id="back-to-top">맨 위로</a>
             </div>
+
             <div class="cinema-footer-attribution">
                 <p>Movie metadata and images may include data provided by <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">TMDB</a>.</p>
             </div>

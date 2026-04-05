@@ -12,42 +12,232 @@
     <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
 </head>
 <body>
-<div id="preloader"><img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58"><div id="status"><span></span><span></span></div></div>
+<div id="preloader">
+    <img class="logo" th:src="@{/images/logo1.png}" alt="logo" width="119" height="58">
+    <div id="status"><span></span><span></span></div>
+</div>
+
 <header th:replace="~{fragments/site-layout :: siteHeader('support')}"></header>
 
 <main class="cinema-page support-page">
-    <section class="cinema-page-hero movie-detail-top">
+    <section class="cinema-page-hero support-hero">
         <div class="container">
-            <ul class="cinema-breadcrumb"><li><a th:href="@{/}">홈</a></li><li>고객센터</li></ul>
-            <div class="detail-hero-grid">
-                <div class="detail-info-col" style="max-width:100%;">
-                    <p class="hero-kicker">이용 안내</p>
+            <ul class="cinema-breadcrumb">
+                <li><a th:href="@{/}">홈</a></li>
+                <li>고객센터</li>
+            </ul>
+
+            <div class="support-hero__layout">
+                <div class="support-hero__copy">
+                    <span class="section-chip">SUPPORT</span>
                     <h1>고객센터</h1>
-                    <p class="detail-tagline">예매, 취소·환불, 극장 이용, 멤버십 관련 문의를 빠르게 확인할 수 있는 안내 페이지입니다.</p>
-                    <ul class="detail-meta-list"><li><strong>대표번호</strong><span>1544-0000</span></li><li><strong>이메일</strong><span>help@cineflow.co.kr</span></li><li><strong>운영시간</strong><span>09:00 ~ 18:00</span></li><li><strong>응답채널</strong><span>전화 · 이메일 · FAQ</span></li></ul>
-                    <div class="detail-actions"><a th:href="@{/booking/history}" class="hero-btn primary">예매내역 확인</a><a th:href="@{/booking}" class="hero-btn secondary">빠른예매</a></div>
+                    <p>예매, 취소 · 환불, 극장 이용, 단체 관람 문의까지 같은 톤과 위계로 정리한 지원 허브입니다.</p>
+                    <div class="support-contact-strip">
+                        <div>
+                            <span>대표번호</span>
+                            <strong>1544-0000</strong>
+                        </div>
+                        <div>
+                            <span>이메일</span>
+                            <strong>help@cineflow.co.kr</strong>
+                        </div>
+                        <div>
+                            <span>운영시간</span>
+                            <strong>09:00 - 18:00</strong>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <a th:href="@{/booking/history}" class="hero-btn primary">예매내역 확인</a>
+                        <a th:href="@{/booking}" class="hero-btn secondary">빠른예매</a>
+                    </div>
+                </div>
+
+                <div class="support-hero-quick-grid">
+                    <a th:href="@{/support#faq}" class="support-shortcut-card">
+                        <h3>자주 묻는 질문</h3>
+                        <p>예매, 결제, 모바일 티켓, 관람권 관련 질문을 먼저 확인하세요.</p>
+                        <span>FAQ 바로가기</span>
+                    </a>
+                    <a th:href="@{/support#cancel-policy}" class="support-shortcut-card">
+                        <h3>취소 · 환불 안내</h3>
+                        <p>상영 시작 전 취소 가능 여부와 환불 정책을 빠르게 확인할 수 있습니다.</p>
+                        <span>정책 확인</span>
+                    </a>
+                    <a th:href="@{/support#inquiry}" class="support-shortcut-card">
+                        <h3>1:1 문의</h3>
+                        <p>개별 확인이 필요한 문의는 접수 시간과 답변 방식을 확인해주세요.</p>
+                        <span>문의 절차</span>
+                    </a>
+                    <a th:href="@{/support#group}" class="support-shortcut-card">
+                        <h3>단체 · 대관 문의</h3>
+                        <p>학교, 기업, 관공서 단체 관람과 대관 문의를 위한 안내를 제공합니다.</p>
+                        <span>상담 안내</span>
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="cinema-page-body">
+    <section class="cinema-page-body support-body">
         <div class="container">
-            <div class="detail-content-layout">
-                <div class="detail-main-sections">
-                    <article class="detail-block" id="faq"><h2>자주 묻는 질문</h2><div class="support-link-list"><li><a href="#">예매 후 좌석 변경이 가능한가요?</a><span>상영 시작 전까지 동일 지점, 동일 회차에서 가능한 경우에 한해 변경할 수 있습니다.</span></li><li><a href="#">모바일 티켓은 어디에서 확인하나요?</a><span>예매완료 후 예매내역 또는 예매 상세 페이지에서 바로 확인할 수 있습니다.</span></li><li><a href="#">쿠폰과 관람권을 함께 사용할 수 있나요?</a><span>일부 프로모션은 중복 적용에 제한이 있으므로 결제 단계의 안내 문구를 확인해주세요.</span></li></div></article>
-                    <article class="detail-block" id="cancel-policy"><h2>취소 / 환불 안내</h2><p>온라인 취소는 상영 시작 전까지만 가능합니다. 이후 취소나 환불은 지점 방문 또는 고객센터 문의가 필요할 수 있습니다.</p><p>특별관, 프로모션, 관람권 사용 예매는 환불 정책이 별도로 적용될 수 있으므로 예매 전 안내 문구를 확인해주세요.</p></article>
-                    <article class="detail-block" id="inquiry"><h2>1:1 문의</h2><p>결제 오류, 예매번호 확인, 멤버십 적립 누락 등 개별 확인이 필요한 문의는 1:1 문의로 접수해주세요.</p><ul class="cast-listing"><li><strong>접수 시간</strong><span>매일 09:00 - 18:00</span></li><li><strong>답변 방식</strong><span>이메일 또는 전화 회신</span></li><li><strong>평균 처리</strong><span>영업일 기준 1~2일</span></li></ul></article>
-                    <article class="detail-block" id="lost"><h2>분실물 문의</h2><p>분실물은 관람 지점에서 우선 보관하며, 접수 후 지점 담당자가 확인 결과를 안내해드립니다.</p><div class="keyword-chips"><span>#지점별 보관</span><span>#신분 확인 필요</span><span>#현장 수령 원칙</span></div></article>
-                    <article class="detail-block" id="group"><h2>단체 · 대관 문의</h2><p>학교, 기업, 관공서 단체 관람과 상영관 대관은 일정과 인원에 맞춰 별도 상담을 진행합니다.</p><ul class="cast-listing"><li><strong>문의 가능 인원</strong><span>20명 이상</span></li><li><strong>제공 항목</strong><span>단체 할인, 시간 조율, 좌석 배정 지원</span></li><li><strong>문의 채널</strong><span>help@cineflow.co.kr</span></li></ul></article>
+            <div class="support-main-layout">
+                <div class="support-main-stack">
+                    <article class="booking-panel support-section-card" id="faq">
+                        <div class="panel-head">
+                            <div>
+                                <span class="panel-step">FAQ</span>
+                                <h2>자주 묻는 질문</h2>
+                            </div>
+                        </div>
+                        <div class="support-faq-list">
+                            <article class="support-faq-item">
+                                <h3>예매 후 좌석 변경이 가능한가요?</h3>
+                                <p>상영 시작 전까지 동일 지점, 동일 회차에서 가능한 경우에 한해 변경할 수 있습니다.</p>
+                            </article>
+                            <article class="support-faq-item">
+                                <h3>모바일 티켓은 어디에서 확인하나요?</h3>
+                                <p>예매 완료 후 예매내역 또는 예매 상세 페이지에서 바로 확인할 수 있습니다.</p>
+                            </article>
+                            <article class="support-faq-item">
+                                <h3>쿠폰과 관람권을 함께 사용할 수 있나요?</h3>
+                                <p>일부 프로모션은 중복 적용에 제한이 있으므로 결제 단계의 안내 문구를 확인해주세요.</p>
+                            </article>
+                        </div>
+                    </article>
+
+                    <article class="booking-panel support-section-card" id="cancel-policy">
+                        <div class="panel-head">
+                            <div>
+                                <span class="panel-step">POLICY</span>
+                                <h2>취소 · 환불 안내</h2>
+                            </div>
+                        </div>
+                        <div class="support-policy-grid">
+                            <div>
+                                <h3>온라인 취소 기준</h3>
+                                <p>온라인 취소는 상영 시작 전까지만 가능합니다. 이후 취소나 환불은 지점 방문 또는 고객센터 문의가 필요할 수 있습니다.</p>
+                            </div>
+                            <div>
+                                <h3>특별관 예매</h3>
+                                <p>특별관, 프로모션, 관람권 사용 예매는 환불 정책이 별도로 적용될 수 있으므로 예매 전 안내 문구를 확인해주세요.</p>
+                            </div>
+                            <div>
+                                <h3>좌석 및 결제 상태</h3>
+                                <p>취소 완료 시 좌석과 결제 상태가 함께 복구되며 예매내역과 관리자 화면에 동일하게 반영됩니다.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="booking-panel support-section-card" id="inquiry">
+                        <div class="panel-head">
+                            <div>
+                                <span class="panel-step">CONTACT</span>
+                                <h2>1:1 문의</h2>
+                            </div>
+                        </div>
+                        <div class="support-operating-grid">
+                            <div>
+                                <h3>접수 시간</h3>
+                                <p>매일 09:00 - 18:00</p>
+                            </div>
+                            <div>
+                                <h3>답변 방식</h3>
+                                <p>이메일 또는 전화 회신</p>
+                            </div>
+                            <div>
+                                <h3>평균 처리</h3>
+                                <p>영업일 기준 1~2일</p>
+                            </div>
+                            <div>
+                                <h3>문의 유형</h3>
+                                <p>결제 오류, 예매번호 확인, 멤버십 적립 누락 등</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="booking-panel support-section-card" id="group">
+                        <div class="panel-head">
+                            <div>
+                                <span class="panel-step">GROUP</span>
+                                <h2>단체 · 대관 문의</h2>
+                            </div>
+                        </div>
+                        <div class="support-policy-grid">
+                            <div>
+                                <h3>문의 가능 인원</h3>
+                                <p>20명 이상 단체 관람과 기업 행사, 학교 행사, 대관 문의를 지원합니다.</p>
+                            </div>
+                            <div>
+                                <h3>제공 항목</h3>
+                                <p>단체 할인, 일정 조율, 좌석 배정, 현장 운영 동선 지원 등 서비스 확장이 가능합니다.</p>
+                            </div>
+                            <div id="lost">
+                                <h3>분실물 문의</h3>
+                                <p>분실물은 관람 지점에서 우선 보관하며, 접수 후 지점 담당자가 확인 결과를 안내해드립니다.</p>
+                            </div>
+                        </div>
+                    </article>
                 </div>
-                <aside class="detail-booking-sticky"><h3>빠른 안내</h3><ul><li><span>대표번호</span><strong>1544-0000</strong></li><li><span>이메일</span><strong>help@cineflow.co.kr</strong></li><li><span>운영시간</span><strong>09:00 - 18:00</strong></li><li><span>바로가기</span><strong>FAQ · 예매내역 · 환불안내</strong></li></ul><a th:href="@{/booking/history}" class="book-btn">예매내역 확인</a></aside>
+
+                <aside class="support-side-stack">
+                    <article class="booking-panel support-side-card">
+                        <div class="panel-head">
+                            <div>
+                                <span class="panel-step">QUICK HELP</span>
+                                <h2>빠른 안내</h2>
+                            </div>
+                        </div>
+                        <ul class="support-mini-list">
+                            <li>
+                                <a th:href="@{/booking/history}">예매내역과 예매번호 확인</a>
+                                <span>회원 / 비회원 모두 확인 가능</span>
+                            </li>
+                            <li>
+                                <a th:href="@{/support#cancel-policy}">취소 · 환불 기준 보기</a>
+                                <span>상영 시작 전 정책 우선 확인</span>
+                            </li>
+                            <li>
+                                <a th:href="@{/booking}">빠른예매 다시 시작</a>
+                                <span>상영시간표와 좌석 선택으로 이동</span>
+                            </li>
+                        </ul>
+                    </article>
+
+                    <article class="booking-panel support-side-card">
+                        <div class="panel-head">
+                            <div>
+                                <span class="panel-step">NOTICE</span>
+                                <h2>운영 공지 성격 안내</h2>
+                            </div>
+                        </div>
+                        <ul class="support-notice-list">
+                            <li>
+                                <span class="notice-chip notice">안내</span>
+                                <a th:href="@{/support#faq}">모바일 티켓은 예매 완료 후 상세 페이지에서 바로 확인할 수 있습니다.</a>
+                                <time>상시</time>
+                            </li>
+                            <li>
+                                <span class="notice-chip policy">정책</span>
+                                <a th:href="@{/support#cancel-policy}">특별관과 프로모션 예매는 취소 기준이 다를 수 있으니 결제 전 꼭 확인해주세요.</a>
+                                <time>상시</time>
+                            </li>
+                            <li>
+                                <span class="notice-chip system">상담</span>
+                                <a th:href="@{/support#inquiry}">1:1 문의는 영업일 기준 1~2일 이내에 순차 답변됩니다.</a>
+                                <time>운영중</time>
+                            </li>
+                        </ul>
+                    </article>
+                </aside>
             </div>
         </div>
     </section>
 </main>
 
 <footer th:replace="~{fragments/site-layout :: siteFooter}"></footer>
-<script th:src="@{/js/jquery.js}"></script><script th:src="@{/js/plugins.js}"></script><script th:src="@{/js/plugins2.js}"></script><script th:src="@{/js/custom.js}"></script>
+<script th:src="@{/js/jquery.js}"></script>
+<script th:src="@{/js/plugins.js}"></script>
+<script th:src="@{/js/plugins2.js}"></script>
+<script th:src="@{/js/custom.js}"></script>
 </body>
 </html>

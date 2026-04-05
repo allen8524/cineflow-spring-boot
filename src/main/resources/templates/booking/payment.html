@@ -29,11 +29,18 @@
                 <li><a th:href="@{/booking/seat(scheduleId=${bookingRequest.scheduleId})}">좌석 선택</a></li>
                 <li>결제</li>
             </ul>
-            <h1>결제</h1>
-            <p>예매 정보를 확인하고 결제수단을 선택한 뒤 예매를 완료해주세요.</p>
+
+            <div class="booking-hero__intro">
+                <div>
+                    <span class="section-chip">PAYMENT</span>
+                    <h1>결제</h1>
+                    <p>예매 정보와 결제 금액을 다시 확인한 뒤, 결제수단을 선택하고 예매를 완료할 수 있도록 정보 위계를 정리했습니다.</p>
+                </div>
+            </div>
+
             <ol class="booking-stepper">
                 <li><span>01</span><strong>상영정보</strong></li>
-                <li><span>02</span><strong>인원 / 좌석</strong></li>
+                <li><span>02</span><strong>인원 · 좌석</strong></li>
                 <li class="is-active"><span>03</span><strong>결제</strong></li>
                 <li><span>04</span><strong>완료</strong></li>
             </ol>
@@ -52,9 +59,12 @@
             </div>
 
             <div th:if="${bookingSummary != null}" th:with="baseTotal=${bookingSummary.basePrice * bookingSummary.peopleCount}, extraAmount=${bookingSummary.totalPrice - (bookingSummary.basePrice * bookingSummary.peopleCount)}">
-                <article class="booking-panel screening-summary-bar payment-summary-bar">
+                <article class="booking-panel screening-summary-bar payment-summary-bar booking-stage-summary">
                     <div class="screening-summary-title">
-                        <h2>예매 정보 최종 확인</h2>
+                        <div>
+                            <span class="panel-step">FINAL CHECK</span>
+                            <h2>예매 정보 최종 확인</h2>
+                        </div>
                         <span class="summary-chip">결제 직전 확인</span>
                     </div>
                     <div class="screening-summary-grid payment-summary-grid">
@@ -85,7 +95,7 @@
                     </div>
                 </article>
 
-                <div class="booking-payment-layout">
+                <div class="booking-payment-layout booking-payment-layout--refined">
                     <section class="booking-payment-main">
                         <form id="payment-form" th:action="@{/booking/complete}" method="post">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -97,7 +107,10 @@
 
                             <article class="booking-panel payment-block">
                                 <div class="panel-head">
-                                    <h2>예매자 정보</h2>
+                                    <div>
+                                        <span class="panel-step">STEP 3-1</span>
+                                        <h2>예매자 정보</h2>
+                                    </div>
                                     <span class="input-help">결제 완료 후 예매내역과 예매번호 확인에 사용됩니다.</span>
                                 </div>
                                 <div class="payment-input-grid">
@@ -118,7 +131,10 @@
 
                             <article class="booking-panel payment-block">
                                 <div class="panel-head">
-                                    <h2>결제수단 선택</h2>
+                                    <div>
+                                        <span class="panel-step">STEP 3-2</span>
+                                        <h2>결제수단 선택</h2>
+                                    </div>
                                     <span class="input-help">실제 PG 연동 대신 가짜 결제 성공 처리로 동작합니다.</span>
                                 </div>
                                 <div class="payment-method-grid">
@@ -133,18 +149,23 @@
                                 <div class="payment-method-detail">
                                     <div class="payment-input-card">
                                         <h3>선택한 결제수단</h3>
-                                        <p class="field-note">카드, 카카오페이, 네이버페이, 토스를 선택할 수 있습니다.</p>
+                                        <p class="field-note">카드, 카카오페이, 네이버페이, 토스 중 원하는 방식을 선택할 수 있습니다.</p>
                                     </div>
                                     <div class="payment-input-card">
                                         <h3>결제 안내</h3>
-                                        <p class="field-note">결제 완료 후 예매 확정, 좌석 예약 처리, 결제 내역 저장이 동시에 진행됩니다.</p>
+                                        <p class="field-note">결제 완료와 동시에 예매 확정, 좌석 예약 처리, 결제 내역 저장이 함께 진행됩니다.</p>
                                     </div>
                                 </div>
                             </article>
                         </form>
 
                         <article class="booking-panel payment-block payment-agreement-block">
-                            <div class="panel-head"><h2>안내 사항</h2></div>
+                            <div class="panel-head">
+                                <div>
+                                    <span class="panel-step">CHECK</span>
+                                    <h2>안내 사항</h2>
+                                </div>
+                            </div>
                             <ul class="agreement-list">
                                 <li><label><input type="checkbox" checked disabled> 선택한 좌석은 결제 완료 후 즉시 예약 처리됩니다.</label></li>
                                 <li><label><input type="checkbox" checked disabled> 이미 예매된 좌석은 결제 직전 다시 한 번 검증됩니다.</label></li>
@@ -153,8 +174,13 @@
                         </article>
                     </section>
 
-                    <aside class="booking-summary booking-panel payment-summary-panel">
-                        <div class="panel-head"><h2>주문 요약</h2></div>
+                    <aside class="booking-summary booking-panel payment-summary-panel booking-summary--sticky">
+                        <div class="panel-head">
+                            <div>
+                                <span class="panel-step">ORDER SUMMARY</span>
+                                <h2>주문 요약</h2>
+                            </div>
+                        </div>
                         <div class="summary-card payment-summary-card">
                             <img th:src="@{${bookingSummary.posterUrl}}" th:alt="${bookingSummary.movieTitle + ' 포스터'}">
                             <div class="summary-text">
@@ -192,7 +218,10 @@
                 </div>
 
                 <section class="booking-notice-section payment-notice-section">
-                    <h2>결제 안내</h2>
+                    <div class="section-header-inline">
+                        <h2>결제 안내</h2>
+                        <span class="section-chip">PAYMENT GUIDE</span>
+                    </div>
                     <div class="booking-notice-grid payment-notice-grid">
                         <article class="notice-card">
                             <h3>예매 확정 시점</h3>
@@ -208,7 +237,7 @@
                         </article>
                         <article class="notice-card">
                             <h3>추가 확장</h3>
-                            <p>현재는 가짜 결제 성공 처리이며, 이후 PG 연동과 취소·환불 로직을 같은 구조로 확장할 수 있습니다.</p>
+                            <p>현재는 가짜 결제 성공 처리이며, 이후 PG 연동과 취소 · 환불 로직을 같은 구조로 확장할 수 있습니다.</p>
                         </article>
                     </div>
                 </section>

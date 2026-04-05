@@ -3,7 +3,7 @@
 <head>
     <title>CineFlow | 메인</title>
     <meta charset="UTF-8">
-    <meta name="description" content="TMDB 공개 영화 메타데이터를 기반으로 상영작과 개봉 예정작을 확인하는 CineFlow 메인 페이지">
+    <meta name="description" content="TMDB 공개 영화 메타데이터를 기반으로 현재 상영작과 개봉 예정작을 확인하는 CineFlow 메인 페이지">
     <meta name="keywords" content="영화, 예매, 극장, TMDB, CineFlow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone-no">
@@ -20,18 +20,19 @@
 
 <header th:replace="~{fragments/site-layout :: siteHeader('home')}"></header>
 
-<section class="slider sliderv2 cinema-hero">
-    <div class="container">
-        <div class="row">
-            <div class="slick-hero" th:if="${!#lists.isEmpty(heroMovies)}">
-                <div class="hero-slide" th:each="movie : ${heroMovies}"
+<main class="storefront-home">
+    <section class="storefront-hero-section">
+        <div class="container">
+            <div class="slick-hero storefront-hero-slider" th:if="${!#lists.isEmpty(heroMovies)}">
+                <div class="hero-slide storefront-hero-card"
+                     th:each="movie : ${heroMovies}"
                      th:style="|background-image:url('${movie.backdropUrl}');|">
                     <div class="hero-overlay"></div>
                     <div class="hero-content-wrap">
                         <div class="hero-copy-area">
-                            <p class="hero-kicker" th:text="${movie.statusLabel}">현재 상영중</p>
+                            <p class="hero-kicker" th:text="${movie.statusLabel}">현재 상영작</p>
                             <h1 th:text="${movie.title}">영화 제목</h1>
-                            <p class="hero-copy" th:text="${movie.heroCopy}">TMDB 영화 소개</p>
+                            <p class="hero-copy" th:text="${movie.heroCopy}">지금 가장 주목받는 영화를 만나보세요.</p>
                             <ul class="hero-meta">
                                 <li th:text="${movie.releaseDateText}">개봉 2026.04.10</li>
                                 <li th:text="${movie.genreText}">장르 정보 준비 중</li>
@@ -41,12 +42,12 @@
                             <div class="hero-actions">
                                 <a th:if="${movie.bookable}"
                                    th:href="@{/booking(movieId=${movie.bookingMovieId})}"
-                                   class="hero-btn primary"><i class="ion-ticket"></i> 예매하기</a>
+                                   class="hero-btn primary">예매하기</a>
                                 <span th:if="${!movie.bookable}" class="hero-btn primary">예매 정보 준비 중</span>
                                 <a th:href="@{/movies/{id}(id=${movie.id})}" class="hero-btn secondary">상세보기</a>
                             </div>
                         </div>
-                        <div class="hero-poster">
+                        <div class="hero-poster storefront-hero-poster">
                             <img th:src="@{${movie.posterUrl}}"
                                  th:alt="${movie.title + ' 포스터'}"
                                  th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
@@ -55,164 +56,232 @@
                 </div>
             </div>
 
-            <div class="cinema-hero-empty" th:if="${#lists.isEmpty(heroMovies)}">
-                <div class="hero-overlay"></div>
-                <div class="hero-content-wrap">
-                    <div class="hero-copy-area">
-                        <p class="hero-kicker">공개 영화 준비 중</p>
-                        <h1>CineFlow</h1>
-                        <p class="hero-copy">TMDB 공개 영화 정보를 잠시 불러오지 못했습니다. 잠시 후 다시 접속하면 최신 영화 메타데이터가 다시 반영됩니다.</p>
+            <div class="storefront-hero-empty" th:if="${#lists.isEmpty(heroMovies)}">
+                <div class="storefront-hero-empty__copy">
+                    <span>NOW LOADING</span>
+                    <h1>CineFlow</h1>
+                    <p>지금 표시할 공개 영화 정보를 준비하고 있습니다. 잠시 후 다시 접속하면 최신 상영작과 예매 흐름을 확인할 수 있습니다.</p>
+                    <div class="hero-actions">
+                        <a th:href="@{/movies}" class="hero-btn primary">영화 목록 보기</a>
+                        <a th:href="@{/booking}" class="hero-btn secondary">빠른예매</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="quick-booking" class="home-booking-dock">
+        <div class="container">
+            <div class="home-booking-dock__grid">
+                <article class="home-booking-feature">
+                    <div class="home-booking-feature__head">
+                        <span class="section-chip">빠른예매</span>
+                        <h2>지금 바로 예매 흐름으로 이동</h2>
+                        <p>영화 탐색, 상영시간표 확인, 예매내역 조회를 한 화면 흐름 안에서 바로 이어갈 수 있도록 정리했습니다.</p>
+                    </div>
+
+                    <div class="home-booking-feature__content" th:if="${featuredMovie != null}">
+                        <div class="home-booking-feature__copy">
+                            <span class="home-booking-feature__label">추천 작품</span>
+                            <h3 th:text="${featuredMovie.title}">영화 제목</h3>
+                            <p th:text="${featuredMovie.shortDescription}">상영과 예매를 함께 살펴보기 좋은 대표 작품입니다.</p>
+                            <ul class="home-booking-feature__meta">
+                                <li th:text="${featuredMovie.releaseDateText}">개봉 2026.04.10</li>
+                                <li th:text="${featuredMovie.runningTimeText}">132분</li>
+                                <li th:text="${featuredMovie.genreText}">장르 정보 준비 중</li>
+                                <li th:text="${featuredMovie.bookingOpenLabel}">예매 오픈</li>
+                            </ul>
+                        </div>
                         <div class="hero-actions">
-                            <a th:href="@{/movies}" class="hero-btn primary">영화 보러가기</a>
+                            <a th:if="${featuredMovie.bookable}"
+                               th:href="@{/booking(movieId=${featuredMovie.bookingMovieId})}"
+                               class="hero-btn primary">바로 예매</a>
+                            <span th:if="${!featuredMovie.bookable}" class="hero-btn primary">예매 정보 준비 중</span>
+                            <a th:href="@{/movies/{id}(id=${featuredMovie.id})}" class="hero-btn secondary">영화 상세</a>
                         </div>
                     </div>
+
+                    <div class="home-booking-feature__content" th:if="${featuredMovie == null}">
+                        <div class="home-booking-feature__copy">
+                            <span class="home-booking-feature__label">안내</span>
+                            <h3>대표 작품을 준비 중입니다</h3>
+                            <p>현재는 TMDB 공개 영화 목록을 불러오는 중입니다. 영화 목록과 빠른예매 페이지에서 다른 작품을 먼저 살펴볼 수 있습니다.</p>
+                        </div>
+                        <div class="hero-actions">
+                            <a th:href="@{/movies}" class="hero-btn primary">영화 목록 보기</a>
+                            <a th:href="@{/booking}" class="hero-btn secondary">빠른예매</a>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="home-booking-actions">
+                    <a th:href="@{/booking}" class="home-quick-card">
+                        <span>영화별 예매</span>
+                        <strong>영화와 좌석 선택까지 빠르게</strong>
+                        <em>예매 흐름 시작</em>
+                    </a>
+                    <a th:href="@{/booking}" class="home-quick-card">
+                        <span>상영시간표</span>
+                        <strong>극장과 날짜 기준으로 바로 확인</strong>
+                        <em>회차 선택</em>
+                    </a>
+                    <a th:href="@{/booking/history}" class="home-quick-card">
+                        <span>예매내역</span>
+                        <strong>완료된 예매와 취소 상태 확인</strong>
+                        <em>예매번호 조회</em>
+                    </a>
+                    <a th:href="@{/support}" class="home-quick-card">
+                        <span>고객지원</span>
+                        <strong>취소, 환불, FAQ, 단체 문의</strong>
+                        <em>이용 안내</em>
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section id="quick-booking" class="quick-booking-section">
-    <div class="container">
-        <div class="quick-booking-inner">
-            <div class="quick-booking-head">
-                <h3>빠른 예매</h3>
-                <p>공개 영화 메타데이터는 TMDB 응답만 사용하고, 예매 가능한 작품만 CineFlow 예매 흐름과 연결합니다.</p>
+    <section class="home-section home-current-section">
+        <div class="container">
+            <div class="home-section__header">
+                <div>
+                    <span class="section-chip">현재 상영작</span>
+                    <h2>지금 예매 흐름으로 이어지는 공개 영화</h2>
+                    <p>영화 서비스 메인처럼 현재 상영작을 중심에 두고, 바로 예매하거나 상세를 확인할 수 있도록 배치했습니다.</p>
+                </div>
+                <a th:href="@{/movies}" class="detail-link">전체 영화 보기</a>
             </div>
 
-            <div class="quick-booking-recommendation" th:if="${featuredMovie != null}">
-                <div class="quick-booking-copy">
-                    <span class="quick-booking-badge">추천 영화</span>
-                    <h4 th:text="${featuredMovie.title}">영화 제목</h4>
-                    <p th:text="${featuredMovie.shortDescription}">영화 소개</p>
+            <div class="home-showcase-layout">
+                <div class="home-showcase-grid" th:if="${!#lists.isEmpty(nowShowingMovies)}">
+                    <article class="home-showcase-card" th:each="movie : ${nowShowingMovies}">
+                        <a class="home-showcase-card__poster" th:href="@{/movies/{id}(id=${movie.id})}">
+                            <span class="status-badge" th:text="${movie.statusLabel}">현재 상영중</span>
+                            <img th:src="@{${movie.posterUrl}}"
+                                 th:alt="${movie.title + ' 포스터'}"
+                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
+                        </a>
+                        <div class="home-showcase-card__body">
+                            <div class="home-showcase-card__head">
+                                <h3><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h3>
+                                <span th:class="${movie.ageBadgeCssClass}" th:text="${movie.ageBadgeText}">12</span>
+                            </div>
+                            <ul class="home-showcase-card__meta">
+                                <li th:text="${movie.releaseDateText}">개봉 2026.04.10</li>
+                                <li th:text="${movie.runningTimeText}">132분</li>
+                                <li th:text="${movie.genreText}">장르 정보 준비 중</li>
+                            </ul>
+                            <p th:text="${movie.overviewSnippet}">영화 요약</p>
+                            <div class="home-showcase-card__actions">
+                                <a th:if="${movie.bookable}"
+                                   th:href="@{/booking(movieId=${movie.bookingMovieId})}"
+                                   class="book-btn">예매하기</a>
+                                <span th:if="${!movie.bookable}" class="book-btn">예매 준비 중</span>
+                                <a th:href="@{/movies/{id}(id=${movie.id})}" class="detail-link">상세보기</a>
+                            </div>
+                        </div>
+                    </article>
                 </div>
-                <ul class="quick-booking-meta">
-                    <li th:text="${featuredMovie.releaseDateText}">개봉 2026.04.10</li>
-                    <li th:text="${featuredMovie.runningTimeText}">132분</li>
-                    <li th:text="${featuredMovie.genreText}">장르 정보 준비 중</li>
-                    <li th:text="${featuredMovie.bookingOpenLabel}">예매 정보 준비 중</li>
-                </ul>
-                <div class="hero-actions quick-booking-actions">
-                    <a th:if="${featuredMovie.bookable}"
-                       th:href="@{/booking(movieId=${featuredMovie.bookingMovieId})}"
-                       class="hero-btn primary">바로 예매</a>
-                    <span th:if="${!featuredMovie.bookable}" class="hero-btn primary">예매 정보 준비 중</span>
-                    <a th:href="@{/movies/{id}(id=${featuredMovie.id})}" class="hero-btn secondary">상세보기</a>
-                </div>
-            </div>
 
-            <div class="quick-booking-recommendation" th:if="${featuredMovie == null}">
-                <div class="quick-booking-copy">
-                    <span class="quick-booking-badge">안내</span>
-                    <h4>추천 영화를 준비 중입니다</h4>
-                    <p>TMDB 공개 목록에서 추천 영화를 아직 불러오지 못했습니다. 영화 목록에서 다른 작품을 먼저 확인해 주세요.</p>
+                <div class="empty-state-card" th:if="${#lists.isEmpty(nowShowingMovies)}">
+                    현재 상영 중인 공개 영화 정보를 준비 중입니다. 잠시 후 다시 확인해주세요.
                 </div>
-                <div class="hero-actions quick-booking-actions">
-                    <a th:href="@{/movies}" class="hero-btn primary">영화 목록 보기</a>
-                </div>
+
+                <aside class="home-rank-board">
+                    <div class="home-rank-board__head">
+                        <h3>실시간 관심작</h3>
+                        <span>공개 영화 기준</span>
+                    </div>
+                    <ol class="home-rank-board__list" th:if="${!#lists.isEmpty(boxOfficeMovies)}">
+                        <li th:each="movie, stat : ${boxOfficeMovies}">
+                            <a th:href="@{/movies/{id}(id=${movie.id})}">
+                                <strong th:text="${stat.index + 1}">1</strong>
+                                <div>
+                                    <span th:text="${movie.title}">영화 제목</span>
+                                    <em th:text="${movie.releaseDateText + ' · ' + movie.runningTimeText}">개봉 2026.04.10 · 132분</em>
+                                </div>
+                            </a>
+                        </li>
+                    </ol>
+                    <div class="empty-state-card" th:if="${#lists.isEmpty(boxOfficeMovies)}">
+                        현재 표시할 인기 영화 순위를 준비 중입니다.
+                    </div>
+                </aside>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section id="section-movies" class="movie-items full-width section-block movie-first-section">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="title-hd">
-                <h2>지금 CineFlow에서 만나는 공개 영화</h2>
-                <a th:href="@{/movies}" class="viewall">전체보기 <i class="ion-ios-arrow-right"></i></a>
-            </div>
-            <div class="tabs">
-                <ul class="tab-links">
-                    <li class="active"><a href="#tab1-h2">인기작</a></li>
-                    <li><a href="#tab2-h2">현재상영작</a></li>
-                    <li><a href="#tab3-h2">개봉예정작</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div id="tab1-h2" class="tab active">
-                        <div class="row" th:if="${!#lists.isEmpty(boxOfficeMovies)}">
-                            <div class="slick-multiItem2">
-                                <div class="slide-it" th:each="movie, stat : ${boxOfficeMovies}">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <span class="movie-badge rank" th:text="${stat.index + 1} + '위'">1위</span>
-                                            <img th:src="@{${movie.posterUrl}}"
-                                                 th:alt="${movie.title}"
-                                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h6>
-                                            <p th:text="${movie.releaseDateText}">개봉 2026.04.10</p>
-                                            <p class="movie-item-summary" th:text="${movie.overviewSnippet}">영화 요약</p>
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a th:if="${movie.bookable}" th:href="@{/booking(movieId=${movie.bookingMovieId})}">예매하기 <i class="ion-android-arrow-dropright"></i></a>
-                                            <a th:if="${!movie.bookable}" th:href="@{/movies/{id}(id=${movie.id})}">상세보기 <i class="ion-android-arrow-dropright"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="coming-text" th:if="${#lists.isEmpty(boxOfficeMovies)}">TMDB 인기 영화 목록을 아직 불러오지 못했습니다.</div>
-                    </div>
-
-                    <div id="tab2-h2" class="tab">
-                        <div class="row" th:if="${!#lists.isEmpty(nowShowingMovies)}">
-                            <div class="slick-multiItem2">
-                                <div class="slide-it" th:each="movie : ${nowShowingMovies}">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <span class="movie-badge state" th:text="${movie.statusLabel}">현재 상영중</span>
-                                            <img th:src="@{${movie.posterUrl}}"
-                                                 th:alt="${movie.title}"
-                                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h6>
-                                            <p th:text="${movie.runningTimeText}">상영시간 추후 안내</p>
-                                            <p class="movie-item-summary" th:text="${movie.shortDescription}">영화 요약</p>
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a th:if="${movie.bookable}" th:href="@{/booking(movieId=${movie.bookingMovieId})}">예매하기 <i class="ion-android-arrow-dropright"></i></a>
-                                            <a th:if="${!movie.bookable}" th:href="@{/movies/{id}(id=${movie.id})}">상세보기 <i class="ion-android-arrow-dropright"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="coming-text" th:if="${#lists.isEmpty(nowShowingMovies)}">TMDB 현재 상영작 목록을 아직 불러오지 못했습니다.</div>
-                    </div>
-
-                    <div id="tab3-h2" class="tab">
-                        <div class="row" th:if="${!#lists.isEmpty(comingSoonMovies)}">
-                            <div class="slick-multiItem2">
-                                <div class="slide-it" th:each="movie : ${comingSoonMovies}">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <span class="movie-badge state" th:text="${movie.statusLabel}">개봉 예정</span>
-                                            <img th:src="@{${movie.posterUrl}}"
-                                                 th:alt="${movie.title}"
-                                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h6>
-                                            <p th:text="${movie.releaseDateText}">개봉 2026.04.18</p>
-                                            <p class="movie-item-summary" th:text="${movie.shortDescription}">영화 요약</p>
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a th:href="@{/movies/{id}(id=${movie.id})}">상세보기 <i class="ion-android-arrow-dropright"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="coming-text" th:if="${#lists.isEmpty(comingSoonMovies)}">TMDB 개봉 예정 목록을 아직 불러오지 못했습니다.</div>
-                    </div>
+    <section class="home-section home-upcoming-section">
+        <div class="container">
+            <div class="home-section__header">
+                <div>
+                    <span class="section-chip">개봉 예정</span>
+                    <h2>놓치지 말아야 할 다음 라인업</h2>
+                    <p>개봉일과 장르, 핵심 소개를 중심으로 예매 오픈 전에 먼저 살펴볼 수 있게 정리했습니다.</p>
                 </div>
             </div>
+
+            <div class="home-upcoming-grid" th:if="${!#lists.isEmpty(comingSoonMovies)}">
+                <article class="home-upcoming-card" th:each="movie : ${comingSoonMovies}">
+                    <a class="home-upcoming-card__poster" th:href="@{/movies/{id}(id=${movie.id})}">
+                        <img th:src="@{${movie.posterUrl}}"
+                             th:alt="${movie.title + ' 포스터'}"
+                             th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
+                    </a>
+                    <div class="home-upcoming-card__body">
+                        <span class="status-badge upcoming" th:text="${movie.statusLabel}">개봉 예정</span>
+                        <h3><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h3>
+                        <p th:text="${movie.overviewSnippet}">개봉 전 소개 문구</p>
+                        <ul>
+                            <li th:text="${movie.releaseDateText}">개봉 2026.04.18</li>
+                            <li th:text="${movie.genreText}">장르 정보 준비 중</li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+
+            <div class="empty-state-card" th:if="${#lists.isEmpty(comingSoonMovies)}">
+                개봉 예정 공개 영화 목록을 준비 중입니다.
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+
+    <section class="home-section home-promo-section">
+        <div class="container">
+            <div class="home-promo-grid">
+                <article class="home-info-banner home-info-banner--wide">
+                    <span class="section-chip">프로모션</span>
+                    <h2>예매 전 확인하면 좋은 안내와 혜택</h2>
+                    <p>이벤트, 취소 및 환불 정책, 고객지원 진입점을 한 구역에 모아두어 예매 전환이 끊기지 않도록 구성했습니다.</p>
+                    <div class="hero-actions">
+                        <a th:href="@{/support#faq}" class="hero-btn secondary">자주 묻는 질문</a>
+                        <a th:href="@{/support#cancel-policy}" class="hero-btn secondary">취소 · 환불 안내</a>
+                    </div>
+                </article>
+
+                <article class="home-info-banner">
+                    <span>멤버십 가이드</span>
+                    <strong>예매내역과 관람 흐름을 한 화면에서 확인</strong>
+                    <p>회원은 마이페이지 예매내역, 비회원은 예매번호 조회로 바로 이어집니다.</p>
+                    <a th:href="@{/booking/history}" class="detail-link">예매내역 보기</a>
+                </article>
+
+                <article class="home-info-banner">
+                    <span>특별관 안내</span>
+                    <strong>포맷과 좌석 경험을 빠르게 비교</strong>
+                    <p>IMAX, 리클라이너, 프리미엄 좌석 흐름을 예매 단계에서 자연스럽게 이어가도록 설계했습니다.</p>
+                    <a th:href="@{/booking}" class="detail-link">상영시간표 보기</a>
+                </article>
+
+                <article class="home-info-banner">
+                    <span>고객센터</span>
+                    <strong>취소, 환불, 단체 문의까지 한 번에</strong>
+                    <p>FAQ, 1:1 문의, 단체 관람 문의 등 운영 안내를 같은 톤으로 연결합니다.</p>
+                    <a th:href="@{/support}" class="detail-link">고객센터 바로가기</a>
+                </article>
+            </div>
+        </div>
+    </section>
+</main>
 
 <footer th:replace="~{fragments/site-layout :: siteFooter}"></footer>
 

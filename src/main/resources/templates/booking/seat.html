@@ -28,11 +28,18 @@
                 <li><a th:href="@{/booking}">빠른예매</a></li>
                 <li>좌석 선택</li>
             </ul>
-            <h1>좌석 선택</h1>
-            <p>선택한 상영 회차의 좌석 배치도와 잔여 좌석을 확인하고 원하는 좌석을 선택해주세요.</p>
+
+            <div class="booking-hero__intro">
+                <div>
+                    <span class="section-chip">SEAT SELECTION</span>
+                    <h1>좌석 선택</h1>
+                    <p>상영 정보, 좌석 배치, 인원 수, 예상 금액을 한 흐름 안에서 보며 예매를 이어갈 수 있도록 재정비했습니다.</p>
+                </div>
+            </div>
+
             <ol class="booking-stepper">
                 <li><span>01</span><strong>상영정보</strong></li>
-                <li class="is-active"><span>02</span><strong>인원 / 좌석</strong></li>
+                <li class="is-active"><span>02</span><strong>인원 · 좌석</strong></li>
                 <li><span>03</span><strong>결제</strong></li>
                 <li><span>04</span><strong>완료</strong></li>
             </ol>
@@ -58,44 +65,50 @@
                 <input type="hidden" id="senior-count-input" name="seniorCount" th:value="${bookingRequest.seniorCount != null ? bookingRequest.seniorCount : 0}">
                 <div id="selected-seat-inputs"></div>
 
-                <div class="booking-seat-layout">
-                    <section class="booking-seat-main">
-                        <article class="booking-panel screening-summary-bar">
-                            <div class="screening-summary-title">
-                                <h2>현재 상영 정보</h2>
-                                <span class="summary-chip">예매 진행 중</span>
+                <article class="booking-panel screening-summary-bar booking-stage-summary">
+                    <div class="screening-summary-title">
+                        <div>
+                            <span class="panel-step">CURRENT SHOWTIME</span>
+                            <h2>현재 상영 정보</h2>
+                        </div>
+                        <span class="summary-chip">좌석 선택 진행 중</span>
+                    </div>
+                    <div class="screening-summary-grid">
+                        <div class="summary-movie-group">
+                            <strong th:text="${selectedSchedule.movieTitle}">영화 제목</strong>
+                            <div class="meta-line">
+                                <em th:class="${selectedSchedule.ageRating == 'ALL' ? 'age-badge all' : 'age-badge age-' + selectedSchedule.ageRating}"
+                                    th:text="${selectedSchedule.ageRating == 'ALL' ? 'ALL' : selectedSchedule.ageRating}">12</em>
+                                <span th:text="${selectedSchedule.theaterName + ' | ' + selectedSchedule.screenName}">CineFlow 강남 | 1관</span>
                             </div>
-                            <div class="screening-summary-grid">
-                                <div class="summary-movie-group">
-                                    <strong th:text="${selectedSchedule.movieTitle}">영화 제목</strong>
-                                    <div class="meta-line">
-                                        <em th:class="${selectedSchedule.ageRating == 'ALL' ? 'age-badge all' : 'age-badge age-' + selectedSchedule.ageRating}"
-                                            th:text="${selectedSchedule.ageRating == 'ALL' ? 'ALL' : selectedSchedule.ageRating}">12</em>
-                                        <span th:text="${selectedSchedule.theaterName + ' | ' + selectedSchedule.screenName}">CineFlow 강남 | 1관</span>
-                                    </div>
-                                </div>
-                                <div class="summary-info-block">
-                                    <span>관람일</span>
-                                    <strong th:text="${#temporals.format(selectedSchedule.showDate, 'yyyy.MM.dd (E)')}">2026.04.03 (금)</strong>
-                                </div>
-                                <div class="summary-info-block">
-                                    <span>상영시간</span>
-                                    <strong th:text="${#temporals.format(selectedSchedule.startTime, 'HH:mm') + ' ~ ' + #temporals.format(selectedSchedule.endTime, 'HH:mm') + ' (' + selectedSchedule.runningTime + '분)'}">10:20 ~ 12:32 (132분)</strong>
-                                </div>
-                                <div class="summary-info-block summary-format">
-                                    <span>상영관</span>
-                                    <strong>
-                                        <em th:text="${selectedSchedule.screenType}">IMAX</em>
-                                        <em th:text="${'잔여 ' + selectedSchedule.availableSeats + '석'}">잔여 58석</em>
-                                        <em th:text="${#numbers.formatInteger(selectedSchedule.price, 3, 'COMMA') + '원부터'}">22,000원부터</em>
-                                    </strong>
-                                </div>
-                            </div>
-                        </article>
+                        </div>
+                        <div class="summary-info-block">
+                            <span>관람일</span>
+                            <strong th:text="${#temporals.format(selectedSchedule.showDate, 'yyyy.MM.dd (E)')}">2026.04.03 (금)</strong>
+                        </div>
+                        <div class="summary-info-block">
+                            <span>상영시간</span>
+                            <strong th:text="${#temporals.format(selectedSchedule.startTime, 'HH:mm') + ' ~ ' + #temporals.format(selectedSchedule.endTime, 'HH:mm') + ' (' + selectedSchedule.runningTime + '분)'}">10:20 ~ 12:32 (132분)</strong>
+                        </div>
+                        <div class="summary-info-block summary-format">
+                            <span>상영관</span>
+                            <strong>
+                                <em th:text="${selectedSchedule.screenType}">IMAX</em>
+                                <em th:text="${'잔여 ' + selectedSchedule.availableSeats + '석'}">잔여 58석</em>
+                                <em th:text="${#numbers.formatInteger(selectedSchedule.price, 3, 'COMMA') + '원부터'}">22,000원부터</em>
+                            </strong>
+                        </div>
+                    </div>
+                </article>
 
-                        <article class="booking-panel seat-select-panel">
+                <div class="booking-seat-layout booking-seat-layout--refined">
+                    <section class="booking-seat-main">
+                        <article class="booking-panel seat-select-panel seat-select-panel--people">
                             <div class="panel-head">
-                                <h2>인원 선택</h2>
+                                <div>
+                                    <span class="panel-step">STEP 2-1</span>
+                                    <h2>인원 선택</h2>
+                                </div>
                                 <p id="people-count-note" class="seat-panel-meta">총 1명 | 선택 좌석 0석</p>
                             </div>
                             <ul class="people-picker-list">
@@ -137,6 +150,12 @@
                         </article>
 
                         <article class="booking-panel seat-map-panel">
+                            <div class="panel-head">
+                                <div>
+                                    <span class="panel-step">STEP 2-2</span>
+                                    <h2>좌석 선택</h2>
+                                </div>
+                            </div>
                             <div class="seat-legend" aria-label="좌석 범례">
                                 <div class="legend-item"><span class="seat-sample available"></span><strong>선택 가능</strong></div>
                                 <div class="legend-item"><span class="seat-sample selected"></span><strong>선택 중</strong></div>
@@ -172,8 +191,13 @@
                         </article>
                     </section>
 
-                    <aside class="booking-summary booking-panel seat-summary-panel">
-                        <div class="panel-head"><h2>선택 요약</h2></div>
+                    <aside class="booking-summary booking-panel seat-summary-panel booking-summary--sticky">
+                        <div class="panel-head">
+                            <div>
+                                <span class="panel-step">SUMMARY</span>
+                                <h2>선택 요약</h2>
+                            </div>
+                        </div>
                         <div class="summary-card">
                             <img th:src="@{${selectedSchedule.posterUrl}}" th:alt="${selectedSchedule.movieTitle + ' 포스터'}">
                             <div class="summary-text">
@@ -203,13 +227,16 @@
                             <a href="#" id="reset-seat-selection">선택 초기화</a>
                             <a th:href="@{/booking(movieId=${selectedSchedule.movieId})}">다른 회차 보기</a>
                         </div>
-                        <p class="summary-note">다음 단계에서 예매자 정보와 결제수단을 입력하고 예매를 완료할 수 있습니다.</p>
+                        <p class="summary-note">인원 수와 좌석 수가 일치하면 다음 단계에서 예매자 정보와 결제수단을 입력할 수 있습니다.</p>
                     </aside>
                 </div>
             </form>
 
             <section class="booking-notice-section seat-notice-section">
-                <h2>좌석 선택 안내</h2>
+                <div class="section-header-inline">
+                    <h2>좌석 선택 안내</h2>
+                    <span class="section-chip">GUIDE</span>
+                </div>
                 <div class="booking-notice-grid">
                     <article class="notice-card">
                         <h3>중복 예매 방지</h3>
@@ -217,7 +244,7 @@
                     </article>
                     <article class="notice-card">
                         <h3>좌석별 금액 차이</h3>
-                        <p>프리미엄석과 커플석은 일반석과 다른 금액이 적용되도록 구조가 준비되어 있습니다.</p>
+                        <p>프리미엄석과 커플석은 일반석과 다른 금액이 적용되며, 요약 영역에서 금액이 함께 반영됩니다.</p>
                     </article>
                     <article class="notice-card">
                         <h3>다음 단계</h3>
