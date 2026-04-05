@@ -30,6 +30,7 @@ tmdb:
   base-url: https://api.themoviedb.org/3
   image-base-url: https://image.tmdb.org/t/p
   language: ko-KR
-  # Optional for local startup. When unset, the app still runs, public movie pages render with local fallback metadata,
-  # and only TMDB live lookup features fall back or stay unavailable.
+  # Public movie pages use TMDB live metadata with a short in-memory TTL cache.
+  # When TMDB_BEARER_TOKEN is unset, the app still runs and public pages render with local fallback metadata.
+  # Successful live lookups are cached briefly, while fallback results are kept much shorter and retried soon.
   bearer-token: ${TMDB_BEARER_TOKEN:}

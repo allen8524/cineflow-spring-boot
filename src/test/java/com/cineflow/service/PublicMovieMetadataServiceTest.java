@@ -13,12 +13,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,11 +33,13 @@ class PublicMovieMetadataServiceTest {
     @Mock
     private TmdbClient tmdbClient;
 
+    private MutableClock clock;
     private PublicMovieMetadataService publicMovieMetadataService;
 
     @BeforeEach
     void setUp() {
-        publicMovieMetadataService = new PublicMovieMetadataService(tmdbClient);
+        clock = new MutableClock(Instant.parse("2026-04-05T00:00:00Z"), ZoneId.of("UTC"));
+        publicMovieMetadataService = new PublicMovieMetadataService(tmdbClient, clock);
     }
 
     @Test
@@ -147,7 +154,7 @@ class PublicMovieMetadataServiceTest {
                 .title("Local Only Movie")
                 .shortDescription("Local short description")
                 .description("Local description")
-                .genre("SF · Drama")
+                .genre("SF, Drama")
                 .ageRating("12")
                 .runningTime(118)
                 .posterUrl("/images/uploads/local-only.jpg")
@@ -189,7 +196,10 @@ class PublicMovieMetadataServiceTest {
 
         when(tmdbClient.isConfigured()).thenReturn(true);
         when(tmdbClient.getMovieDetailWithMedia(321L))
-                .thenThrow(TmdbClientException.network("TMDB request failed because the TMDB server could not be reached. Please try again later.", new RuntimeException("timeout")));
+                .thenThrow(TmdbClientException.network(
+                        "TMDB request failed because the TMDB server could not be reached. Please try again later.",
+                        new RuntimeException("timeout")
+                ));
 
         PublicMovieMetadataDto result = publicMovieMetadataService.resolveMetadata(movie);
 
@@ -224,20 +234,11 @@ class PublicMovieMetadataServiceTest {
     }
 
     @Test
-    void resolveMetadataListAvoidsDuplicateLiveLookupWithinSingleRender() {
-        Movie first = Movie.builder()
+    void resolveMetadataUsesLiveCacheAcrossRepeatedCallsWithinTtl() {
+        Movie movie = Movie.builder()
                 .id(6L)
                 .tmdbId(777L)
-                .title("Duplicated Movie")
-                .status(MovieStatus.NOW_SHOWING)
-                .bookingOpen(true)
-                .active(true)
-                .build();
-
-        Movie second = Movie.builder()
-                .id(7L)
-                .tmdbId(777L)
-                .title("Duplicated Movie")
+                .title("Cached Live Movie")
                 .status(MovieStatus.NOW_SHOWING)
                 .bookingOpen(true)
                 .active(true)
@@ -245,21 +246,157 @@ class PublicMovieMetadataServiceTest {
 
         TmdbMovieDetailDto detail = new TmdbMovieDetailDto();
         detail.setId(777L);
-        detail.setTitle("Duplicated Movie");
+        detail.setTitle("Cached Live Movie");
         detail.setOverview("Live overview");
 
         when(tmdbClient.isConfigured()).thenReturn(true);
         when(tmdbClient.getMovieDetailWithMedia(777L)).thenReturn(detail);
 
+        PublicMovieMetadataDto first = publicMovieMetadataService.resolveMetadata(movie);
+        PublicMovieMetadataDto second = publicMovieMetadataService.resolveMetadata(movie);
+
+        assertThat(first.isLiveMetadata()).isTrue();
+        assertThat(second.isLiveMetadata()).isTrue();
+        verify(tmdbClient, times(1)).getMovieDetailWithMedia(777L);
+    }
+
+    @Test
+    void resolveMetadataRefreshesLiveCacheAfterTtlExpires() {
+        Movie movie = Movie.builder()
+                .id(7L)
+                .tmdbId(888L)
+                .title("Expiring Live Movie")
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(true)
+                .active(true)
+                .build();
+
+        TmdbMovieDetailDto firstDetail = new TmdbMovieDetailDto();
+        firstDetail.setId(888L);
+        firstDetail.setTitle("Expiring Live Movie");
+        firstDetail.setOverview("First live overview");
+
+        TmdbMovieDetailDto refreshedDetail = new TmdbMovieDetailDto();
+        refreshedDetail.setId(888L);
+        refreshedDetail.setTitle("Expiring Live Movie");
+        refreshedDetail.setOverview("Refreshed live overview");
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getMovieDetailWithMedia(888L)).thenReturn(firstDetail, refreshedDetail);
+
+        PublicMovieMetadataDto first = publicMovieMetadataService.resolveMetadata(movie);
+        clock.advance(Duration.ofMinutes(6));
+        PublicMovieMetadataDto second = publicMovieMetadataService.resolveMetadata(movie);
+
+        assertThat(first.getOverview()).isEqualTo("First live overview");
+        assertThat(second.getOverview()).isEqualTo("Refreshed live overview");
+        verify(tmdbClient, times(2)).getMovieDetailWithMedia(888L);
+    }
+
+    @Test
+    void resolveMetadataCachesFallbackOnlyBrieflyBeforeRetryingLiveLookup() {
+        Movie movie = Movie.builder()
+                .id(8L)
+                .tmdbId(4321L)
+                .title("Recovering Movie")
+                .description("Local fallback description")
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(true)
+                .active(true)
+                .build();
+
+        TmdbMovieDetailDto recoveredDetail = new TmdbMovieDetailDto();
+        recoveredDetail.setId(4321L);
+        recoveredDetail.setTitle("Recovering Movie");
+        recoveredDetail.setOverview("Recovered live overview");
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getMovieDetailWithMedia(4321L))
+                .thenThrow(TmdbClientException.network(
+                        "TMDB request failed because the TMDB server could not be reached. Please try again later.",
+                        new RuntimeException("timeout")
+                ))
+                .thenReturn(recoveredDetail);
+
+        PublicMovieMetadataDto first = publicMovieMetadataService.resolveMetadata(movie);
+        PublicMovieMetadataDto second = publicMovieMetadataService.resolveMetadata(movie);
+        clock.advance(Duration.ofSeconds(31));
+        PublicMovieMetadataDto third = publicMovieMetadataService.resolveMetadata(movie);
+
+        assertThat(first.isLiveMetadata()).isFalse();
+        assertThat(second.isLiveMetadata()).isFalse();
+        assertThat(third.isLiveMetadata()).isTrue();
+        assertThat(third.getOverview()).isEqualTo("Recovered live overview");
+        verify(tmdbClient, times(2)).getMovieDetailWithMedia(4321L);
+    }
+
+    @Test
+    void resolveMetadataListAvoidsDuplicateLiveLookupWithinSingleRender() {
+        Movie first = Movie.builder()
+                .id(9L)
+                .tmdbId(9999L)
+                .title("Duplicated Movie")
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(true)
+                .active(true)
+                .build();
+
+        Movie second = Movie.builder()
+                .id(10L)
+                .tmdbId(9999L)
+                .title("Duplicated Movie")
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(true)
+                .active(true)
+                .build();
+
+        TmdbMovieDetailDto detail = new TmdbMovieDetailDto();
+        detail.setId(9999L);
+        detail.setTitle("Duplicated Movie");
+        detail.setOverview("Live overview");
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getMovieDetailWithMedia(9999L)).thenReturn(detail);
+
         List<PublicMovieMetadataDto> results = publicMovieMetadataService.resolveMetadata(List.of(first, second));
 
         assertThat(results).hasSize(2);
-        assertThat(results.get(0).getLocalMovieId()).isEqualTo(6L);
-        assertThat(results.get(1).getLocalMovieId()).isEqualTo(7L);
-        assertThat(results.get(0).getTmdbId()).isEqualTo(777L);
-        assertThat(results.get(1).getTmdbId()).isEqualTo(777L);
+        assertThat(results.get(0).getLocalMovieId()).isEqualTo(9L);
+        assertThat(results.get(1).getLocalMovieId()).isEqualTo(10L);
+        assertThat(results.get(0).getTmdbId()).isEqualTo(9999L);
+        assertThat(results.get(1).getTmdbId()).isEqualTo(9999L);
         assertThat(results.get(0).isLiveMetadata()).isTrue();
         assertThat(results.get(1).isLiveMetadata()).isTrue();
-        verify(tmdbClient).getMovieDetailWithMedia(777L);
+        verify(tmdbClient, times(1)).getMovieDetailWithMedia(9999L);
+    }
+
+    private static final class MutableClock extends Clock {
+
+        private Instant currentInstant;
+        private final ZoneId zoneId;
+
+        private MutableClock(Instant currentInstant, ZoneId zoneId) {
+            this.currentInstant = currentInstant;
+            this.zoneId = zoneId;
+        }
+
+        private void advance(Duration duration) {
+            currentInstant = currentInstant.plus(duration);
+        }
+
+        @Override
+        public ZoneId getZone() {
+            return zoneId;
+        }
+
+        @Override
+        public Clock withZone(ZoneId zone) {
+            return new MutableClock(currentInstant, zone);
+        }
+
+        @Override
+        public Instant instant() {
+            return currentInstant;
+        }
     }
 }

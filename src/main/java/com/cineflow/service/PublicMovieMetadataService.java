@@ -5,23 +5,28 @@ import com.cineflow.dto.PublicMovieMetadataDto;
 import com.cineflow.dto.TmdbGenreDto;
 import com.cineflow.dto.TmdbMovieDetailDto;
 import com.cineflow.dto.TmdbMovieSummaryDto;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class PublicMovieMetadataService {
 
@@ -31,8 +36,23 @@ public class PublicMovieMetadataService {
     private static final String DEFAULT_SHORT_DESCRIPTION = "\uC0C1\uC138 \uC18C\uAC1C\uB294 \uC900\uBE44 \uC911\uC774\uC9C0\uB9CC \uC0C1\uC601 \uC815\uBCF4\uC640 \uC608\uB9E4\uB294 \uC815\uC0C1\uC801\uC73C\uB85C \uC774\uC6A9\uD558\uC2E4 \uC218 \uC788\uC2B5\uB2C8\uB2E4.";
     private static final int SHORT_DESCRIPTION_LIMIT = 120;
     private static final Pattern GENRE_SPLITTER = Pattern.compile("\\s*(?:,|/|\u00B7)\\s*");
+    // Keep successful TMDB lookups warm across short bursts of repeated page loads.
+    private static final Duration LIVE_METADATA_CACHE_TTL = Duration.ofMinutes(5);
+    // Keep fallback entries much shorter so transient upstream issues do not linger.
+    private static final Duration FALLBACK_METADATA_CACHE_TTL = Duration.ofSeconds(30);
 
     private final TmdbClient tmdbClient;
+    private final Clock clock;
+    private final Map<String, MetadataCacheEntry> metadataCache = new ConcurrentHashMap<>();
+
+    public PublicMovieMetadataService(TmdbClient tmdbClient) {
+        this(tmdbClient, Clock.systemUTC());
+    }
+
+    PublicMovieMetadataService(TmdbClient tmdbClient, Clock clock) {
+        this.tmdbClient = tmdbClient;
+        this.clock = clock;
+    }
 
     public PublicMovieMetadataDto resolveMetadata(Movie movie) {
         if (movie == null) {
@@ -44,19 +64,29 @@ public class PublicMovieMetadataService {
             return localFallback;
         }
 
+        Optional<PublicMovieMetadataDto> cachedMetadata = resolveFromTtlCache(movie);
+        if (cachedMetadata.isPresent()) {
+            return cachedMetadata.get();
+        }
+
         try {
-            return resolveLiveMetadata(movie).orElse(localFallback);
+            PublicMovieMetadataDto resolvedMetadata = resolveLiveMetadata(movie).orElse(localFallback);
+            cacheResolvedMetadata(movie, resolvedMetadata);
+            return resolvedMetadata;
         } catch (TmdbClientException exception) {
             log.warn("TMDB live metadata lookup failed. Falling back to local data. movieId={}, tmdbId={}, reason={}",
                     movie.getId(), movie.getTmdbId(), exception.getMessage());
+            cacheResolvedMetadata(movie, localFallback);
             return localFallback;
         } catch (IllegalArgumentException exception) {
             log.warn("TMDB metadata matching failed. Falling back to local data. movieId={}, tmdbId={}, reason={}",
                     movie.getId(), movie.getTmdbId(), exception.getMessage());
+            cacheResolvedMetadata(movie, localFallback);
             return localFallback;
         } catch (RuntimeException exception) {
             log.warn("Unexpected TMDB metadata error. Falling back to local data. movieId={}, tmdbId={}",
                     movie.getId(), movie.getTmdbId(), exception);
+            cacheResolvedMetadata(movie, localFallback);
             return localFallback;
         }
     }
@@ -103,6 +133,26 @@ public class PublicMovieMetadataService {
                 .map(detail -> toLiveMetadata(movie, detail));
     }
 
+    private Optional<PublicMovieMetadataDto> resolveFromTtlCache(Movie movie) {
+        Instant now = clock.instant();
+
+        for (String cacheKey : buildCandidateCacheKeys(movie)) {
+            MetadataCacheEntry cacheEntry = metadataCache.get(cacheKey);
+            if (cacheEntry == null) {
+                continue;
+            }
+
+            if (cacheEntry.isExpiredAt(now)) {
+                metadataCache.remove(cacheKey, cacheEntry);
+                continue;
+            }
+
+            return Optional.of(adaptCachedMetadata(movie, cacheEntry.metadata()));
+        }
+
+        return Optional.empty();
+    }
+
     private Optional<TmdbMovieSummaryDto> findTmdbMatch(Movie movie) {
         String query = trimToNull(movie.getTitle());
         if (query == null) {
@@ -131,6 +181,22 @@ public class PublicMovieMetadataService {
                         .filter(result -> titleMatches(result, normalizedTitle))
                         .findFirst())
                 .or(() -> Optional.of(results.get(0)));
+    }
+
+    private void cacheResolvedMetadata(Movie movie, PublicMovieMetadataDto resolvedMetadata) {
+        Instant now = clock.instant();
+        Duration ttl = resolvedMetadata.isLiveMetadata() ? LIVE_METADATA_CACHE_TTL : FALLBACK_METADATA_CACHE_TTL;
+        MetadataCacheEntry cacheEntry = new MetadataCacheEntry(resolvedMetadata, now.plus(ttl));
+
+        for (String cacheKey : buildCacheKeys(movie, resolvedMetadata)) {
+            metadataCache.put(cacheKey, cacheEntry);
+        }
+
+        evictExpiredEntries(now);
+    }
+
+    private void evictExpiredEntries(Instant now) {
+        metadataCache.entrySet().removeIf(entry -> entry.getValue().isExpiredAt(now));
     }
 
     private PublicMovieMetadataDto toLiveMetadata(Movie movie, TmdbMovieDetailDto detail) {
@@ -248,6 +314,44 @@ public class PublicMovieMetadataService {
         String normalizedTitle = normalizeTitle(movie.getTitle());
         Integer releaseYear = movie.getReleaseDate() != null ? movie.getReleaseDate().getYear() : null;
         return "search:" + Objects.toString(normalizedTitle, "") + ":" + Objects.toString(releaseYear, "");
+    }
+
+    private List<String> buildCandidateCacheKeys(Movie movie) {
+        Set<String> keys = new LinkedHashSet<>();
+        addTmdbKey(keys, movie.getTmdbId());
+        addLocalKey(keys, movie.getId());
+        addSearchKey(keys, movie.getTitle(), movie.getReleaseDate());
+        return List.copyOf(keys);
+    }
+
+    private List<String> buildCacheKeys(Movie movie, PublicMovieMetadataDto resolvedMetadata) {
+        Set<String> keys = new LinkedHashSet<>();
+        addTmdbKey(keys, firstNonNull(resolvedMetadata.getTmdbId(), movie.getTmdbId()));
+        addLocalKey(keys, movie.getId());
+        addSearchKey(keys, movie.getTitle(), movie.getReleaseDate());
+        return List.copyOf(keys);
+    }
+
+    private void addTmdbKey(Set<String> keys, Long tmdbId) {
+        if (tmdbId != null && tmdbId > 0) {
+            keys.add("tmdb:" + tmdbId);
+        }
+    }
+
+    private void addLocalKey(Set<String> keys, Long localMovieId) {
+        if (localMovieId != null && localMovieId > 0) {
+            keys.add("local:" + localMovieId);
+        }
+    }
+
+    private void addSearchKey(Set<String> keys, String title, LocalDate releaseDate) {
+        String normalizedTitle = normalizeTitle(title);
+        if (normalizedTitle == null) {
+            return;
+        }
+
+        Integer releaseYear = releaseDate != null ? releaseDate.getYear() : null;
+        keys.add("search:" + normalizedTitle + ":" + Objects.toString(releaseYear, ""));
     }
 
     private PublicMovieMetadataDto adaptCachedMetadata(Movie movie, PublicMovieMetadataDto cachedMetadata) {
@@ -415,5 +519,11 @@ public class PublicMovieMetadataService {
             return null;
         }
         return value.trim();
+    }
+
+    private record MetadataCacheEntry(PublicMovieMetadataDto metadata, Instant expiresAt) {
+        private boolean isExpiredAt(Instant currentTime) {
+            return !expiresAt.isAfter(currentTime);
+        }
     }
 }
