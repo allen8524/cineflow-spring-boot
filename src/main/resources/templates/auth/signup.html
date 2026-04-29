@@ -44,32 +44,32 @@
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                         <div class="auth-field">
                             <label for="loginId">아이디</label>
-                            <input id="loginId" th:field="*{loginId}" type="text" autocomplete="username" placeholder="4~20자의 아이디">
+                            <input id="loginId" th:field="*{loginId}" th:errorclass="is-invalid" type="text" autocomplete="username" placeholder="4~20자의 아이디" required>
                             <p class="field-error" th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">아이디 오류</p>
                         </div>
                         <div class="auth-field">
                             <label for="email">이메일</label>
-                            <input id="email" th:field="*{email}" type="email" autocomplete="email" placeholder="example@cineflow.co.kr">
+                            <input id="email" th:field="*{email}" th:errorclass="is-invalid" type="email" autocomplete="email" placeholder="example@cineflow.co.kr" required>
                             <p class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">이메일 오류</p>
                         </div>
                         <div class="auth-field">
                             <label for="password">비밀번호</label>
-                            <input id="password" th:field="*{password}" type="password" autocomplete="new-password" placeholder="8자 이상 입력해주세요">
+                            <input id="password" th:field="*{password}" th:errorclass="is-invalid" type="password" autocomplete="new-password" placeholder="8자 이상 입력해주세요" required>
                             <p class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">비밀번호 오류</p>
                         </div>
                         <div class="auth-field">
                             <label for="passwordConfirm">비밀번호 확인</label>
-                            <input id="passwordConfirm" th:field="*{passwordConfirm}" type="password" autocomplete="new-password" placeholder="비밀번호를 다시 입력해주세요">
+                            <input id="passwordConfirm" th:field="*{passwordConfirm}" th:errorclass="is-invalid" type="password" autocomplete="new-password" placeholder="비밀번호를 다시 입력해주세요" required>
                             <p class="field-error" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}">비밀번호 확인 오류</p>
                         </div>
                         <div class="auth-field">
                             <label for="name">이름</label>
-                            <input id="name" th:field="*{name}" type="text" autocomplete="name" placeholder="실명을 입력해주세요">
+                            <input id="name" th:field="*{name}" th:errorclass="is-invalid" type="text" autocomplete="name" placeholder="실명을 입력해주세요" required>
                             <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">이름 오류</p>
                         </div>
                         <div class="auth-field">
                             <label for="phone">휴대전화 번호</label>
-                            <input id="phone" th:field="*{phone}" type="text" autocomplete="tel" placeholder="01012345678">
+                            <input id="phone" th:field="*{phone}" th:errorclass="is-invalid" type="text" autocomplete="tel" placeholder="01012345678" required>
                             <p class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">휴대전화 번호 오류</p>
                         </div>
                         <div class="auth-submit-wrap">
@@ -85,6 +85,8 @@
         </div>
     </section>
 </main>
+
+<footer th:replace="~{fragments/site-layout :: siteFooter}"></footer>
 
 <script th:src="@{/js/jquery.js}"></script>
 <script th:src="@{/js/plugins.js}"></script>

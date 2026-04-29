@@ -193,6 +193,10 @@
                                 <span>회원 / 비회원 모두 확인 가능</span>
                             </li>
                             <li>
+                                <a th:href="@{/mypage/bookings}">마이페이지 예매내역</a>
+                                <span>로그인 후 계정에 연결된 예매 확인</span>
+                            </li>
+                            <li>
                                 <a th:href="@{/support#cancel-policy}">취소 · 환불 기준 보기</a>
                                 <span>상영 시작 전 정책 우선 확인</span>
                             </li>
@@ -200,7 +204,26 @@
                                 <a th:href="@{/booking}">빠른예매 다시 시작</a>
                                 <span>상영시간표와 좌석 선택으로 이동</span>
                             </li>
+                            <li>
+                                <a th:href="@{/movies}">전체 영화 보기</a>
+                                <span>현재 상영작과 예매 가능 작품 확인</span>
+                            </li>
                         </ul>
+                    </article>
+
+                    <article class="booking-panel support-side-card">
+                        <div class="panel-head">
+                            <div>
+                                <span class="panel-step">ACCOUNT</span>
+                                <h2>계정 바로가기</h2>
+                            </div>
+                        </div>
+                        <div class="history-action-grid support-account-links">
+                            <a th:href="@{/}">메인</a>
+                            <a th:href="@{/login}">로그인</a>
+                            <a th:href="@{/signup}">회원가입</a>
+                            <a th:href="@{/booking/history}">비회원 예매조회</a>
+                        </div>
                     </article>
 
                     <article class="booking-panel support-side-card">

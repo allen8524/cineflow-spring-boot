@@ -6,8 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SupportController {
 
-    @GetMapping({"/support", "/support.html"})
+    @GetMapping("/support")
     public String support() {
         return "support/index";
+    }
+
+    @GetMapping("/support.html")
+    public String legacySupport() {
+        return "redirect:/support";
     }
 }

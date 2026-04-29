@@ -6202,3 +6202,19 @@ a {
 .history-action-grid {
     flex-wrap: wrap;
 }
+
+.support-account-links {
+    display: flex;
+    gap: 10px;
+    min-width: 0;
+}
+
+.support-account-links a,
+.support-mini-list a,
+.support-notice-list a,
+.support-shortcut-card h3,
+.support-shortcut-card p,
+.support-contact-strip strong {
+    overflow-wrap: anywhere;
+    word-break: keep-all;
+}

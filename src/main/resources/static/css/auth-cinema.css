@@ -14,6 +14,7 @@
     grid-template-columns: minmax(280px, 420px) minmax(320px, 620px);
     gap: 28px;
     align-items: stretch;
+    min-width: 0;
 }
 
 .auth-layout--wide {
@@ -29,6 +30,7 @@
     display: grid;
     gap: 18px;
     box-shadow: 0 20px 45px rgba(3, 9, 23, 0.28);
+    min-width: 0;
 }
 
 .auth-intro-card h1 {
@@ -53,6 +55,7 @@
 
 .auth-form-panel {
     padding: 32px;
+    min-width: 0;
 }
 
 .auth-form-panel--compact {
@@ -81,6 +84,8 @@
 }
 
 .auth-field input {
+    width: 100%;
+    min-width: 0;
     border-radius: 12px;
     border: 1px solid rgba(148, 163, 184, 0.24);
     background: #0c1428;
@@ -88,6 +93,11 @@
     min-height: 54px;
     padding: 0 16px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-field input.is-invalid {
+    border-color: rgba(255, 143, 143, 0.88);
+    box-shadow: 0 0 0 4px rgba(255, 143, 143, 0.1);
 }
 
 .auth-field input:focus {
@@ -100,6 +110,9 @@
     margin: 0;
     color: #ff8f8f;
     font-size: 13px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    word-break: keep-all;
 }
 
 .auth-submit-wrap {
@@ -119,11 +132,22 @@
     flex-wrap: wrap;
     color: #a8bad9;
     font-size: 14px;
+    min-width: 0;
 }
 
 .auth-helper-links a {
     color: #dcf836;
     font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.auth-intro-card h1,
+.auth-intro-card p,
+.auth-feature-list,
+.auth-form-panel .panel-head,
+.auth-helper-links {
+    overflow-wrap: anywhere;
+    word-break: keep-all;
 }
 
 .auth-access-copy {
@@ -143,5 +167,20 @@
 
     .auth-form-grid--two-column {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .auth-page {
+        padding: 42px 0 64px;
+    }
+
+    .auth-intro-card,
+    .auth-form-panel {
+        padding: 24px;
+    }
+
+    .auth-intro-card h1 {
+        font-size: 34px;
     }
 }
