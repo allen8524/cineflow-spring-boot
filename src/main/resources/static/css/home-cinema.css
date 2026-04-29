@@ -6129,3 +6129,46 @@ a {
 .detail-schedule-list li {
     flex-wrap: wrap;
 }
+
+.booking-layout--refined,
+.booking-main-grid--refined,
+.booking-seat-layout--refined,
+.booking-payment-layout--refined,
+.screening-summary-grid,
+.payment-summary-grid,
+.summary-card,
+.summary-text,
+.summary-movie-group,
+.summary-info-block,
+.time-primary,
+.time-meta,
+.payment-input-card,
+.method-card,
+.booking-feedback-banner,
+.seat-summary-links,
+.complete-sub-links {
+    min-width: 0;
+}
+
+.movie-title,
+.summary-movie,
+.summary-text strong,
+.summary-movie-group strong,
+.summary-info-block strong,
+.time-primary span,
+.time-meta span,
+.seat-summary-links a,
+.complete-sub-links a,
+.method-card,
+.input-help {
+    overflow-wrap: anywhere;
+    word-break: keep-all;
+}
+
+.summary-text strong,
+.summary-movie-group strong,
+.summary-info-block strong,
+.time-primary span,
+.time-meta span {
+    white-space: normal;
+}

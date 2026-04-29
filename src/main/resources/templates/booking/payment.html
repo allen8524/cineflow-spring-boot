@@ -26,7 +26,7 @@
                 <li><a th:href="@{/}">홈</a></li>
                 <li><a th:href="@{/booking}">예매</a></li>
                 <li><a th:href="@{/booking}">빠른예매</a></li>
-                <li><a th:href="@{/booking/seat(scheduleId=${bookingRequest.scheduleId})}">좌석 선택</a></li>
+                <li><a th:href="${bookingRequest.scheduleId != null ? '/booking/seat?scheduleId=' + bookingRequest.scheduleId : '/booking'}">좌석 선택</a></li>
                 <li>결제</li>
             </ul>
 
@@ -69,11 +69,11 @@
                     </div>
                     <div class="screening-summary-grid payment-summary-grid">
                         <div class="summary-movie-group">
-                            <strong th:text="${bookingSummary.movieTitle}">영화 제목</strong>
+                            <strong th:text="${bookingSummary.movieTitleText}">영화 제목</strong>
                             <div class="meta-line">
-                                <em th:class="${bookingSummary.ageRating == 'ALL' ? 'age-badge all' : 'age-badge age-' + bookingSummary.ageRating}"
-                                    th:text="${bookingSummary.ageRating == 'ALL' ? 'ALL' : bookingSummary.ageRating}">12</em>
-                                <span th:text="${bookingSummary.theaterName + ' | ' + bookingSummary.screenName}">CineFlow 강남 | 1관</span>
+                                <em th:class="${bookingSummary.ageBadgeCssClass}"
+                                    th:text="${bookingSummary.ageBadgeText}">12</em>
+                                <span th:text="${bookingSummary.theaterName + ' | ' + bookingSummary.screenNameText}">CineFlow 강남 | 1관</span>
                             </div>
                         </div>
                         <div class="summary-info-block">
@@ -182,11 +182,13 @@
                             </div>
                         </div>
                         <div class="summary-card payment-summary-card">
-                            <img th:src="@{${bookingSummary.posterUrl}}" th:alt="${bookingSummary.movieTitle + ' 포스터'}">
+                            <img th:src="@{${bookingSummary.posterImageUrl}}"
+                                 th:alt="${bookingSummary.posterAltText}"
+                                 th:onerror="|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                             <div class="summary-text">
-                                <p class="summary-movie" th:text="${bookingSummary.movieTitle}">영화 제목</p>
+                                <p class="summary-movie" th:text="${bookingSummary.movieTitleText}">영화 제목</p>
                                 <ul>
-                                    <li><span>극장 / 상영관</span><strong th:text="${bookingSummary.theaterName + ' | ' + bookingSummary.screenName + '(' + bookingSummary.screenType + ')'}">CineFlow 강남 | 1관(IMAX)</strong></li>
+                                    <li><span>극장 / 상영관</span><strong th:text="${bookingSummary.theaterName + ' | ' + bookingSummary.screenNameText + '(' + bookingSummary.screenTypeText + ')'}">CineFlow 강남 | 1관(IMAX)</strong></li>
                                     <li><span>상영시간</span><strong th:text="${#temporals.format(bookingSummary.startTime, 'yyyy.MM.dd (E) HH:mm')}">2026.04.03 (금) 10:20</strong></li>
                                     <li><span>좌석</span><strong th:text="${bookingSummary.seatNames}">E7, E8</strong></li>
                                     <li><span>관람 인원</span><strong th:text="${bookingSummary.peopleLabel}">성인 2명 / 청소년 0명 / 우대 0명</strong></li>

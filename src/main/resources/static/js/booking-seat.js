@@ -22,6 +22,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var selectedSeats = [];
 
+    function getInitialSeatCodes() {
+        return Array.from(selectedSeatInputs.querySelectorAll('input[name="seatCodes"]'))
+            .map(function (input) {
+                return (input.value || "").trim().toUpperCase();
+            })
+            .filter(function (seatCode) {
+                return seatCode.length > 0;
+            });
+    }
+
     function getCount(type) {
         return parseInt(countInputs[type].value || "0", 10);
     }
@@ -130,6 +140,35 @@ document.addEventListener("DOMContentLoaded", function () {
         renderSummary();
     }
 
+    function hydrateInitialSeatSelection() {
+        var initialSeatCodes = getInitialSeatCodes();
+
+        if (initialSeatCodes.length === 0) {
+            return;
+        }
+
+        initialSeatCodes.forEach(function (seatCode) {
+            var button = seatButtons.find(function (seatButton) {
+                return seatButton.dataset.seatCode === seatCode && !seatButton.disabled;
+            });
+
+            if (!button || findSelectedSeatIndex(seatCode) >= 0) {
+                return;
+            }
+
+            selectedSeats.push({
+                code: seatCode,
+                price: parseInt(button.dataset.seatPrice || "0", 10)
+            });
+            button.classList.add("selected");
+        });
+
+        selectedSeats.sort(function (left, right) {
+            return compareSeatCodes(left.code, right.code);
+        });
+        trimSelectedSeatsToPeopleCount();
+    }
+
     document.querySelectorAll(".people-counter button").forEach(function (button) {
         button.addEventListener("click", function () {
             var counter = button.closest(".people-counter");
@@ -175,5 +214,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    hydrateInitialSeatSelection();
     renderSummary();
 });

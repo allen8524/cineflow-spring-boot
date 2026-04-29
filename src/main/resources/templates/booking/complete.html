@@ -96,16 +96,18 @@
                                 <span class="summary-chip" th:text="${booking.cancelAvailabilityLabel}">취소 가능</span>
                             </div>
                             <div class="summary-card complete-summary-card">
-                                <img th:src="@{${booking.posterUrl}}" th:alt="${booking.movieTitle + ' 포스터'}">
+                                <img th:src="@{${booking.posterImageUrl}}"
+                                     th:alt="${booking.posterAltText}"
+                                     th:onerror="|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                                 <div class="summary-text">
-                                    <p class="summary-movie" th:text="${booking.movieTitle}">영화 제목</p>
+                                    <p class="summary-movie" th:text="${booking.movieTitleText}">영화 제목</p>
                                     <div class="meta-line">
-                                        <em th:class="${booking.ageBadgeCssClass}" th:text="${booking.ageRating}">12</em>
-                                        <span th:text="${booking.theaterName + ' | ' + booking.screenName + '(' + booking.screenType + ')'}">CineFlow 강남 | 1관(IMAX)</span>
+                                        <em th:class="${booking.ageBadgeCssClass}" th:text="${booking.ageBadgeText}">12</em>
+                                        <span th:text="${booking.theaterName + ' | ' + booking.screenNameText + '(' + booking.screenTypeText + ')'}">CineFlow 강남 | 1관(IMAX)</span>
                                     </div>
                                     <ul class="complete-info-list">
                                         <li><span>극장</span><strong th:text="${booking.theaterName}">CineFlow 강남</strong></li>
-                                        <li><span>상영관</span><strong th:text="${booking.screenName + ' (' + booking.screenType + ')'}">1관 (IMAX)</strong></li>
+                                        <li><span>상영관</span><strong th:text="${booking.screenNameText + ' (' + booking.screenTypeText + ')'}">1관 (IMAX)</strong></li>
                                         <li><span>상영시간</span><strong th:text="${#temporals.format(booking.startTime, 'yyyy.MM.dd (E) HH:mm')}">2026.04.04 (금) 19:40</strong></li>
                                         <li><span>종료예정</span><strong th:text="${#temporals.format(booking.endTime, 'HH:mm')}">21:38</strong></li>
                                         <li><span>좌석</span><strong th:text="${booking.seatNames}">H10, H11, H12</strong></li>
@@ -116,7 +118,7 @@
                                         </li>
                                     </ul>
                                     <div class="format-tags">
-                                        <em th:text="${booking.screenType}">2D</em>
+                                        <em th:text="${booking.screenTypeText}">2D</em>
                                         <em th:text="${booking.stateLabel}">예매 완료</em>
                                         <em th:if="${booking.canceled}">취소 반영</em>
                                     </div>

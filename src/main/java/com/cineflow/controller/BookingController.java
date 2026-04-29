@@ -1,12 +1,12 @@
 package com.cineflow.controller;
 
 import com.cineflow.domain.Booking;
-import com.cineflow.domain.Movie;
 import com.cineflow.domain.PaymentMethod;
 import com.cineflow.domain.Theater;
 import com.cineflow.domain.User;
 import com.cineflow.dto.BookingRequestDto;
 import com.cineflow.dto.BookingSummaryDto;
+import com.cineflow.dto.MovieViewDto;
 import com.cineflow.dto.PaymentResultDto;
 import com.cineflow.dto.ScheduleViewDto;
 import com.cineflow.security.AuthenticatedUser;
@@ -28,9 +28,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpServletRequest;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -43,7 +47,7 @@ public class BookingController {
     private final ScheduleService scheduleService;
     private final SeatService seatService;
 
-    @GetMapping({"/booking", "/booking.html"})
+    @GetMapping("/booking")
     public String booking(
             @RequestParam(required = false) Long movieId,
             @RequestParam(required = false) Long theaterId,
@@ -63,8 +67,8 @@ public class BookingController {
             date = scheduleFromRequest.getShowDate();
         }
 
-        List<Movie> movies = movieService.getBookableMovies();
-        Movie selectedMovie = resolveSelectedMovie(movies, movieId);
+        List<MovieViewDto> movies = movieService.getBookableMovieViews();
+        MovieViewDto selectedMovie = resolveSelectedMovie(movies, movieId);
         List<Theater> theaters = selectedMovie != null
                 ? theaterService.getTheatersForMovie(selectedMovie.getId())
                 : theaterService.getAllTheaters();
@@ -97,6 +101,11 @@ public class BookingController {
         return "booking/quick";
     }
 
+    @GetMapping("/booking.html")
+    public String legacyBooking(HttpServletRequest request) {
+        return redirectWithQuery("/booking", request);
+    }
+
     @GetMapping({"/booking/history", "/booking-history.html"})
     public String history(
             @RequestParam(required = false) String bookingCode,
@@ -116,19 +125,23 @@ public class BookingController {
         return renderHistoryPage(currentUser, null, model, true);
     }
 
-    @GetMapping({"/booking/seat", "/booking-seat.html"})
+    @GetMapping("/booking/seat")
     public String seat(
             @RequestParam(required = false) Long scheduleId,
             @ModelAttribute("bookingRequest") BookingRequestDto bookingRequest,
+            RedirectAttributes redirectAttributes,
             Model model
     ) {
         Long resolvedScheduleId = bookingRequest.getScheduleId() != null ? bookingRequest.getScheduleId() : scheduleId;
-        ScheduleViewDto selectedSchedule = scheduleService.findScheduleView(resolvedScheduleId).orElseGet(scheduleService::getDefaultScheduleView);
+        if (resolvedScheduleId == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "상영 회차를 먼저 선택해 주세요.");
+            return "redirect:/booking";
+        }
 
+        ScheduleViewDto selectedSchedule = scheduleService.findScheduleView(resolvedScheduleId).orElse(null);
         if (selectedSchedule == null) {
-            model.addAttribute("selectedSchedule", null);
-            model.addAttribute("seatRows", List.of());
-            return "booking/seat";
+            redirectAttributes.addFlashAttribute("errorMessage", "선택한 상영 회차를 찾을 수 없습니다. 다시 선택해 주세요.");
+            return "redirect:/booking";
         }
 
         if (bookingRequest.getScheduleId() == null) {
@@ -146,6 +159,11 @@ public class BookingController {
         model.addAttribute("reservedSeatCodes", seatService.getReservedSeatCodes(selectedSchedule.getScheduleId()));
         model.addAttribute("baseSeatPrice", selectedSchedule.getPrice());
         return "booking/seat";
+    }
+
+    @GetMapping("/booking-seat.html")
+    public String legacySeat(HttpServletRequest request) {
+        return redirectWithQuery("/booking/seat", request);
     }
 
     @PostMapping("/booking/payment")
@@ -168,7 +186,7 @@ public class BookingController {
         }
     }
 
-    @GetMapping({"/booking/payment", "/booking-payment.html"})
+    @GetMapping("/booking/payment")
     public String payment(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @ModelAttribute("bookingRequest") BookingRequestDto bookingRequest,
@@ -190,6 +208,11 @@ public class BookingController {
         model.addAttribute("bookingSummary", bookingSummary);
         model.addAttribute("paymentMethods", PaymentMethod.values());
         return "booking/payment";
+    }
+
+    @GetMapping("/booking-payment.html")
+    public String legacyPayment(HttpServletRequest request) {
+        return redirectWithQuery("/booking/payment", request);
     }
 
     @PostMapping("/booking/complete")
@@ -348,12 +371,15 @@ public class BookingController {
         redirectAttributes.addFlashAttribute("bookingRequest", bookingRequest);
     }
 
-    private Movie resolveSelectedMovie(List<Movie> movies, Long movieId) {
+    private MovieViewDto resolveSelectedMovie(List<MovieViewDto> movies, Long movieId) {
         if (movies.isEmpty()) {
             return null;
         }
         if (movieId == null) {
-            return movies.get(0);
+            return movies.stream()
+                    .filter(movie -> !scheduleService.getAvailableDates(movie.getId(), null).isEmpty())
+                    .findFirst()
+                    .orElse(movies.get(0));
         }
         return movies.stream()
                 .filter(movie -> movie.getId().equals(movieId))
@@ -418,5 +444,45 @@ public class BookingController {
             return "/booking/history?bookingCode=" + booking.getBookingCode();
         }
         return "/booking/history";
+    }
+
+    private String redirectWithQuery(String path, HttpServletRequest request) {
+        String queryString = resolveQueryString(request);
+        if (!StringUtils.hasText(queryString)) {
+            return "redirect:" + path;
+        }
+        return "redirect:" + path + "?" + queryString;
+    }
+
+    private String resolveQueryString(HttpServletRequest request) {
+        if (request == null) {
+            return null;
+        }
+
+        String queryString = request.getQueryString();
+        if (StringUtils.hasText(queryString)) {
+            return queryString;
+        }
+
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        if (parameterMap == null || parameterMap.isEmpty()) {
+            return null;
+        }
+
+        return parameterMap.entrySet().stream()
+                .flatMap(entry -> {
+                    String[] values = entry.getValue();
+                    if (values == null || values.length == 0) {
+                        return java.util.stream.Stream.of(encodeQueryPart(entry.getKey()) + "=");
+                    }
+                    return java.util.Arrays.stream(values)
+                            .map(value -> encodeQueryPart(entry.getKey()) + "=" + encodeQueryPart(value));
+                })
+                .reduce((left, right) -> left + "&" + right)
+                .orElse(null);
+    }
+
+    private String encodeQueryPart(String value) {
+        return URLEncoder.encode(value == null ? "" : value, StandardCharsets.UTF_8);
     }
 }

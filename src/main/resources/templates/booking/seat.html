@@ -53,17 +53,15 @@
                 <span th:text="${errorMessage}">이미 예약된 좌석이 포함되어 있습니다.</span>
             </div>
 
-            <div th:if="${selectedSchedule == null}" class="empty-state-card">
-                선택한 상영 회차를 찾을 수 없습니다. 상영시간표에서 다시 선택해주세요.
-            </div>
-
             <form th:if="${selectedSchedule != null}" id="seat-selection-form" th:action="@{/booking/payment}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                 <input type="hidden" name="scheduleId" th:value="${selectedSchedule.scheduleId}">
                 <input type="hidden" id="adult-count-input" name="adultCount" th:value="${bookingRequest.adultCount != null ? bookingRequest.adultCount : 1}">
                 <input type="hidden" id="teen-count-input" name="teenCount" th:value="${bookingRequest.teenCount != null ? bookingRequest.teenCount : 0}">
                 <input type="hidden" id="senior-count-input" name="seniorCount" th:value="${bookingRequest.seniorCount != null ? bookingRequest.seniorCount : 0}">
-                <div id="selected-seat-inputs"></div>
+                <div id="selected-seat-inputs">
+                    <input type="hidden" name="seatCodes" th:each="seatCode : ${bookingRequest.seatCodes}" th:value="${seatCode}">
+                </div>
 
                 <article class="booking-panel screening-summary-bar booking-stage-summary">
                     <div class="screening-summary-title">
@@ -75,11 +73,11 @@
                     </div>
                     <div class="screening-summary-grid">
                         <div class="summary-movie-group">
-                            <strong th:text="${selectedSchedule.movieTitle}">영화 제목</strong>
+                            <strong th:text="${selectedSchedule.movieTitleText}">영화 제목</strong>
                             <div class="meta-line">
-                                <em th:class="${selectedSchedule.ageRating == 'ALL' ? 'age-badge all' : 'age-badge age-' + selectedSchedule.ageRating}"
-                                    th:text="${selectedSchedule.ageRating == 'ALL' ? 'ALL' : selectedSchedule.ageRating}">12</em>
-                                <span th:text="${selectedSchedule.theaterName + ' | ' + selectedSchedule.screenName}">CineFlow 강남 | 1관</span>
+                                <em th:class="${selectedSchedule.ageBadgeCssClass}"
+                                    th:text="${selectedSchedule.ageBadgeText}">12</em>
+                                <span th:text="${selectedSchedule.theaterName + ' | ' + selectedSchedule.screenNameText}">CineFlow 강남 | 1관</span>
                             </div>
                         </div>
                         <div class="summary-info-block">
@@ -93,7 +91,7 @@
                         <div class="summary-info-block summary-format">
                             <span>상영관</span>
                             <strong>
-                                <em th:text="${selectedSchedule.screenType}">IMAX</em>
+                                <em th:text="${selectedSchedule.screenTypeText}">IMAX</em>
                                 <em th:text="${'잔여 ' + selectedSchedule.availableSeats + '석'}">잔여 58석</em>
                                 <em th:text="${#numbers.formatInteger(selectedSchedule.price, 3, 'COMMA') + '원부터'}">22,000원부터</em>
                             </strong>
@@ -199,9 +197,11 @@
                             </div>
                         </div>
                         <div class="summary-card">
-                            <img th:src="@{${selectedSchedule.posterUrl}}" th:alt="${selectedSchedule.movieTitle + ' 포스터'}">
+                            <img th:src="@{${selectedSchedule.posterImageUrl}}"
+                                 th:alt="${selectedSchedule.posterAltText}"
+                                 th:onerror="|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                             <div class="summary-text">
-                                <p class="summary-movie" th:text="${selectedSchedule.movieTitle}">영화 제목</p>
+                                <p class="summary-movie" th:text="${selectedSchedule.movieTitleText}">영화 제목</p>
                                 <ul>
                                     <li><span>극장 / 상영관</span><strong th:text="${selectedSchedule.theaterName + ' | ' + selectedSchedule.screenDisplayName}">CineFlow 강남 | 1관(IMAX)</strong></li>
                                     <li><span>일시</span><strong th:text="${#temporals.format(selectedSchedule.showDate, 'yyyy.MM.dd (E) ') + #temporals.format(selectedSchedule.startTime, 'HH:mm')}">2026.04.03 (금) 10:20</strong></li>

@@ -45,6 +45,11 @@ import java.util.List;
 )
 public class Booking {
 
+    private static final String DEFAULT_POSTER_URL = "/images/uploads/movie-single.jpg";
+    private static final String DEFAULT_MOVIE_TITLE = "영화 정보 준비 중";
+    private static final String DEFAULT_SCREEN_NAME = "상영관 정보 준비 중";
+    private static final String DEFAULT_SCREEN_TYPE = "상영 형식 준비 중";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -186,6 +191,10 @@ public class Booking {
 
     @Transient
     public String getAgeBadgeCssClass() {
+        if (ageRating == null || ageRating.isBlank()) {
+            return "age-badge";
+        }
+
         return switch (ageRating) {
             case "15" -> "age-badge age-15";
             case "19" -> "age-badge age-19";
@@ -193,5 +202,35 @@ public class Booking {
             case "ALL" -> "age-badge all";
             default -> "age-badge";
         };
+    }
+
+    @Transient
+    public String getAgeBadgeText() {
+        return ageRating != null && !ageRating.isBlank() ? ageRating : "?";
+    }
+
+    @Transient
+    public String getPosterImageUrl() {
+        return posterUrl != null && !posterUrl.isBlank() ? posterUrl : DEFAULT_POSTER_URL;
+    }
+
+    @Transient
+    public String getPosterAltText() {
+        return getMovieTitleText() + " 포스터";
+    }
+
+    @Transient
+    public String getMovieTitleText() {
+        return movieTitle != null && !movieTitle.isBlank() ? movieTitle : DEFAULT_MOVIE_TITLE;
+    }
+
+    @Transient
+    public String getScreenNameText() {
+        return screenName != null && !screenName.isBlank() ? screenName : DEFAULT_SCREEN_NAME;
+    }
+
+    @Transient
+    public String getScreenTypeText() {
+        return screenType != null && !screenType.isBlank() ? screenType : DEFAULT_SCREEN_TYPE;
     }
 }

@@ -91,6 +91,12 @@ public class MovieService {
         return movieRepository.findAllByActiveTrueAndBookingOpenTrueOrderByReleaseDateDescTitleAsc();
     }
 
+    public List<MovieViewDto> getBookableMovieViews() {
+        return getBookableMovies().stream()
+                .map(this::toView)
+                .toList();
+    }
+
     public List<Movie> getAllMoviesForAdmin() {
         return movieRepository.findAll(Sort.by(
                 Sort.Order.desc("active"),

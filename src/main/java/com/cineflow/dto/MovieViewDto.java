@@ -20,6 +20,8 @@ public class MovieViewDto {
     private static final String DEFAULT_RUNNING_TIME_TEXT = "\uC0C1\uC601\uC2DC\uAC04 \uC5C5\uB370\uC774\uD2B8 \uC608\uC815";
     private static final String DEFAULT_AGE_RATING_TEXT = "\uAD00\uB78C\uB4F1\uAE09 \uC815\uBCF4 \uC5C5\uB370\uC774\uD2B8 \uC608\uC815";
     private static final String DEFAULT_METRIC_TEXT = "\uC9D1\uACC4\uC911";
+    private static final String DEFAULT_TITLE_TEXT = "\uC601\uD654 \uC815\uBCF4 \uC900\uBE44 \uC911";
+    private static final String DEFAULT_POSTER_URL = "/images/uploads/movie-single.jpg";
 
     private final Long id;
     private final String title;
@@ -37,6 +39,18 @@ public class MovieViewDto {
     private final MovieStatus status;
     private final boolean bookingOpen;
     private final boolean active;
+
+    public String getTitleText() {
+        return title != null && !title.isBlank() ? title : DEFAULT_TITLE_TEXT;
+    }
+
+    public String getPosterImageUrl() {
+        return posterUrl != null && !posterUrl.isBlank() ? posterUrl : DEFAULT_POSTER_URL;
+    }
+
+    public String getPosterAltText() {
+        return getTitleText() + " 포스터";
+    }
 
     public String getAgeBadgeCssClass() {
         if (ageRating == null) {

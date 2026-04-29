@@ -48,7 +48,7 @@
             <div class="booking-progress-glance">
                 <div>
                     <span>선택 영화</span>
-                    <strong th:text="${selectedMovie != null ? selectedMovie.title : '영화를 선택해주세요'}">영화를 선택해주세요</strong>
+                    <strong th:text="${selectedMovie != null ? selectedMovie.titleText : '영화를 선택해주세요'}">영화를 선택해주세요</strong>
                 </div>
                 <div>
                     <span>선택 극장</span>
@@ -86,10 +86,10 @@
                         <ul class="selection-list movie-selection-list">
                             <li th:each="movie : ${movies}" th:classappend="${selectedMovie != null and movie.id == selectedMovie.id} ? ' is-selected' : ''">
                                 <a th:href="@{/booking(movieId=${movie.id})}">
-                                    <span class="movie-title" th:text="${movie.title}">시간의 궤도</span>
+                                    <span class="movie-title" th:text="${movie.titleText}">시간의 궤도</span>
                                     <span class="meta-line">
-                                        <em th:class="${movie.ageBadgeCssClass}" th:text="${movie.ageRating}">12</em>
-                                        <span th:text="${movie.metricName + ' ' + movie.bookingRate + '%'}">예매율 31.2%</span>
+                                        <em th:class="${movie.ageBadgeCssClass}" th:text="${movie.ageBadgeText}">12</em>
+                                        <span th:text="${movie.metricName + ' ' + movie.bookingRateText}">예매율 31.2%</span>
                                     </span>
                                 </a>
                             </li>
@@ -167,7 +167,7 @@
                                         <span th:text="${schedule.totalSeats + '석 중 ' + schedule.availableSeats + '석 가능'}">220석 중 58석 가능</span>
                                     </div>
                                     <div class="time-tags">
-                                        <em th:text="${schedule.screenType}">IMAX</em>
+                                        <em th:text="${schedule.screenTypeText}">IMAX</em>
                                         <em th:text="${schedule.seatAvailabilityLabel}">예매 가능</em>
                                     </div>
                                 </a>
@@ -185,12 +185,15 @@
                         </div>
                     </div>
                     <div class="summary-card">
-                        <img th:if="${selectedMovie != null}" th:src="@{${selectedMovie.posterUrl}}" th:alt="${selectedMovie.title + ' 포스터'}">
+                        <img th:if="${selectedMovie != null}"
+                             th:src="@{${selectedMovie.posterImageUrl}}"
+                             th:alt="${selectedMovie.posterAltText}"
+                             th:onerror="|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                         <img th:if="${selectedMovie == null}" th:src="@{/images/uploads/movie-single.jpg}" alt="영화 포스터">
                         <div class="summary-text">
-                            <p class="summary-movie" th:text="${selectedMovie != null ? selectedMovie.title : '영화를 선택해주세요'}">시간의 궤도</p>
+                            <p class="summary-movie" th:text="${selectedMovie != null ? selectedMovie.titleText : '영화를 선택해주세요'}">시간의 궤도</p>
                             <ul>
-                                <li><span>선택한 영화</span><strong th:text="${selectedMovie != null ? selectedMovie.title : '미선택'}">시간의 궤도</strong></li>
+                                <li><span>선택한 영화</span><strong th:text="${selectedMovie != null ? selectedMovie.titleText : '미선택'}">시간의 궤도</strong></li>
                                 <li><span>선택한 극장</span><strong th:text="${selectedTheater != null ? selectedTheater.name : (selectedSchedule != null ? selectedSchedule.theaterName : '전체 극장')}">CineFlow 강남</strong></li>
                                 <li><span>선택한 날짜</span><strong th:text="${selectedDate != null ? #temporals.format(selectedDate, 'yyyy.MM.dd (E)') : '날짜 선택'}">2026.04.04 (금)</strong></li>
                                 <li><span>선택한 시간</span><strong th:text="${selectedSchedule != null ? #temporals.format(selectedSchedule.startTime, 'HH:mm') + ' ~ ' + #temporals.format(selectedSchedule.endTime, 'HH:mm') : '시간 선택'}">19:40 ~ 21:38</strong></li>
