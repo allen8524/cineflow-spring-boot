@@ -23,6 +23,11 @@ public class PublicMovieMetadataDto {
     private static final String DEFAULT_RUNNING_TIME_TEXT = "\uC0C1\uC601\uC2DC\uAC04 \uCD94\uD6C4 \uC548\uB0B4";
     private static final String DEFAULT_AGE_RATING_TEXT = "\uAD00\uB78C\uB4F1\uAE09 \uCD94\uD6C4 \uC548\uB0B4";
     private static final String DEFAULT_METRIC_TEXT = "\uC9D1\uACC4\uC911";
+    private static final String DEFAULT_TITLE_TEXT = "\uC601\uD654 \uC815\uBCF4 \uC900\uBE44 \uC911";
+    private static final String DEFAULT_DESCRIPTION_TEXT = "\uD604\uC7AC \uC601\uD654 \uC18C\uAC1C\uB97C \uBD88\uB7EC\uC624\uB294 \uC911\uC785\uB2C8\uB2E4. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694.";
+    private static final String DEFAULT_SHORT_DESCRIPTION_TEXT = "\uC601\uD654 \uC18C\uAC1C\uB97C \uC900\uBE44 \uC911\uC785\uB2C8\uB2E4.";
+    private static final String DEFAULT_POSTER_URL = "/images/uploads/movie-single.jpg";
+    private static final String DEFAULT_BACKDROP_URL = "/images/uploads/slider-bg.jpg";
     private static final int HERO_COPY_LIMIT = 220;
     private static final int OVERVIEW_SNIPPET_LIMIT = 150;
 
@@ -49,6 +54,10 @@ public class PublicMovieMetadataDto {
         return localMovieId != null ? localMovieId : tmdbId;
     }
 
+    public Long getDetailRouteId() {
+        return getId();
+    }
+
     public Long getBookingMovieId() {
         return localMovieId;
     }
@@ -67,6 +76,38 @@ public class PublicMovieMetadataDto {
 
     public String getDescription() {
         return overview;
+    }
+
+    public String getTitleText() {
+        return firstNonBlank(title, DEFAULT_TITLE_TEXT);
+    }
+
+    public String getDescriptionText() {
+        return firstNonBlank(overview, shortDescription, DEFAULT_DESCRIPTION_TEXT);
+    }
+
+    public String getShortDescriptionText() {
+        return firstNonBlank(shortDescription, overview, DEFAULT_SHORT_DESCRIPTION_TEXT);
+    }
+
+    public String getHeroCopyText() {
+        return firstNonBlank(getHeroCopy(), DEFAULT_SHORT_DESCRIPTION_TEXT);
+    }
+
+    public String getOverviewSnippetText() {
+        return firstNonBlank(getOverviewSnippet(), DEFAULT_SHORT_DESCRIPTION_TEXT);
+    }
+
+    public String getPosterImageUrl() {
+        return firstNonBlank(posterUrl, DEFAULT_POSTER_URL);
+    }
+
+    public String getBackdropImageUrl() {
+        return firstNonBlank(backdropUrl, DEFAULT_BACKDROP_URL);
+    }
+
+    public String getPosterAltText() {
+        return getTitleText() + " 포스터";
     }
 
     public String getHeroCopy() {

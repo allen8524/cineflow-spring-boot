@@ -21,7 +21,7 @@
 
 <main class="cinema-page storefront-detail-page">
     <section class="cinema-page-hero movie-detail-top"
-             th:style="|background-image: linear-gradient(90deg, rgba(8, 12, 24, 0.94) 0%, rgba(12, 18, 37, 0.84) 48%, rgba(12, 18, 37, 0.56) 100%), url('${movie.backdropUrl}'); background-size: cover; background-position: center;|">
+             th:style="|background-image: linear-gradient(90deg, rgba(8, 12, 24, 0.94) 0%, rgba(12, 18, 37, 0.84) 48%, rgba(12, 18, 37, 0.56) 100%), url('${movie.backdropImageUrl}'); background-size: cover; background-position: center;|">
         <div class="container">
             <ul class="cinema-breadcrumb">
                 <li><a th:href="@{/}">홈</a></li>
@@ -31,18 +31,18 @@
 
             <div class="detail-hero-shell">
                 <div class="detail-poster-col detail-poster-card">
-                    <img th:src="@{${movie.posterUrl}}"
-                         th:alt="${movie.title + ' 포스터'}"
-                         th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
+                    <img th:src="@{${movie.posterImageUrl}}"
+                         th:alt="${movie.posterAltText}"
+                         th:onerror="|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                 </div>
 
                 <div class="detail-info-col detail-copy-panel">
                     <p class="hero-kicker" th:text="${movie.statusLabel}">현재 상영중</p>
-                    <h1 th:text="${movie.title}">영화 제목</h1>
+                    <h1 th:text="${movie.titleText}">영화 제목</h1>
                     <p class="detail-original-title"
                        th:if="${movie.originalTitleVisible}"
                        th:text="${movie.originalTitle}">Original Title</p>
-                    <p class="detail-tagline" th:text="${movie.shortDescription}">영화 핵심 소개 문구</p>
+                    <p class="detail-tagline" th:text="${movie.shortDescriptionText}">영화 핵심 소개 문구</p>
 
                     <ul class="detail-meta-list">
                         <li>
@@ -95,7 +95,7 @@
                     <ul>
                         <li>
                             <span>선택 작품</span>
-                            <strong th:text="${movie.title}">영화 제목</strong>
+                            <strong th:text="${movie.titleText}">영화 제목</strong>
                         </li>
                         <li>
                             <span>추천 극장</span>
@@ -132,7 +132,7 @@
                             <h2>줄거리</h2>
                             <span class="section-chip">OVERVIEW</span>
                         </div>
-                        <p class="detail-copy" th:text="${movie.description}">영화 줄거리</p>
+                        <p class="detail-copy" th:text="${movie.descriptionText}">영화 줄거리</p>
                     </article>
 
                     <article class="detail-block">
@@ -245,21 +245,21 @@
 
                 <div class="recommend-grid" th:if="${!#lists.isEmpty(relatedMovies)}">
                     <article class="recommend-card" th:each="relatedMovie : ${relatedMovies}">
-                        <a th:href="@{/movies/{id}(id=${relatedMovie.id})}">
-                            <img th:src="@{${relatedMovie.posterUrl}}"
-                                 th:alt="${relatedMovie.title + ' 포스터'}"
-                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
+                        <a th:href="@{/movies/{id}(id=${relatedMovie.detailRouteId})}">
+                            <img th:src="@{${relatedMovie.posterImageUrl}}"
+                                 th:alt="${relatedMovie.posterAltText}"
+                                 th:onerror="|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                         </a>
                         <h4>
-                            <a th:href="@{/movies/{id}(id=${relatedMovie.id})}" th:text="${relatedMovie.title}">추천 영화</a>
+                            <a th:href="@{/movies/{id}(id=${relatedMovie.detailRouteId})}" th:text="${relatedMovie.titleText}">추천 영화</a>
                         </h4>
                         <p th:text="${relatedMovie.statusLabel + ' · ' + relatedMovie.releaseDateText}">현재 상영중 · 개봉 2026.04.10</p>
-                        <p class="recommend-copy" th:text="${relatedMovie.overviewSnippet}">추천 영화 요약</p>
+                        <p class="recommend-copy" th:text="${relatedMovie.overviewSnippetText}">추천 영화 요약</p>
                         <a th:if="${relatedMovie.bookable}"
                            th:href="@{/booking(movieId=${relatedMovie.bookingMovieId})}"
                            class="detail-link">바로 예매</a>
                         <a th:if="${!relatedMovie.bookable}"
-                           th:href="@{/movies/{id}(id=${relatedMovie.id})}"
+                           th:href="@{/movies/{id}(id=${relatedMovie.detailRouteId})}"
                            class="detail-link">상세보기</a>
                     </article>
                 </div>

@@ -26,13 +26,13 @@
             <div class="slick-hero storefront-hero-slider" th:if="${!#lists.isEmpty(heroMovies)}">
                 <div class="hero-slide storefront-hero-card"
                      th:each="movie : ${heroMovies}"
-                     th:style="|background-image:url('${movie.backdropUrl}');|">
+                     th:style="|background-image:url('${movie.backdropImageUrl}');|">
                     <div class="hero-overlay"></div>
                     <div class="hero-content-wrap">
                         <div class="hero-copy-area">
                             <p class="hero-kicker" th:text="${movie.statusLabel}">현재 상영작</p>
-                            <h1 th:text="${movie.title}">영화 제목</h1>
-                            <p class="hero-copy" th:text="${movie.heroCopy}">지금 가장 주목받는 영화를 만나보세요.</p>
+                            <h1 th:text="${movie.titleText}">영화 제목</h1>
+                            <p class="hero-copy" th:text="${movie.heroCopyText}">지금 가장 주목받는 영화를 만나보세요.</p>
                             <ul class="hero-meta">
                                 <li th:text="${movie.releaseDateText}">개봉 2026.04.10</li>
                                 <li th:text="${movie.genreText}">장르 정보 준비 중</li>
@@ -44,13 +44,13 @@
                                    th:href="@{/booking(movieId=${movie.bookingMovieId})}"
                                    class="hero-btn primary">예매하기</a>
                                 <span th:if="${!movie.bookable}" class="hero-btn primary">예매 정보 준비 중</span>
-                                <a th:href="@{/movies/{id}(id=${movie.id})}" class="hero-btn secondary">상세보기</a>
+                                <a th:href="@{/movies/{id}(id=${movie.detailRouteId})}" class="hero-btn secondary">상세보기</a>
                             </div>
                         </div>
                         <div class="hero-poster storefront-hero-poster">
-                            <img th:src="@{${movie.posterUrl}}"
-                                 th:alt="${movie.title + ' 포스터'}"
-                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
+                            <img th:src="@{${movie.posterImageUrl}}"
+                                 th:alt="${movie.posterAltText}"
+                                 th:onerror="|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                         </div>
                     </div>
                 </div>
@@ -83,8 +83,8 @@
                     <div class="home-booking-feature__content" th:if="${featuredMovie != null}">
                         <div class="home-booking-feature__copy">
                             <span class="home-booking-feature__label">추천 작품</span>
-                            <h3 th:text="${featuredMovie.title}">영화 제목</h3>
-                            <p th:text="${featuredMovie.shortDescription}">상영과 예매를 함께 살펴보기 좋은 대표 작품입니다.</p>
+                            <h3 th:text="${featuredMovie.titleText}">영화 제목</h3>
+                            <p th:text="${featuredMovie.shortDescriptionText}">상영과 예매를 함께 살펴보기 좋은 대표 작품입니다.</p>
                             <ul class="home-booking-feature__meta">
                                 <li th:text="${featuredMovie.releaseDateText}">개봉 2026.04.10</li>
                                 <li th:text="${featuredMovie.runningTimeText}">132분</li>
@@ -97,7 +97,7 @@
                                th:href="@{/booking(movieId=${featuredMovie.bookingMovieId})}"
                                class="hero-btn primary">바로 예매</a>
                             <span th:if="${!featuredMovie.bookable}" class="hero-btn primary">예매 정보 준비 중</span>
-                            <a th:href="@{/movies/{id}(id=${featuredMovie.id})}" class="hero-btn secondary">영화 상세</a>
+                            <a th:href="@{/movies/{id}(id=${featuredMovie.detailRouteId})}" class="hero-btn secondary">영화 상세</a>
                         </div>
                     </div>
 
@@ -154,15 +154,15 @@
             <div class="home-showcase-layout">
                 <div class="home-showcase-grid" th:if="${!#lists.isEmpty(nowShowingMovies)}">
                     <article class="home-showcase-card" th:each="movie : ${nowShowingMovies}">
-                        <a class="home-showcase-card__poster" th:href="@{/movies/{id}(id=${movie.id})}">
+                        <a class="home-showcase-card__poster" th:href="@{/movies/{id}(id=${movie.detailRouteId})}">
                             <span class="status-badge" th:text="${movie.statusLabel}">현재 상영중</span>
-                            <img th:src="@{${movie.posterUrl}}"
-                                 th:alt="${movie.title + ' 포스터'}"
-                                 th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
+                            <img th:src="@{${movie.posterImageUrl}}"
+                                 th:alt="${movie.posterAltText}"
+                                 th:onerror="|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                         </a>
                         <div class="home-showcase-card__body">
                             <div class="home-showcase-card__head">
-                                <h3><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h3>
+                                <h3><a th:href="@{/movies/{id}(id=${movie.detailRouteId})}" th:text="${movie.titleText}">영화 제목</a></h3>
                                 <span th:class="${movie.ageBadgeCssClass}" th:text="${movie.ageBadgeText}">12</span>
                             </div>
                             <ul class="home-showcase-card__meta">
@@ -170,13 +170,13 @@
                                 <li th:text="${movie.runningTimeText}">132분</li>
                                 <li th:text="${movie.genreText}">장르 정보 준비 중</li>
                             </ul>
-                            <p th:text="${movie.overviewSnippet}">영화 요약</p>
+                            <p th:text="${movie.overviewSnippetText}">영화 요약</p>
                             <div class="home-showcase-card__actions">
                                 <a th:if="${movie.bookable}"
                                    th:href="@{/booking(movieId=${movie.bookingMovieId})}"
                                    class="book-btn">예매하기</a>
                                 <span th:if="${!movie.bookable}" class="book-btn">예매 준비 중</span>
-                                <a th:href="@{/movies/{id}(id=${movie.id})}" class="detail-link">상세보기</a>
+                                <a th:href="@{/movies/{id}(id=${movie.detailRouteId})}" class="detail-link">상세보기</a>
                             </div>
                         </div>
                     </article>
@@ -193,10 +193,10 @@
                     </div>
                     <ol class="home-rank-board__list" th:if="${!#lists.isEmpty(boxOfficeMovies)}">
                         <li th:each="movie, stat : ${boxOfficeMovies}">
-                            <a th:href="@{/movies/{id}(id=${movie.id})}">
+                            <a th:href="@{/movies/{id}(id=${movie.detailRouteId})}">
                                 <strong th:text="${stat.index + 1}">1</strong>
                                 <div>
-                                    <span th:text="${movie.title}">영화 제목</span>
+                                    <span th:text="${movie.titleText}">영화 제목</span>
                                     <em th:text="${movie.releaseDateText + ' · ' + movie.runningTimeText}">개봉 2026.04.10 · 132분</em>
                                 </div>
                             </a>
@@ -222,15 +222,15 @@
 
             <div class="home-upcoming-grid" th:if="${!#lists.isEmpty(comingSoonMovies)}">
                 <article class="home-upcoming-card" th:each="movie : ${comingSoonMovies}">
-                    <a class="home-upcoming-card__poster" th:href="@{/movies/{id}(id=${movie.id})}">
-                        <img th:src="@{${movie.posterUrl}}"
-                             th:alt="${movie.title + ' 포스터'}"
-                             th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
+                    <a class="home-upcoming-card__poster" th:href="@{/movies/{id}(id=${movie.detailRouteId})}">
+                        <img th:src="@{${movie.posterImageUrl}}"
+                             th:alt="${movie.posterAltText}"
+                             th:onerror="|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                     </a>
                     <div class="home-upcoming-card__body">
                         <span class="status-badge upcoming" th:text="${movie.statusLabel}">개봉 예정</span>
-                        <h3><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h3>
-                        <p th:text="${movie.overviewSnippet}">개봉 전 소개 문구</p>
+                        <h3><a th:href="@{/movies/{id}(id=${movie.detailRouteId})}" th:text="${movie.titleText}">영화 제목</a></h3>
+                        <p th:text="${movie.overviewSnippetText}">개봉 전 소개 문구</p>
                         <ul>
                             <li th:text="${movie.releaseDateText}">개봉 2026.04.18</li>
                             <li th:text="${movie.genreText}">장르 정보 준비 중</li>

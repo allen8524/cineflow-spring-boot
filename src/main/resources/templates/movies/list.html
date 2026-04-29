@@ -75,20 +75,20 @@
                 <article class="cinema-movie-card catalog-card"
                          th:each="movie, stat : ${movies}"
                          th:classappend="' ' + ${movie.statusCssClass}">
-                    <a class="poster-wrap catalog-card__poster" th:href="@{/movies/{id}(id=${movie.id})}">
+                    <a class="poster-wrap catalog-card__poster" th:href="@{/movies/{id}(id=${movie.detailRouteId})}">
                         <span class="rank-badge" th:if="${stat.index < 3}" th:text="${stat.index + 1} + '위'">1위</span>
                         <span class="status-badge" th:if="${stat.index >= 3}"
                               th:classappend="${movie.comingSoon} ? ' upcoming' : ''"
                               th:text="${movie.statusLabel}">현재 상영중</span>
-                        <img th:src="@{${movie.posterUrl}}"
-                             th:alt="${movie.title + ' 포스터'}"
-                             th:attr="onerror=|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
+                        <img th:src="@{${movie.posterImageUrl}}"
+                             th:alt="${movie.posterAltText}"
+                             th:onerror="|this.onerror=null;this.src='@{/images/uploads/movie-single.jpg}'|">
                     </a>
 
                     <div class="movie-card-body catalog-card__body">
                         <div class="movie-card-head catalog-card__head">
                             <div>
-                                <h3><a th:href="@{/movies/{id}(id=${movie.id})}" th:text="${movie.title}">영화 제목</a></h3>
+                                <h3><a th:href="@{/movies/{id}(id=${movie.detailRouteId})}" th:text="${movie.titleText}">영화 제목</a></h3>
                                 <p class="catalog-card__subline" th:text="${movie.statusLabel + ' · ' + movie.releaseDateText}">현재 상영중 · 개봉 2026.04.10</p>
                             </div>
                             <span th:class="${movie.ageBadgeCssClass}" th:text="${movie.ageBadgeText}">12</span>
@@ -100,14 +100,14 @@
                             <li th:text="${movie.bookingOpenLabel}">예매 오픈</li>
                         </ul>
 
-                        <p class="movie-card-summary" th:text="${movie.overviewSnippet}">영화 소개 문구</p>
+                        <p class="movie-card-summary" th:text="${movie.overviewSnippetText}">영화 소개 문구</p>
 
                         <div class="movie-card-actions catalog-card__actions">
                             <a th:if="${movie.bookable}"
                                th:href="@{/booking(movieId=${movie.bookingMovieId})}"
                                class="book-btn">예매하기</a>
                             <span th:if="${!movie.bookable}" class="book-btn">예매 준비 중</span>
-                            <a th:href="@{/movies/{id}(id=${movie.id})}" class="detail-link">상세보기</a>
+                            <a th:href="@{/movies/{id}(id=${movie.detailRouteId})}" class="detail-link">상세보기</a>
                         </div>
                     </div>
                 </article>

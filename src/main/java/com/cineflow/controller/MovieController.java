@@ -27,10 +27,15 @@ public class MovieController {
     private final TheaterService theaterService;
     private final ScheduleService scheduleService;
 
-    @GetMapping({"/movies", "/movielist.html"})
+    @GetMapping("/movies")
     public String list(Model model) {
         model.addAttribute("movies", publicMovieMetadataService.getMovieList(24));
         return "movies/list";
+    }
+
+    @GetMapping("/movielist.html")
+    public String legacyList() {
+        return "redirect:/movies";
     }
 
     @GetMapping("/movies/{id}")
@@ -39,11 +44,11 @@ public class MovieController {
     }
 
     @GetMapping("/moviesingle.html")
-    public String detailByParam(@RequestParam(name = "id", required = false) Long id, Model model) {
-        PublicMovieMetadataDto movie = id != null
-                ? publicMovieMetadataService.getMovieDetail(id)
-                : publicMovieMetadataService.getDefaultMovieDetail();
-        return renderDetail(movie, model);
+    public String detailByParam(@RequestParam(name = "id", required = false) Long id) {
+        if (id == null) {
+            return "redirect:/movies";
+        }
+        return "redirect:/movies/" + id;
     }
 
     private String renderDetail(PublicMovieMetadataDto movie, Model model) {

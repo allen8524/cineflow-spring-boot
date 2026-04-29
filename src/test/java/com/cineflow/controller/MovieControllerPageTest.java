@@ -21,6 +21,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -65,6 +66,27 @@ class MovieControllerPageTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("movies/list"))
                 .andExpect(model().attributeExists("movies"));
+    }
+
+    @Test
+    void legacyMovieListRedirectsToCanonicalMovieList() throws Exception {
+        mockMvc.perform(get("/movielist.html"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/movies"));
+    }
+
+    @Test
+    void legacyMovieSingleRedirectsToCanonicalDetailUrlWhenIdIsPresent() throws Exception {
+        mockMvc.perform(get("/moviesingle.html").param("id", "101"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/movies/101"));
+    }
+
+    @Test
+    void legacyMovieSingleRedirectsToMovieListWhenIdIsMissing() throws Exception {
+        mockMvc.perform(get("/moviesingle.html"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/movies"));
     }
 
     @Test

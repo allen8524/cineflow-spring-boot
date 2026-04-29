@@ -26,3 +26,8 @@ server:
 app:
   seed:
     enabled: false
+tmdb:
+  base-url: https://api.themoviedb.org/3
+  image-base-url: https://image.tmdb.org/t/p
+  language: ko-KR
+  bearer-token: ${TMDB_BEARER_TOKEN:eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhYmY3M2RiMzg4NTk2NzQ1MjQ3NmY0MmMyNGEwNmI3OSIsIm5iZiI6MTc3NTM2NzY4Mi4xMDksInN1YiI6IjY5ZDFmNjAyYmM2YTk3NGRjZTRmZDg4NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.cpc75_MX8v7XdbmDxzjd7gsfayeNFXFTV9g3o8Y0eFA}

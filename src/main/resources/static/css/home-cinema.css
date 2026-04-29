@@ -6077,3 +6077,55 @@ a {
         gap: 8px;
     }
 }
+
+.hero-copy-area,
+.home-booking-feature__copy,
+.home-showcase-card,
+.home-showcase-card__head > div,
+.home-upcoming-card,
+.catalog-card,
+.catalog-card__head > div,
+.detail-copy-panel,
+.detail-booking-sticky li,
+.detail-schedule-main,
+.recommend-card,
+.home-rank-board__list li div {
+    min-width: 0;
+}
+
+.hero-copy-area h1,
+.home-booking-feature__copy h3,
+.home-showcase-card__head h3,
+.home-upcoming-card__body h3,
+.catalog-card__head h3,
+.detail-copy-panel h1,
+.recommend-card h4,
+.home-rank-board__list span {
+    overflow-wrap: anywhere;
+    word-break: keep-all;
+}
+
+.home-showcase-card__head h3,
+.home-upcoming-card__body h3,
+.catalog-card__head h3,
+.recommend-card h4 {
+    line-height: 1.35;
+}
+
+.home-showcase-card__meta li,
+.catalog-card__meta li,
+.home-upcoming-card__body li,
+.detail-meta-list li,
+.detail-schedule-sub span,
+.hero-btn,
+.book-btn,
+.detail-link {
+    white-space: normal;
+}
+
+.home-showcase-card__actions,
+.catalog-card__actions,
+.detail-actions,
+.detail-schedule-list li {
+    flex-wrap: wrap;
+}
