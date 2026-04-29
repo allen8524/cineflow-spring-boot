@@ -58,7 +58,12 @@
             </div>
 
             <div th:if="${booking == null}" class="empty-state-card">
-                표시할 예매 정보가 없습니다. 예매번호를 다시 확인하거나 예매내역 페이지로 이동해주세요.
+                <h3>표시할 예매 정보가 없습니다.</h3>
+                <p>예매번호를 다시 확인하거나 예매내역 페이지로 이동해주세요.</p>
+                <div class="history-card-actions">
+                    <a th:href="@{/booking/history}" class="hero-btn primary">예매내역 보기</a>
+                    <a th:href="@{/}" class="hero-btn secondary">메인으로 이동</a>
+                </div>
             </div>
 
             <div th:if="${booking != null}">
@@ -72,7 +77,7 @@
                     <div class="success-meta-grid">
                         <div class="success-meta-item">
                             <span>예매번호</span>
-                            <strong th:text="${booking.bookingCode}">CF20260404-1940-T8M2</strong>
+                            <strong th:text="${booking.bookingCode != null ? booking.bookingCode : '-'}">CF20260404-1940-T8M2</strong>
                         </div>
                         <div class="success-meta-item">
                             <span>현재 상태</span>
@@ -103,15 +108,15 @@
                                     <p class="summary-movie" th:text="${booking.movieTitleText}">영화 제목</p>
                                     <div class="meta-line">
                                         <em th:class="${booking.ageBadgeCssClass}" th:text="${booking.ageBadgeText}">12</em>
-                                        <span th:text="${booking.theaterName + ' | ' + booking.screenNameText + '(' + booking.screenTypeText + ')'}">CineFlow 강남 | 1관(IMAX)</span>
+                                        <span th:text="${booking.venueDisplayText}">CineFlow 강남 | 1관(IMAX)</span>
                                     </div>
                                     <ul class="complete-info-list">
-                                        <li><span>극장</span><strong th:text="${booking.theaterName}">CineFlow 강남</strong></li>
-                                        <li><span>상영관</span><strong th:text="${booking.screenNameText + ' (' + booking.screenTypeText + ')'}">1관 (IMAX)</strong></li>
-                                        <li><span>상영시간</span><strong th:text="${#temporals.format(booking.startTime, 'yyyy.MM.dd (E) HH:mm')}">2026.04.04 (금) 19:40</strong></li>
-                                        <li><span>종료예정</span><strong th:text="${#temporals.format(booking.endTime, 'HH:mm')}">21:38</strong></li>
-                                        <li><span>좌석</span><strong th:text="${booking.seatNames}">H10, H11, H12</strong></li>
-                                        <li><span>인원</span><strong th:text="${booking.peopleCount + '명'}">3명</strong></li>
+                                        <li><span>극장</span><strong th:text="${booking.theaterNameText}">CineFlow 강남</strong></li>
+                                        <li><span>상영관</span><strong th:text="${booking.screenDisplayText}">1관 (IMAX)</strong></li>
+                                        <li><span>상영시간</span><strong th:text="${booking.showStartDateTimeWithDayText}">2026.04.04 (금) 19:40</strong></li>
+                                        <li><span>종료예정</span><strong th:text="${booking.showEndTimeText}">21:38</strong></li>
+                                        <li><span>좌석</span><strong th:text="${booking.seatNamesText}">H10, H11, H12</strong></li>
+                                        <li><span>인원</span><strong th:text="${booking.peopleCountText}">3명</strong></li>
                                         <li th:if="${booking.canceled}">
                                             <span>취소 사유</span>
                                             <strong th:text="${booking.cancelReasonOrDefault}">사용자 요청</strong>
@@ -135,13 +140,13 @@
                             </div>
                             <div class="amount-breakdown complete-amount-breakdown">
                                 <ul>
-                                    <li><span>총 결제 금액</span><strong th:text="${#numbers.formatInteger(booking.totalPrice, 3, 'COMMA') + '원'}">45,000원</strong></li>
-                                    <li><span>예매자 이름</span><strong th:text="${booking.customerName}">김민서</strong></li>
-                                    <li><span>연락처</span><strong th:text="${booking.customerPhone}">01012345678</strong></li>
+                                    <li><span>총 결제 금액</span><strong th:text="${booking.totalPriceText}">45,000원</strong></li>
+                                    <li><span>예매자 이름</span><strong th:text="${booking.customerNameText}">김민서</strong></li>
+                                    <li><span>연락처</span><strong th:text="${booking.customerPhoneText}">01012345678</strong></li>
                                 </ul>
                                 <div class="amount-total">
                                     <span th:text="${booking.canceled ? '환불 처리 금액' : '결제 완료 금액'}">결제 완료 금액</span>
-                                    <strong th:text="${#numbers.formatInteger(booking.totalPrice, 3, 'COMMA') + '원'}">45,000원</strong>
+                                    <strong th:text="${booking.totalPriceText}">45,000원</strong>
                                 </div>
                                 <ul class="payment-meta-list">
                                     <li><span>결제수단</span><strong th:text="${paymentResult != null ? paymentResult.paymentMethodLabel : '-'}">카드</strong></li>
@@ -165,7 +170,7 @@
                             <div class="ticket-frame">
                                 <div class="qr-placeholder" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
                                 <p class="ticket-code">예매번호 <strong th:text="${booking.bookingCode}">CF20260404-1940-T8M2</strong></p>
-                                <p class="ticket-time" th:text="${'상영 시작 ' + #temporals.format(booking.startTime, 'HH:mm') + ' 전까지 입장을 준비해주세요.'}">상영 시작 19:40 전까지 입장을 준비해주세요.</p>
+                                <p class="ticket-time" th:text="${'상영 시작 ' + booking.showStartTimeText + ' 전까지 입장을 준비해주세요.'}">상영 시작 19:40 전까지 입장을 준비해주세요.</p>
                                 <p class="ticket-note">예매번호 기준으로 좌석과 결제 정보가 연결되어 있습니다.</p>
                             </div>
                         </article>
@@ -201,6 +206,8 @@
                                     <button type="submit" class="hero-btn secondary">예매 취소</button>
                                 </form>
                                 <a th:href="@{/booking}" class="hero-btn secondary">다시 예매하기</a>
+                                <a th:href="@{/}" class="hero-btn secondary">메인으로 이동</a>
+                                <a th:href="@{/movies}" class="hero-btn secondary">전체 영화 보기</a>
                                 <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin}" class="hero-btn secondary">관리자 보기</a>
                             </div>
                             <div class="seat-summary-links complete-sub-links">

@@ -1,5 +1,7 @@
 package com.cineflow.controller;
 
+import com.cineflow.domain.Booking;
+import com.cineflow.domain.BookingStatus;
 import com.cineflow.domain.MovieStatus;
 import com.cineflow.dto.MovieViewDto;
 import com.cineflow.dto.ScheduleViewDto;
@@ -133,6 +135,22 @@ class BookingControllerPageTest {
     }
 
     @Test
+    void legacyCompleteRedirectsToCanonicalRoute() throws Exception {
+        mockMvc.perform(get("/booking-complete.html").param("bookingCode", "CF20260429-1940-ABCD"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/booking/complete?bookingCode=CF20260429-1940-ABCD"));
+    }
+
+    @Test
+    void legacyHistoryRedirectsToCanonicalRouteWithLookupParams() throws Exception {
+        mockMvc.perform(get("/booking-history.html")
+                        .param("bookingCode", "CF20260429-1940-ABCD")
+                        .param("customerPhone", "010-1234-5678"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/booking/history?bookingCode=CF20260429-1940-ABCD&customerPhone=010-1234-5678"));
+    }
+
+    @Test
     void seatRedirectsToBookingWhenScheduleIdIsMissing() throws Exception {
         mockMvc.perform(get("/booking/seat"))
                 .andExpect(status().is3xxRedirection())
@@ -175,5 +193,95 @@ class BookingControllerPageTest {
                 .andExpect(model().attributeExists("selectedSchedule"))
                 .andExpect(model().attributeExists("seatRows"))
                 .andExpect(model().attributeExists("baseSeatPrice"));
+    }
+
+    @Test
+    void completeRendersSuccessfullyWithReservationNumberAlias() throws Exception {
+        Booking booking = sampleBooking("CF20260429-1940-ABCD", "01012345678");
+
+        when(bookingService.getAccessibleBookingByCodeOrLatest("CF20260429-1940-ABCD", null)).thenReturn(booking);
+
+        mockMvc.perform(get("/booking/complete").param("reservationNumber", "CF20260429-1940-ABCD"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("booking/complete"))
+                .andExpect(model().attribute("booking", booking))
+                .andExpect(model().attributeExists("historyUrl"));
+    }
+
+    @Test
+    void completeRendersSuccessfullyWithBookingIdAlias() throws Exception {
+        Booking booking = sampleBooking("CF20260429-1940-ABCD", "01012345678");
+
+        when(bookingService.findAccessibleBookingById(5L, null)).thenReturn(Optional.of(booking));
+
+        mockMvc.perform(get("/booking/complete").param("bookingId", "5"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("booking/complete"))
+                .andExpect(model().attribute("booking", booking));
+    }
+
+    @Test
+    void completeRendersEmptyStateWhenLookupIsMissing() throws Exception {
+        mockMvc.perform(get("/booking/complete"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("booking/complete"))
+                .andExpect(model().attributeDoesNotExist("errorMessage"))
+                .andExpect(model().attribute("booking", org.hamcrest.Matchers.nullValue()));
+    }
+
+    @Test
+    void historyRendersGuestLookupWhenPhoneMatches() throws Exception {
+        Booking booking = sampleBooking("CF20260429-1940-ABCD", "01012345678");
+
+        when(bookingService.findAccessibleBookingByCode("CF20260429-1940-ABCD", null)).thenReturn(Optional.of(booking));
+
+        mockMvc.perform(get("/booking/history")
+                        .param("bookingCode", "CF20260429-1940-ABCD")
+                        .param("customerPhone", "010-1234-5678"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("booking/history"))
+                .andExpect(model().attribute("currentBookingCount", 1))
+                .andExpect(model().attribute("viewMode", "guest"))
+                .andExpect(model().attribute("isGuestLookup", true));
+    }
+
+    @Test
+    void historyShowsMessageWhenGuestPhoneDoesNotMatch() throws Exception {
+        Booking booking = sampleBooking("CF20260429-1940-ABCD", "01012345678");
+
+        when(bookingService.findAccessibleBookingByCode("CF20260429-1940-ABCD", null)).thenReturn(Optional.of(booking));
+
+        mockMvc.perform(get("/booking/history")
+                        .param("bookingCode", "CF20260429-1940-ABCD")
+                        .param("customerPhone", "010-0000-0000"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("booking/history"))
+                .andExpect(model().attribute("currentBookingCount", 0))
+                .andExpect(model().attributeExists("errorMessage"));
+    }
+
+    @Test
+    void myBookingsRedirectsToLoginWhenUserIsMissing() throws Exception {
+        mockMvc.perform(get("/mypage/bookings"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
+    }
+
+    private Booking sampleBooking(String bookingCode, String customerPhone) {
+        return Booking.builder()
+                .bookingCode(bookingCode)
+                .customerName("Codex Tester")
+                .customerPhone(customerPhone)
+                .movieTitle("Booking Movie")
+                .theaterName("CineFlow Gangnam")
+                .screenName("1관")
+                .screenType("IMAX")
+                .seatNames("A1")
+                .peopleCount(1)
+                .totalPrice(22000)
+                .startTime(LocalDateTime.now().plusDays(1))
+                .endTime(LocalDateTime.now().plusDays(1).plusHours(2))
+                .status(BookingStatus.BOOKED)
+                .build();
     }
 }

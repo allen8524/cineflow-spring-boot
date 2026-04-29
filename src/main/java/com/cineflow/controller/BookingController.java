@@ -106,14 +106,20 @@ public class BookingController {
         return redirectWithQuery("/booking", request);
     }
 
-    @GetMapping({"/booking/history", "/booking-history.html"})
+    @GetMapping("/booking/history")
     public String history(
             @RequestParam(required = false) String bookingCode,
+            @RequestParam(required = false) String customerPhone,
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             Model model
     ) {
         User currentUser = extractUser(authenticatedUser);
-        return renderHistoryPage(currentUser, bookingCode, model, false);
+        return renderHistoryPage(currentUser, bookingCode, customerPhone, model, false);
+    }
+
+    @GetMapping("/booking-history.html")
+    public String legacyHistory(HttpServletRequest request) {
+        return redirectWithQuery("/booking/history", request);
     }
 
     @GetMapping("/mypage/bookings")
@@ -122,7 +128,10 @@ public class BookingController {
             Model model
     ) {
         User currentUser = extractUser(authenticatedUser);
-        return renderHistoryPage(currentUser, null, model, true);
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+        return renderHistoryPage(currentUser, null, null, model, true);
     }
 
     @GetMapping("/booking/seat")
@@ -266,19 +275,24 @@ public class BookingController {
         }
     }
 
-    @GetMapping({"/booking/complete", "/booking-complete.html"})
+    @GetMapping("/booking/complete")
     public String complete(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            @RequestParam(required = false) Long bookingId,
             @RequestParam(required = false) String bookingCode,
+            @RequestParam(required = false) String reservationNumber,
             Model model
     ) {
         User currentUser = extractUser(authenticatedUser);
-        Booking booking = bookingService.getAccessibleBookingByCodeOrLatest(bookingCode, currentUser);
+        String resolvedBookingCode = StringUtils.hasText(bookingCode) ? bookingCode : reservationNumber;
+        Booking booking = bookingId != null
+                ? bookingService.findAccessibleBookingById(bookingId, currentUser).orElse(null)
+                : bookingService.getAccessibleBookingByCodeOrLatest(resolvedBookingCode, currentUser);
         PaymentResultDto paymentResult = booking != null && booking.getPayment() != null
                 ? PaymentResultDto.from(booking, booking.getPayment())
                 : null;
 
-        if (StringUtils.hasText(bookingCode) && booking == null) {
+        if ((bookingId != null || StringUtils.hasText(resolvedBookingCode)) && booking == null) {
             model.addAttribute("errorMessage", "예매번호에 해당하는 예매를 찾을 수 없거나 접근 권한이 없습니다.");
         }
 
@@ -289,12 +303,18 @@ public class BookingController {
         return "booking/complete";
     }
 
-    private String renderHistoryPage(User currentUser, String bookingCode, Model model, boolean myPage) {
+    @GetMapping("/booking-complete.html")
+    public String legacyComplete(HttpServletRequest request) {
+        return redirectWithQuery("/booking/complete", request);
+    }
+
+    private String renderHistoryPage(User currentUser, String bookingCode, String customerPhone, Model model, boolean myPage) {
         List<Booking> currentBookings;
         List<Booking> pastBookings;
         List<Booking> canceledBookings;
         Booking previewBooking;
         String historyModeLabel;
+        String viewMode = myPage ? "mypage" : "guest";
 
         if (currentUser != null) {
             currentBookings = bookingService.getCurrentBookingsForUser(currentUser);
@@ -306,7 +326,9 @@ public class BookingController {
             historyModeLabel = currentUser.getName() + "님의 예매내역";
             model.addAttribute("guestLookupMode", false);
         } else if (StringUtils.hasText(bookingCode)) {
-            Booking guestBooking = bookingService.findAccessibleBookingByCode(bookingCode, null).orElse(null);
+            Booking guestBooking = bookingService.findAccessibleBookingByCode(bookingCode, null)
+                    .filter(booking -> matchesCustomerPhone(booking, customerPhone))
+                    .orElse(null);
             currentBookings = new ArrayList<>();
             pastBookings = new ArrayList<>();
             canceledBookings = new ArrayList<>();
@@ -342,9 +364,13 @@ public class BookingController {
         model.addAttribute("todayBookingCount", currentBookings.stream().filter(booking -> booking.getStartTime() != null && booking.getStartTime().toLocalDate().equals(LocalDate.now())).count());
         model.addAttribute("pastBookingCount", pastBookings.size());
         model.addAttribute("canceledBookingCount", canceledBookings.size());
-        model.addAttribute("isMyPage", currentUser != null || myPage);
+        model.addAttribute("isMyPage", myPage);
+        model.addAttribute("isGuestLookup", currentUser == null && !myPage);
+        model.addAttribute("viewMode", viewMode);
+        model.addAttribute("member", currentUser);
         model.addAttribute("historyModeLabel", historyModeLabel);
         model.addAttribute("lookupBookingCode", bookingCode);
+        model.addAttribute("lookupCustomerPhone", customerPhone);
         return "booking/history";
     }
 
@@ -444,6 +470,23 @@ public class BookingController {
             return "/booking/history?bookingCode=" + booking.getBookingCode();
         }
         return "/booking/history";
+    }
+
+    private boolean matchesCustomerPhone(Booking booking, String customerPhone) {
+        if (!StringUtils.hasText(customerPhone)) {
+            return true;
+        }
+        if (booking == null || !StringUtils.hasText(booking.getCustomerPhone())) {
+            return false;
+        }
+        return normalizePhone(booking.getCustomerPhone()).equals(normalizePhone(customerPhone));
+    }
+
+    private String normalizePhone(String phone) {
+        if (!StringUtils.hasText(phone)) {
+            return "";
+        }
+        return phone.replaceAll("[^0-9]", "");
     }
 
     private String redirectWithQuery(String path, HttpServletRequest request) {

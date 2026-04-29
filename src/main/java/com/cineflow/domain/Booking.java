@@ -24,9 +24,12 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @Getter
@@ -47,8 +50,13 @@ public class Booking {
 
     private static final String DEFAULT_POSTER_URL = "/images/uploads/movie-single.jpg";
     private static final String DEFAULT_MOVIE_TITLE = "영화 정보 준비 중";
+    private static final String DEFAULT_THEATER_NAME = "극장 정보 준비 중";
     private static final String DEFAULT_SCREEN_NAME = "상영관 정보 준비 중";
     private static final String DEFAULT_SCREEN_TYPE = "상영 형식 준비 중";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+    private static final DateTimeFormatter DATE_TIME_WITH_DAY_FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd (E) HH:mm", Locale.KOREAN);
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final NumberFormat WON_FORMATTER = NumberFormat.getIntegerInstance(Locale.KOREA);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -225,6 +233,11 @@ public class Booking {
     }
 
     @Transient
+    public String getTheaterNameText() {
+        return theaterName != null && !theaterName.isBlank() ? theaterName : DEFAULT_THEATER_NAME;
+    }
+
+    @Transient
     public String getScreenNameText() {
         return screenName != null && !screenName.isBlank() ? screenName : DEFAULT_SCREEN_NAME;
     }
@@ -232,5 +245,81 @@ public class Booking {
     @Transient
     public String getScreenTypeText() {
         return screenType != null && !screenType.isBlank() ? screenType : DEFAULT_SCREEN_TYPE;
+    }
+
+    @Transient
+    public String getScreenDisplayText() {
+        return getScreenNameText() + " (" + getScreenTypeText() + ")";
+    }
+
+    @Transient
+    public String getVenueDisplayText() {
+        return getTheaterNameText() + " | " + getScreenDisplayText();
+    }
+
+    @Transient
+    public String getSeatNamesText() {
+        return seatNames != null && !seatNames.isBlank() ? seatNames : "좌석 정보 없음";
+    }
+
+    @Transient
+    public String getPeopleCountText() {
+        return Math.max(peopleCount != null ? peopleCount : 0, 0) + "명";
+    }
+
+    @Transient
+    public String getTotalPriceText() {
+        int safeTotalPrice = Math.max(totalPrice != null ? totalPrice : 0, 0);
+        return WON_FORMATTER.format(safeTotalPrice) + "원";
+    }
+
+    @Transient
+    public String getCustomerNameText() {
+        return customerName != null && !customerName.isBlank() ? customerName : "예매자 정보 없음";
+    }
+
+    @Transient
+    public String getCustomerPhoneText() {
+        return customerPhone != null && !customerPhone.isBlank() ? customerPhone : "연락처 정보 없음";
+    }
+
+    @Transient
+    public String getPaymentMethodLabel() {
+        return payment != null ? payment.getMethodLabel() : "결제수단 정보 없음";
+    }
+
+    @Transient
+    public String getPaymentStatusLabel() {
+        return payment != null ? payment.getPaymentStatusLabel() : "결제 정보 없음";
+    }
+
+    @Transient
+    public String getShowStartDateTimeText() {
+        return startTime != null ? DATE_TIME_FORMATTER.format(startTime) : "상영 시간 미정";
+    }
+
+    @Transient
+    public String getShowStartDateTimeWithDayText() {
+        return startTime != null ? DATE_TIME_WITH_DAY_FORMATTER.format(startTime) : "상영 시간 미정";
+    }
+
+    @Transient
+    public String getShowStartTimeText() {
+        return startTime != null ? TIME_FORMATTER.format(startTime) : "--:--";
+    }
+
+    @Transient
+    public String getShowEndTimeText() {
+        return endTime != null ? TIME_FORMATTER.format(endTime) : "--:--";
+    }
+
+    @Transient
+    public String getCreatedAtText() {
+        return createdAt != null ? DATE_TIME_FORMATTER.format(createdAt) : "-";
+    }
+
+    @Transient
+    public String getCanceledAtText() {
+        return canceledAt != null ? DATE_TIME_FORMATTER.format(canceledAt) : "-";
     }
 }

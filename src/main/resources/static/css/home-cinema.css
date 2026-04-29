@@ -6146,7 +6146,19 @@ a {
 .method-card,
 .booking-feedback-banner,
 .seat-summary-links,
-.complete-sub-links {
+.complete-sub-links,
+.complete-main-grid,
+.success-meta-grid,
+.amount-breakdown,
+.history-lookup-form,
+.history-main-layout,
+.history-content-stack,
+.history-side-stack,
+.history-booking-card,
+.history-card-main,
+.history-past-card,
+.history-preview-card,
+.history-info-grid {
     min-width: 0;
 }
 
@@ -6159,6 +6171,13 @@ a {
 .time-meta span,
 .seat-summary-links a,
 .complete-sub-links a,
+.history-info-grid strong,
+.history-card-main h3,
+.history-past-main h3,
+.history-preview-info strong,
+.history-preview-info em,
+.success-meta-item strong,
+.amount-breakdown strong,
 .method-card,
 .input-help {
     overflow-wrap: anywhere;
@@ -6169,6 +6188,17 @@ a {
 .summary-movie-group strong,
 .summary-info-block strong,
 .time-primary span,
-.time-meta span {
+.time-meta span,
+.history-info-grid strong,
+.history-preview-info em,
+.success-meta-item strong,
+.amount-breakdown strong {
     white-space: normal;
+}
+
+.history-card-actions,
+.history-inline-actions,
+.complete-cta-grid,
+.history-action-grid {
+    flex-wrap: wrap;
 }

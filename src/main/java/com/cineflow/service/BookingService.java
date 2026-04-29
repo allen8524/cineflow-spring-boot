@@ -108,6 +108,14 @@ public class BookingService {
         return bookingRepository.findByBookingCode(bookingCode.trim());
     }
 
+    public Optional<Booking> findAccessibleBookingById(Long bookingId, User actor) {
+        if (bookingId == null) {
+            return Optional.empty();
+        }
+        return bookingRepository.findById(bookingId)
+                .filter(booking -> canAccessBooking(booking, actor));
+    }
+
     public Optional<Booking> findAccessibleBookingByCode(String bookingCode, User actor) {
         return findBookingByCode(bookingCode)
                 .filter(booking -> canAccessBooking(booking, actor));
