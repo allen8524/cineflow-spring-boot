@@ -7,9 +7,8 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class AdminTmdbErrorResponseDto {
+public class ApiErrorResponseDto {
 
-    private final int status;
     private final String message;
     private final String code;
 }
