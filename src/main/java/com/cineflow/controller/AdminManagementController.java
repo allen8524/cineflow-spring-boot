@@ -387,6 +387,8 @@ public class AdminManagementController {
 
     private void populateTheaterFormModel(Model model, boolean editMode, Long theaterId) {
         model.addAttribute("editMode", editMode);
+        model.addAttribute("isEdit", editMode);
+        model.addAttribute("formMode", editMode ? "edit" : "create");
         model.addAttribute("formAction", editMode ? "/admin/theaters/" + theaterId : "/admin/theaters");
         model.addAttribute("pageTitle", editMode ? "Edit Theater" : "Create Theater");
     }
@@ -394,6 +396,8 @@ public class AdminManagementController {
     private void populateScreenFormModel(Model model, boolean editMode, Long screenId) {
         model.addAttribute("theaters", theaterService.getAllTheatersForAdmin());
         model.addAttribute("editMode", editMode);
+        model.addAttribute("isEdit", editMode);
+        model.addAttribute("formMode", editMode ? "edit" : "create");
         model.addAttribute("formAction", editMode ? "/admin/screens/" + screenId : "/admin/screens");
         model.addAttribute("pageTitle", editMode ? "Edit Screen" : "Create Screen");
     }
@@ -405,8 +409,11 @@ public class AdminManagementController {
         List<Screen> activeScreens = screenService.getActiveScreensForSchedule();
 
         model.addAttribute("movies", activeMovies);
+        model.addAttribute("theaters", theaterService.getAllTheatersForAdmin().stream().filter(theater -> theater.isActive()).toList());
         model.addAttribute("screens", activeScreens);
         model.addAttribute("editMode", editMode);
+        model.addAttribute("isEdit", editMode);
+        model.addAttribute("formMode", editMode ? "edit" : "create");
         model.addAttribute("formAction", editMode ? "/admin/schedules/" + scheduleId : "/admin/schedules");
         model.addAttribute("pageTitle", editMode ? "Edit Schedule" : "Create Schedule");
     }

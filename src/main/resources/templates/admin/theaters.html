@@ -64,6 +64,8 @@
                             <th>Name</th>
                             <th>Region</th>
                             <th>Location</th>
+                            <th>상영관 수</th>
+                            <th>좌석 수</th>
                             <th>Description</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -74,7 +76,9 @@
                             <td th:text="${theater.name}">CineFlow Gangnam</td>
                             <td th:text="${theater.region}">Seoul</td>
                             <td th:text="${theater.location}">410 Teheran-ro, Gangnam-gu, Seoul</td>
-                            <td th:text="${theater.description}">Premium flagship site</td>
+                            <td th:text="${theater.screens != null ? #lists.size(theater.screens) : 0}">0</td>
+                            <td th:text="${theater.screens != null ? #aggregates.sum(theater.screens.![totalSeats]) : 0}">0</td>
+                            <td th:text="${theater.description != null && !theater.description.isBlank() ? theater.description : '-'}">Premium flagship site</td>
                             <td><span th:class="${theater.active ? 'history-state-chip state-booked' : 'history-state-chip state-cancel'}" th:text="${theater.active ? 'Active' : 'Inactive'}">Active</span></td>
                             <td class="admin-actions admin-actions--stack">
                                 <a th:href="@{/admin/theaters/{id}/edit(id=${theater.id})}" class="detail-link">Edit</a>
@@ -85,7 +89,7 @@
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(theaters)}">
-                            <td colspan="6">No theaters registered.</td>
+                            <td colspan="8">No theaters registered.</td>
                         </tr>
                         </tbody>
                     </table>

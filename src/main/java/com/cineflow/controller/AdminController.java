@@ -55,6 +55,12 @@ public class AdminController {
                 .build();
 
         model.addAttribute("dashboard", dashboard);
+        model.addAttribute("totalMovies", dashboard.getTotalMovies());
+        model.addAttribute("totalBookings", dashboard.getTotalBookings());
+        model.addAttribute("todayBookings", dashboard.getTodayBookings());
+        model.addAttribute("totalRevenue", dashboard.getTotalRevenue());
+        model.addAttribute("scheduleCount", dashboard.getTotalSchedules());
+        model.addAttribute("theaterCount", theaterService.getAllTheatersForAdmin().size());
         model.addAttribute("recentBookings", bookings.stream().limit(6).toList());
         model.addAttribute("todaySchedules", schedules.stream()
                 .filter(schedule -> schedule.getShowDate().equals(LocalDate.now()))
@@ -100,8 +106,12 @@ public class AdminController {
     }
 
     @GetMapping("/schedules/{id}")
-    public String scheduleDetail(@PathVariable Long id, Model model) {
+    public String scheduleDetail(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         ScheduleViewDto schedule = scheduleService.findAdminScheduleView(id).orElse(null);
+        if (schedule == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "요청한 상영일정을 찾을 수 없습니다.");
+            return "redirect:/admin/schedules";
+        }
 
         model.addAttribute("schedule", schedule);
         model.addAttribute("scheduleRow", schedule != null ? AdminScheduleRowDto.from(schedule) : null);

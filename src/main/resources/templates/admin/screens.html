@@ -61,20 +61,24 @@
                     <table class="admin-table">
                         <thead>
                         <tr>
-                            <th>Theater</th>
-                            <th>Screen</th>
-                            <th>Format</th>
-                            <th>Total Seats</th>
+                            <th>ID</th>
+                            <th>극장</th>
+                            <th>상영관</th>
+                            <th>행/열</th>
+                            <th>타입</th>
+                            <th>좌석 수</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="screen : ${screens}">
-                            <td th:text="${screen.theater.name}">CineFlow Gangnam</td>
-                            <td th:text="${screen.name}">Screen 1</td>
-                            <td th:text="${screen.screenType}">IMAX</td>
-                            <td th:text="${screen.totalSeats + ' seats'}">120 seats</td>
+                            <td th:text="${screen.id}">1</td>
+                            <td th:text="${screen.theater != null && screen.theater.name != null ? screen.theater.name : '극장 정보 없음'}">CineFlow Gangnam</td>
+                            <td th:text="${screen.name != null ? screen.name : '상영관 이름 없음'}">Screen 1</td>
+                            <td th:text="${'- / -'}">- / -</td>
+                            <td th:text="${screen.screenType != null ? screen.screenType : '-'}">IMAX</td>
+                            <td th:text="${(screen.totalSeats != null ? screen.totalSeats : 0) + '석'}">120석</td>
                             <td><span th:class="${screen.active ? 'history-state-chip state-booked' : 'history-state-chip state-cancel'}" th:text="${screen.active ? 'Active' : 'Inactive'}">Active</span></td>
                             <td class="admin-actions admin-actions--stack">
                                 <a th:href="@{/admin/screens/{id}/edit(id=${screen.id})}" class="detail-link">Edit</a>
@@ -85,7 +89,7 @@
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(screens)}">
-                            <td colspan="6">No screens registered.</td>
+                            <td colspan="8">No screens registered.</td>
                         </tr>
                         </tbody>
                     </table>

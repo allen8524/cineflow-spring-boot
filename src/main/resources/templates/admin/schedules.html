@@ -93,11 +93,11 @@
                         </thead>
                         <tbody>
                         <tr th:each="schedule : ${schedules}">
-                            <td th:text="${schedule.movieTitle}">영화 제목</td>
-                            <td th:text="${schedule.theaterName}">CineFlow 강남</td>
-                            <td th:text="${schedule.screenName + ' (' + schedule.screenType + ')'}">1관 (IMAX)</td>
-                            <td th:text="${#temporals.format(schedule.startTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 19:40</td>
-                            <td th:text="${#temporals.format(schedule.endTime, 'yyyy.MM.dd HH:mm')}">2026.04.04 21:40</td>
+                            <td th:text="${schedule.movieTitle != null && !schedule.movieTitle.isBlank() ? schedule.movieTitle : '영화 정보 없음'}">영화 제목</td>
+                            <td th:text="${schedule.theaterName != null && !schedule.theaterName.isBlank() ? schedule.theaterName : '극장 정보 없음'}">CineFlow 강남</td>
+                            <td th:text="${(schedule.screenName != null ? schedule.screenName : '상영관 정보 없음') + ' (' + (schedule.screenType != null ? schedule.screenType : '-') + ')'}">1관 (IMAX)</td>
+                            <td th:text="${schedule.startTime != null ? #temporals.format(schedule.startTime, 'yyyy.MM.dd HH:mm') : '-'}">2026.04.04 19:40</td>
+                            <td th:text="${schedule.endTime != null ? #temporals.format(schedule.endTime, 'yyyy.MM.dd HH:mm') : '-'}">2026.04.04 21:40</td>
                             <td th:text="${schedule.availableSeats + '석'}">67석</td>
                             <td th:text="${schedule.totalSeats + '석'}">120석</td>
                             <td th:text="${schedule.occupancyRate + '%'}">44%</td>

@@ -54,14 +54,14 @@
             </div>
 
             <section class="admin-stat-grid">
-                <article class="booking-panel admin-stat-card"><span>총 영화 수</span><strong th:text="${dashboard.totalMovies}">0</strong></article>
-                <article class="booking-panel admin-stat-card"><span>총 회차 수</span><strong th:text="${dashboard.totalSchedules}">0</strong></article>
-                <article class="booking-panel admin-stat-card"><span>총 예매 수</span><strong th:text="${dashboard.totalBookings}">0</strong></article>
+                <article class="booking-panel admin-stat-card"><span>총 영화 수</span><strong th:text="${totalMovies != null ? totalMovies : 0}">0</strong></article>
+                <article class="booking-panel admin-stat-card"><span>총 회차 수</span><strong th:text="${scheduleCount != null ? scheduleCount : 0}">0</strong></article>
+                <article class="booking-panel admin-stat-card"><span>총 예매 수</span><strong th:text="${totalBookings != null ? totalBookings : 0}">0</strong></article>
                 <article class="booking-panel admin-stat-card"><span>예정된 예매</span><strong th:text="${dashboard.upcomingBookings}">0</strong></article>
                 <article class="booking-panel admin-stat-card"><span>취소된 예매</span><strong th:text="${dashboard.canceledBookings}">0</strong></article>
-                <article class="booking-panel admin-stat-card"><span>총 매출</span><strong th:text="${#numbers.formatInteger(dashboard.totalRevenue, 3, 'COMMA') + '원'}">0원</strong></article>
+                <article class="booking-panel admin-stat-card"><span>총 매출</span><strong th:text="${#numbers.formatInteger(totalRevenue != null ? totalRevenue : 0, 3, 'COMMA') + '원'}">0원</strong></article>
                 <article class="booking-panel admin-stat-card"><span>오늘 상영 회차</span><strong th:text="${dashboard.todaySchedules}">0</strong></article>
-                <article class="booking-panel admin-stat-card"><span>오늘 예매 수</span><strong th:text="${dashboard.todayBookings}">0</strong></article>
+                <article class="booking-panel admin-stat-card"><span>오늘 예매 수</span><strong th:text="${todayBookings != null ? todayBookings : 0}">0</strong></article>
             </section>
 
             <section class="admin-quick-grid">

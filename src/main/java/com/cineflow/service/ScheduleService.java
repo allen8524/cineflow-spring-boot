@@ -161,6 +161,7 @@ public class ScheduleService {
                 .orElseThrow(() -> new IllegalArgumentException("선택한 상영관을 찾을 수 없습니다."));
 
         validateScheduleForm(form, null);
+        validateTheaterScreenRelation(form, screen);
 
         long totalSeats = seatService.countActiveSeatTemplatesForScreen(screen.getId());
         if (totalSeats == 0) {
@@ -198,6 +199,7 @@ public class ScheduleService {
                 .orElseThrow(() -> new IllegalArgumentException("선택한 상영관을 찾을 수 없습니다."));
 
         validateScheduleForm(form, id);
+        validateTheaterScreenRelation(form, screen);
 
         long totalSeats = seatService.countActiveSeatTemplatesForScreen(screen.getId());
         if (totalSeats == 0) {
@@ -225,6 +227,16 @@ public class ScheduleService {
         }
         schedule.setActive(false);
         scheduleRepository.save(schedule);
+    }
+
+
+    private void validateTheaterScreenRelation(AdminScheduleForm form, Screen screen) {
+        if (form.getTheaterId() == null) {
+            throw new IllegalArgumentException("극장을 선택해 주세요.");
+        }
+        if (screen.getTheater() == null || !form.getTheaterId().equals(screen.getTheater().getId())) {
+            throw new IllegalArgumentException("선택한 극장과 상영관 정보가 일치하지 않습니다.");
+        }
     }
 
     private void validateScheduleForm(AdminScheduleForm form, Long scheduleId) {
