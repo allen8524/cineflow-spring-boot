@@ -226,6 +226,20 @@ $(function(){
 	    }
 	  ]
 	});
+	var heroSlider = $('.slick-hero, .storefront-hero-slider');
+	if (heroSlider.length && $.fn.slick && !heroSlider.hasClass('slick-initialized')) {
+		heroSlider.slick({
+			infinite: true,
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			arrows: true,
+			dots: true,
+			autoplay: true,
+			autoplaySpeed: 4000,
+			draggable: true
+		});
+	}
+
 	//slider for home v3 and home v2, twitter slider home 1, 2
 	var singleItem = $('.slider-single-item');
 	singleItem.slick({

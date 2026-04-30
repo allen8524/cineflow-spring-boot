@@ -6,8 +6,8 @@
     <meta name="description" content="TMDB 공개 영화 메타데이터를 기반으로 현재 상영작과 개봉 예정작을 확인하는 CineFlow 메인 페이지">
     <meta name="keywords" content="영화, 예매, 극장, TMDB, CineFlow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="format-detection" content="telephone-no">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
     <link rel="stylesheet" th:href="@{/css/plugins.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
@@ -26,7 +26,7 @@
             <div class="slick-hero storefront-hero-slider" th:if="${!#lists.isEmpty(heroMovies)}">
                 <div class="hero-slide storefront-hero-card"
                      th:each="movie : ${heroMovies}"
-                     th:style="|background-image:url('${movie.backdropImageUrl}');|">
+                     th:style="|background-image:url('@{${movie.backdropImageUrl}}');|">
                     <div class="hero-overlay"></div>
                     <div class="hero-content-wrap">
                         <div class="hero-copy-area">
@@ -60,7 +60,7 @@
                 <div class="storefront-hero-empty__copy">
                     <span>NOW LOADING</span>
                     <h1>CineFlow</h1>
-                    <p>지금 표시할 공개 영화 정보를 준비하고 있습니다. 잠시 후 다시 접속하면 최신 상영작과 예매 흐름을 확인할 수 있습니다.</p>
+                    <p>지금 표시할 인기 영화 정보를 준비하고 있습니다. 잠시 후 다시 접속하면 최신 상영작과 예매 흐름을 확인할 수 있습니다.</p>
                     <div class="hero-actions">
                         <a th:href="@{/movies}" class="hero-btn primary">영화 목록 보기</a>
                         <a th:href="@{/booking}" class="hero-btn secondary">빠른예매</a>
@@ -77,7 +77,7 @@
                     <div class="home-booking-feature__head">
                         <span class="section-chip">빠른예매</span>
                         <h2>지금 바로 예매 흐름으로 이동</h2>
-                        <p>영화 탐색, 상영시간표 확인, 예매내역 조회를 한 화면 흐름 안에서 바로 이어갈 수 있도록 정리했습니다.</p>
+                        <p>영화 탐색, 예매 시작 확인, 예매내역 조회를 한 화면 흐름 안에서 바로 이어갈 수 있도록 정리했습니다.</p>
                     </div>
 
                     <div class="home-booking-feature__content" th:if="${featuredMovie != null}">
@@ -105,7 +105,7 @@
                         <div class="home-booking-feature__copy">
                             <span class="home-booking-feature__label">안내</span>
                             <h3>대표 작품을 준비 중입니다</h3>
-                            <p>현재는 TMDB 공개 영화 목록을 불러오는 중입니다. 영화 목록과 빠른예매 페이지에서 다른 작품을 먼저 살펴볼 수 있습니다.</p>
+                            <p>현재는 TMDB 인기 영화 목록을 불러오는 중입니다. 영화 목록과 빠른예매 페이지에서 다른 작품을 먼저 살펴볼 수 있습니다.</p>
                         </div>
                         <div class="hero-actions">
                             <a th:href="@{/movies}" class="hero-btn primary">영화 목록 보기</a>
@@ -116,19 +116,19 @@
 
                 <div class="home-booking-actions">
                     <a th:href="@{/booking}" class="home-quick-card">
-                        <span>영화별 예매</span>
-                        <strong>영화와 좌석 선택까지 빠르게</strong>
+                        <span>빠른예매</span>
+                        <strong>영화/극장/날짜를 한 번에 선택</strong>
                         <em>예매 흐름 시작</em>
                     </a>
                     <a th:href="@{/booking}" class="home-quick-card">
-                        <span>상영시간표</span>
-                        <strong>극장과 날짜 기준으로 바로 확인</strong>
-                        <em>회차 선택</em>
+                        <span>예매 시작</span>
+                        <strong>원하는 회차를 바로 찾아 선택</strong>
+                        <em>빠른예매 이동</em>
                     </a>
                     <a th:href="@{/booking/history}" class="home-quick-card">
                         <span>예매내역</span>
-                        <strong>완료된 예매와 취소 상태 확인</strong>
-                        <em>예매번호 조회</em>
+                        <strong>회원/비회원 통합 예매 상태 확인</strong>
+                        <em>예매번호 또는 계정 조회</em>
                     </a>
                     <a th:href="@{/support}" class="home-quick-card">
                         <span>고객지원</span>
@@ -145,8 +145,8 @@
             <div class="home-section__header">
                 <div>
                     <span class="section-chip">현재 상영작</span>
-                    <h2>지금 예매 흐름으로 이어지는 공개 영화</h2>
-                    <p>영화 서비스 메인처럼 현재 상영작을 중심에 두고, 바로 예매하거나 상세를 확인할 수 있도록 배치했습니다.</p>
+                    <h2>지금 예매할 수 있는 현재 상영작</h2>
+                    <p>현재 상영작을 중심으로 바로 예매하거나 상세 정보를 확인할 수 있도록 구성했습니다.</p>
                 </div>
                 <a th:href="@{/movies}" class="detail-link">전체 영화 보기</a>
             </div>
@@ -183,13 +183,13 @@
                 </div>
 
                 <div class="empty-state-card" th:if="${#lists.isEmpty(nowShowingMovies)}">
-                    현재 상영 중인 공개 영화 정보를 준비 중입니다. 잠시 후 다시 확인해주세요.
+                    현재 상영 중인 영화 정보를 준비 중입니다. 잠시 후 다시 확인해주세요.
                 </div>
 
                 <aside class="home-rank-board">
                     <div class="home-rank-board__head">
-                        <h3>실시간 관심작</h3>
-                        <span>공개 영화 기준</span>
+                        <h3>인기 관심작</h3>
+                        <span>TMDB 인기 영화 기준</span>
                     </div>
                     <ol class="home-rank-board__list" th:if="${!#lists.isEmpty(boxOfficeMovies)}">
                         <li th:each="movie, stat : ${boxOfficeMovies}">
@@ -240,7 +240,7 @@
             </div>
 
             <div class="empty-state-card" th:if="${#lists.isEmpty(comingSoonMovies)}">
-                개봉 예정 공개 영화 목록을 준비 중입니다.
+                개봉 예정 영화 목록을 준비 중입니다.
             </div>
         </div>
     </section>
@@ -261,7 +261,7 @@
                 <article class="home-info-banner">
                     <span>멤버십 가이드</span>
                     <strong>예매내역과 관람 흐름을 한 화면에서 확인</strong>
-                    <p>회원은 마이페이지 예매내역, 비회원은 예매번호 조회로 바로 이어집니다.</p>
+                    <p>회원과 비회원 모두 예매번호 또는 계정 기준으로 예매 상태를 확인할 수 있습니다.</p>
                     <a th:href="@{/booking/history}" class="detail-link">예매내역 보기</a>
                 </article>
 
@@ -269,7 +269,7 @@
                     <span>특별관 안내</span>
                     <strong>포맷과 좌석 경험을 빠르게 비교</strong>
                     <p>IMAX, 리클라이너, 프리미엄 좌석 흐름을 예매 단계에서 자연스럽게 이어가도록 설계했습니다.</p>
-                    <a th:href="@{/booking}" class="detail-link">상영시간표 보기</a>
+                    <a th:href="@{/booking}" class="detail-link">예매 시작 보기</a>
                 </article>
 
                 <article class="home-info-banner">
