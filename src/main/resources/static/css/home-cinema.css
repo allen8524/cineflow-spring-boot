@@ -6218,3 +6218,17 @@ a {
     overflow-wrap: anywhere;
     word-break: keep-all;
 }
+
+.error-page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.page-single-2 .middle-content h1,
+.page-single-2 .middle-content p {
+    overflow-wrap: anywhere;
+    word-break: keep-all;
+}
