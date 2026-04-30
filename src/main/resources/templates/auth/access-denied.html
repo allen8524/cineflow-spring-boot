@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>CineFlow | 접근 제한</title>
+    <title>CineFlow | 접근이 제한되었습니다</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600"/>
     <link rel="stylesheet" th:href="@{/css/plugins.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
@@ -16,13 +16,13 @@
         <div class="container">
             <div class="booking-panel auth-form-panel auth-form-panel--compact">
                 <div class="panel-head">
-                    <h2>접근 권한이 없습니다</h2>
-                    <span class="input-help">요청하신 페이지는 관리자 또는 로그인한 회원만 이용할 수 있습니다.</span>
+                    <h2>접근이 제한되었습니다</h2>
+                    <span class="input-help">이 페이지에 접근할 권한이 없습니다.</span>
                 </div>
-                <p class="auth-access-copy">권한이 없는 계정으로 관리자 페이지에 접근했거나 로그인 없이 보호된 화면으로 이동한 경우입니다. 로그인 후 다시 시도해주세요.</p>
+                <p class="auth-access-copy">로그인이 필요하거나 현재 계정 권한으로는 요청하신 기능을 이용할 수 없습니다. 로그인 후 다시 시도해 주세요.</p>
                 <div class="summary-cta auth-access-actions">
+                    <a th:href="@{/}" class="hero-btn secondary">메인으로 이동</a>
                     <a th:href="@{/login}" class="hero-btn primary">로그인 페이지로 이동</a>
-                    <a th:href="@{/}" class="hero-btn secondary">메인으로 돌아가기</a>
                 </div>
             </div>
         </div>
