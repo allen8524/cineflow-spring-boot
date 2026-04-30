@@ -96,17 +96,17 @@
                         <tbody>
                         <tr th:each="booking : ${bookings}">
                             <td><a th:href="@{/booking/complete(bookingCode=${booking.bookingCode})}" th:text="${booking.bookingCode}">CF20260404-1940-T8M2</a></td>
-                            <td th:text="${booking.customerName}">고객명</td>
-                            <td th:text="${booking.movieTitle}">영화 제목</td>
-                            <td th:text="${booking.theaterName}">CineFlow 강남</td>
+                            <td th:text="${booking.customerName != null && !booking.customerName.isBlank() ? booking.customerName : '비회원'}">고객명</td>
+                            <td th:text="${booking.movieTitleText}">영화 제목</td>
+                            <td th:text="${booking.venueDisplayText}">CineFlow 강남</td>
                             <td th:text="${booking.startTime != null ? #temporals.format(booking.startTime, 'yyyy.MM.dd HH:mm') : '-'}">2026.04.04 19:40</td>
-                            <td th:text="${booking.seatNames}">H10, H11, H12</td>
+                            <td th:text="${booking.seatNames != null && !booking.seatNames.isBlank() ? booking.seatNames : '좌석 정보 없음'}">H10, H11, H12</td>
                             <td><span th:class="${booking.stateCssClass}" th:text="${booking.stateLabel}">예매 완료</span></td>
                             <td>
                                 <span th:if="${booking.payment != null}" th:class="${booking.payment.paymentStatusCssClass}" th:text="${booking.payment.paymentStatusLabel}">결제 완료</span>
                                 <span th:if="${booking.payment == null}" class="history-state-chip state-refund">결제 정보 없음</span>
                             </td>
-                            <td th:text="${#numbers.formatInteger(booking.totalPrice, 3, 'COMMA') + '원'}">45,000원</td>
+                            <td th:text="${#numbers.formatInteger(booking.totalPrice != null ? booking.totalPrice : 0, 3, 'COMMA') + '원'}">45,000원</td>
                             <td class="admin-actions">
                                 <form th:if="${booking.cancelable}" th:action="@{/admin/bookings/{bookingCode}/cancel(bookingCode=${booking.bookingCode})}" method="post" class="inline-post-form">
                                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

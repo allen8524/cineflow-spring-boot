@@ -61,25 +61,29 @@
                     <table class="admin-table">
                         <thead>
                         <tr>
-                            <th>Title</th>
+                            <th>포스터</th>
+                            <th>제목</th>
                             <th>Status</th>
                             <th>Booking</th>
                             <th>Visibility</th>
                             <th>Genre</th>
                             <th>Running Time</th>
                             <th>Release Date</th>
+                            <th>평점</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="movie : ${movies}">
-                            <td th:text="${movie.title}">Movie Title</td>
+                            <td><img th:src="${movie.posterUrl != null && !movie.posterUrl.isBlank() ? movie.posterUrl : '/images/uploads/movie-single.jpg'}" onerror="this.onerror=null;this.src='/images/uploads/movie-single.jpg';" alt="poster" class="admin-poster-thumb"></td>
+                            <td th:text="${movie.title != null && !movie.title.isBlank() ? movie.title : '제목 없음'}">Movie Title</td>
                             <td th:text="${movie.statusLabel}">Now Showing</td>
                             <td><span th:class="${movie.bookingOpen ? 'history-state-chip state-booked' : 'history-state-chip state-refund'}" th:text="${movie.bookingOpenLabel}">Open</span></td>
                             <td><span th:class="${movie.active ? 'history-state-chip state-booked' : 'history-state-chip state-cancel'}" th:text="${movie.activeLabel}">Visible</span></td>
-                            <td th:text="${movie.genre}">Drama</td>
-                            <td th:text="${movie.runningTime + ' min'}">120 min</td>
+                            <td th:text="${movie.genre != null && !movie.genre.isBlank() ? movie.genre : '-'}">Drama</td>
+                            <td th:text="${(movie.runningTime != null ? movie.runningTime : 0) + ' min'}">120 min</td>
                             <td th:text="${movie.releaseDate != null ? #temporals.format(movie.releaseDate, 'yyyy.MM.dd') : '-'}">2026.04.10</td>
+                            <td th:text="${movie.score != null ? #numbers.formatDecimal(movie.score,1,1) : '-'}">-</td>
                             <td class="admin-actions admin-actions--stack">
                                 <a th:href="@{/admin/movies/{id}/edit(id=${movie.id})}" class="detail-link">Edit</a>
                                 <form th:action="@{/admin/movies/{id}/delete(id=${movie.id})}" method="post" class="inline-post-form">
@@ -89,7 +93,7 @@
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(movies)}">
-                            <td colspan="8">No movies registered.</td>
+                            <td colspan="10">No movies registered.</td>
                         </tr>
                         </tbody>
                     </table>
