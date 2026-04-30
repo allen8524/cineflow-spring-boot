@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${editMode ? 'CineFlow | Theater Edit' : 'CineFlow | Theater Create'}">CineFlow | Theater Create</title>
+    <title th:text="${editMode ? 'CineFlow | 관리자 극장 수정' : 'CineFlow | 관리자 극장 등록'}">CineFlow | 관리자 극장 등록</title>
     <meta charset="UTF-8">
     <meta name="description" content="CineFlow admin theater form">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,9 +27,9 @@
             <ul class="cinema-breadcrumb">
                 <li><a th:href="@{/admin}">Admin</a></li>
                 <li><a th:href="@{/admin/theaters}">Theaters</a></li>
-                <li th:text="${editMode ? 'Edit Theater' : 'Create Theater'}">Create Theater</li>
+                <li th:text="${editMode ? '극장 수정' : '극장 등록'}">Create Theater</li>
             </ul>
-            <h1 th:text="${editMode ? 'Edit Theater' : 'Create Theater'}">Create Theater</h1>
+            <h1 th:text="${editMode ? '극장 수정' : '극장 등록'}">Create Theater</h1>
             <p>Set the public theater name, region, location, and description used throughout booking screens.</p>
         </div>
     </section>
@@ -75,8 +75,8 @@
                     </div>
 
                     <div class="admin-form-actions">
-                        <a th:href="@{/admin/theaters}" class="hero-btn secondary">Back to List</a>
-                        <button type="submit" class="hero-btn primary" th:text="${editMode ? 'Save Changes' : 'Create Theater'}">Create Theater</button>
+                        <a th:href="@{/admin/theaters}" class="hero-btn secondary">취소</a>
+                        <button type="submit" class="hero-btn primary" th:text="${editMode ? '수정 완료' : '등록'}">Create Theater</button>
                     </div>
                 </form>
             </article>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${editMode ? 'CineFlow | Schedule Edit' : 'CineFlow | Schedule Create'}">CineFlow | Schedule Create</title>
+    <title th:text="${editMode ? 'CineFlow | 관리자 상영일정 수정' : 'CineFlow | 관리자 상영일정 등록'}">CineFlow | 관리자 상영일정 등록</title>
     <meta charset="UTF-8">
     <meta name="description" content="CineFlow admin schedule form">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,9 +27,9 @@
             <ul class="cinema-breadcrumb">
                 <li><a th:href="@{/admin}">Admin</a></li>
                 <li><a th:href="@{/admin/schedules}">Schedules</a></li>
-                <li th:text="${editMode ? 'Edit Schedule' : 'Create Schedule'}">Create Schedule</li>
+                <li th:text="${editMode ? '상영일정 수정' : '상영일정 등록'}">Create Schedule</li>
             </ul>
-            <h1 th:text="${editMode ? 'Edit Schedule' : 'Create Schedule'}">Create Schedule</h1>
+            <h1 th:text="${editMode ? '상영일정 수정' : '상영일정 등록'}">Create Schedule</h1>
             <p>Select a movie and screen, then enter the show time and price for booking.</p>
         </div>
     </section>
@@ -49,17 +49,29 @@
                         <label for="movieId">Movie</label>
                         <select id="movieId" th:field="*{movieId}">
                             <option value="">Select</option>
-                            <option th:each="movie : ${movies}" th:value="${movie.id}" th:text="${movie.title}">Movie title</option>
+                            <option th:each="movie : ${movies != null ? movies : T(java.util.Collections).emptyList()}" th:value="${movie.id}" th:text="${movie.title}">Movie title</option>
                         </select>
+                        <p class="input-help" th:if="${movies == null or #lists.isEmpty(movies)}">등록 가능한 영화가 없습니다.</p>
                         <p class="field-error" th:if="${#fields.hasErrors('movieId')}" th:errors="*{movieId}">Movie error</p>
+                    </div>
+
+                    <div class="admin-form-field">
+                        <label for="theaterId">Theater</label>
+                        <select id="theaterId" th:field="*{theaterId}">
+                            <option value="">Select</option>
+                            <option th:each="theater : ${theaters != null ? theaters : T(java.util.Collections).emptyList()}" th:value="${theater.id}" th:text="${theater.name + ' | ' + theater.region}">CineFlow Gangnam | Seoul</option>
+                        </select>
+                        <p class="input-help" th:if="${theaters == null or #lists.isEmpty(theaters)}">등록 가능한 극장이 없습니다.</p>
+                        <p class="field-error" th:if="${#fields.hasErrors('theaterId')}" th:errors="*{theaterId}">Theater error</p>
                     </div>
 
                     <div class="admin-form-field">
                         <label for="screenId">Screen</label>
                         <select id="screenId" th:field="*{screenId}">
                             <option value="">Select</option>
-                            <option th:each="screen : ${screens}" th:value="${screen.id}" th:text="${screen.theater.name + ' | ' + screen.name + ' (' + screen.screenType + ')'}">CineFlow Gangnam | Screen 1 (IMAX)</option>
+                            <option th:each="screen : ${screens != null ? screens : T(java.util.Collections).emptyList()}" th:value="${screen.id}" th:text="${(screen.theater != null && screen.theater.name != null ? screen.theater.name : '극장 정보 없음') + ' | ' + (screen.name != null ? screen.name : '상영관 이름 없음') + ' (' + (screen.screenType != null ? screen.screenType : '-') + ')'}">CineFlow Gangnam | Screen 1 (IMAX)</option>
                         </select>
+                        <p class="input-help" th:if="${screens == null or #lists.isEmpty(screens)}">등록 가능한 상영관이 없습니다.</p>
                         <p class="field-error" th:if="${#fields.hasErrors('screenId')}" th:errors="*{screenId}">Screen error</p>
                     </div>
 
@@ -87,8 +99,8 @@
                     </div>
 
                     <div class="admin-form-actions">
-                        <a th:href="@{/admin/schedules}" class="hero-btn secondary">Back to List</a>
-                        <button type="submit" class="hero-btn primary" th:text="${editMode ? 'Save Changes' : 'Create Schedule'}">Create Schedule</button>
+                        <a th:href="@{/admin/schedules}" class="hero-btn secondary">취소</a>
+                        <button type="submit" class="hero-btn primary" th:text="${editMode ? '수정 완료' : '등록'}">Create Schedule</button>
                     </div>
                 </form>
             </article>

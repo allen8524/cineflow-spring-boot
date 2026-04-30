@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${editMode ? 'CineFlow | Screen Edit' : 'CineFlow | Screen Create'}">CineFlow | Screen Create</title>
+    <title th:text="${editMode ? 'CineFlow | 관리자 상영관 수정' : 'CineFlow | 관리자 상영관 등록'}">CineFlow | 관리자 상영관 등록</title>
     <meta charset="UTF-8">
     <meta name="description" content="CineFlow admin screen form">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,9 +27,9 @@
             <ul class="cinema-breadcrumb">
                 <li><a th:href="@{/admin}">Admin</a></li>
                 <li><a th:href="@{/admin/screens}">Screens</a></li>
-                <li th:text="${editMode ? 'Edit Screen' : 'Create Screen'}">Create Screen</li>
+                <li th:text="${editMode ? '상영관 수정' : '상영관 등록'}">Create Screen</li>
             </ul>
-            <h1 th:text="${editMode ? 'Edit Screen' : 'Create Screen'}">Create Screen</h1>
+            <h1 th:text="${editMode ? '상영관 수정' : '상영관 등록'}">Create Screen</h1>
             <p>Screen creation also prepares seat templates, so review capacity changes carefully.</p>
         </div>
     </section>
@@ -49,7 +49,7 @@
                         <label for="theaterId">Theater</label>
                         <select id="theaterId" th:field="*{theaterId}">
                             <option value="">Select</option>
-                            <option th:each="theater : ${theaters}" th:value="${theater.id}" th:text="${theater.name + ' | ' + theater.region}">CineFlow Gangnam | Seoul</option>
+                            <option th:each="theater : ${theaters != null ? theaters : T(java.util.Collections).emptyList()}" th:value="${theater.id}" th:text="${theater.name + ' | ' + theater.region}">CineFlow Gangnam | Seoul</option>
                         </select>
                         <p class="field-error" th:if="${#fields.hasErrors('theaterId')}" th:errors="*{theaterId}">Theater error</p>
                     </div>
@@ -83,8 +83,8 @@
                     </div>
 
                     <div class="admin-form-actions">
-                        <a th:href="@{/admin/screens}" class="hero-btn secondary">Back to List</a>
-                        <button type="submit" class="hero-btn primary" th:text="${editMode ? 'Save Changes' : 'Create Screen'}">Create Screen</button>
+                        <a th:href="@{/admin/screens}" class="hero-btn secondary">취소</a>
+                        <button type="submit" class="hero-btn primary" th:text="${editMode ? '수정 완료' : '등록'}">Create Screen</button>
                     </div>
                 </form>
             </article>

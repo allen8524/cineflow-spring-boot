@@ -16,6 +16,9 @@ public class AdminScheduleForm {
     @NotNull(message = "Please select a movie.")
     private Long movieId;
 
+    @NotNull(message = "Please select a theater.")
+    private Long theaterId;
+
     @NotNull(message = "Please select a screen.")
     private Long screenId;
 
@@ -34,6 +37,7 @@ public class AdminScheduleForm {
     public static AdminScheduleForm from(Schedule schedule) {
         AdminScheduleForm form = new AdminScheduleForm();
         form.setMovieId(schedule.getMovie().getId());
+        form.setTheaterId(schedule.getScreen().getTheater().getId());
         form.setScreenId(schedule.getScreen().getId());
         form.setStartTime(schedule.getStartTime());
         form.setEndTime(schedule.getEndTime());
