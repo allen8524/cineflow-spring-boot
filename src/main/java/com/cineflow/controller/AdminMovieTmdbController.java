@@ -28,8 +28,13 @@ public class AdminMovieTmdbController {
     private final AdminMovieTmdbService adminMovieTmdbService;
 
     @GetMapping("/search")
-    public List<AdminTmdbMovieSearchResultDto> searchMovies(@RequestParam(name = "query", required = false) String query) {
-        return adminMovieTmdbService.searchMovies(query);
+    public List<AdminTmdbMovieSearchResultDto> searchMovies(
+            @RequestParam(name = "query", required = false) String query,
+            @RequestParam(name = "q", required = false) String q,
+            @RequestParam(name = "keyword", required = false) String keyword
+    ) {
+        String resolvedQuery = firstNonBlank(query, q, keyword);
+        return adminMovieTmdbService.searchMovies(resolvedQuery);
     }
 
     @GetMapping("/{tmdbId}")
@@ -59,6 +64,7 @@ public class AdminMovieTmdbController {
                 .body(AdminTmdbErrorResponseDto.builder()
                         .status(status.value())
                         .message(message)
+                        .code(resolveCode(status))
                         .build());
     }
 
@@ -78,5 +84,26 @@ public class AdminMovieTmdbController {
 
     private String resolveTmdbFailureMessage(TmdbClientException exception) {
         return exception.getMessage() != null ? exception.getMessage() : "TMDB request failed.";
+    }
+
+    private String resolveCode(HttpStatus status) {
+        return switch (status) {
+            case BAD_REQUEST -> "BAD_REQUEST";
+            case SERVICE_UNAVAILABLE -> "TMDB_NOT_CONFIGURED";
+            case BAD_GATEWAY -> "TMDB_UPSTREAM_ERROR";
+            default -> "TMDB_REQUEST_FAILED";
+        };
+    }
+
+    private String firstNonBlank(String... values) {
+        if (values == null) {
+            return null;
+        }
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+        return null;
     }
 }

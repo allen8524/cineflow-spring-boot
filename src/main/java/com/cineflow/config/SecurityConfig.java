@@ -52,7 +52,7 @@ public class SecurityConfig {
                                 "/fonts/**"
                         ).permitAll()
                         .requestMatchers("/mypage/**").authenticated()
-                        .requestMatchers("/api/bookings/**").hasRole("ADMIN")
+                        .requestMatchers("/api/bookings/**").authenticated()
                         .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
