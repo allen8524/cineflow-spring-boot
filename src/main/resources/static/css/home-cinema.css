@@ -5006,10 +5006,12 @@ a {
     align-items: center;
     gap: 4px;
     margin: 0;
+    flex-wrap: nowrap;
 }
 
 .storefront-primary-nav > li > a {
     border-radius: 999px;
+    white-space: nowrap;
     padding: 10px 18px;
     font-weight: 700;
 }
@@ -5069,12 +5071,12 @@ a {
 
 @media (min-width: 992px) and (max-width: 1280px) {
     .storefront-navbar__content {
-        gap: 16px;
+        gap: 12px;
     }
 
     .storefront-primary-nav > li > a {
-        padding: 10px 12px;
-        font-size: 14px;
+        padding: 10px 10px;
+        font-size: 13px;
     }
 
     .storefront-navbar .menu-right {
@@ -5500,6 +5502,7 @@ a {
     padding: 20px;
     display: grid;
     gap: 14px;
+    align-content: start;
 }
 
 .home-rank-board__head {
