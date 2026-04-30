@@ -4980,10 +4980,26 @@ a {
     background: transparent;
 }
 
+@media (min-width: 992px) {
+    .storefront-navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+    }
+
+    .storefront-navbar__collapse {
+        display: block !important;
+        flex: 1;
+        min-width: 0;
+    }
+}
+
 .storefront-brand-shell {
     display: flex;
     align-items: center;
-    min-height: 78px;
+    min-height: 68px;
+    margin-right: 14px;
 }
 
 .storefront-brand {
@@ -4998,13 +5014,13 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 28px;
+    gap: 14px;
 }
 
 .storefront-primary-nav {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
     margin: 0;
     flex-wrap: nowrap;
 }
@@ -5012,8 +5028,9 @@ a {
 .storefront-primary-nav > li > a {
     border-radius: 999px;
     white-space: nowrap;
-    padding: 10px 18px;
-    font-weight: 700;
+    padding: 8px 12px;
+    font-weight: 600;
+    font-size: 14px;
 }
 
 .storefront-primary-nav > li > a.active,
@@ -5025,7 +5042,7 @@ a {
     margin: 0 0 0 auto;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
 }
 
 .storefront-navbar .menu-right > li {
@@ -5037,11 +5054,13 @@ a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 42px;
-    padding: 0 14px;
+    min-height: 38px;
+    padding: 0 10px;
     border-radius: 999px;
     color: #dce4fb !important;
     line-height: 1;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .storefront-navbar .menu-right .menu-link:hover,
@@ -5051,11 +5070,13 @@ a {
 }
 
 .storefront-navbar .menu-right .menu-cta {
-    min-height: 44px;
-    padding: 0 18px !important;
+    min-height: 40px;
+    padding: 0 15px !important;
     border-radius: 999px;
     background: linear-gradient(135deg, var(--cf-cta) 0%, var(--cf-cta-dark) 100%);
     box-shadow: 0 12px 20px rgba(246, 63, 99, 0.3);
+    font-size: 14px;
+    font-weight: 600;
 }
 
 
@@ -5075,7 +5096,7 @@ a {
     }
 
     .storefront-primary-nav > li > a {
-        padding: 10px 10px;
+        padding: 8px 9px;
         font-size: 13px;
     }
 
@@ -5090,7 +5111,7 @@ a {
     }
 
     .storefront-navbar .menu-right .menu-cta {
-        padding: 0 14px !important;
+        padding: 0 12px !important;
         font-size: 13px;
     }
 }
