@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" class="no-js" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>CineFlow | 전체 영화</title>
+    <title>CineFlow | 영화 탐색</title>
     <meta charset="UTF-8">
-    <meta name="description" content="TMDB 공개 영화 메타데이터를 기준으로 보여주는 CineFlow 영화 목록">
+    <meta name="description" content="TMDB 공개 영화 정보와 CineFlow 예매 데이터를 함께 안내하는 영화 탐색 화면">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="format-detection" content="telephone-no">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
@@ -25,14 +25,14 @@
             <ul class="cinema-breadcrumb">
                 <li><a th:href="@{/}">홈</a></li>
                 <li>영화</li>
-                <li>전체 영화</li>
+                <li>영화 탐색</li>
             </ul>
 
             <div class="catalog-hero__content">
                 <div>
                     <span class="section-chip">MOVIES</span>
-                    <h1>전체 영화</h1>
-                    <p>공개 영화 메타데이터를 중심으로 포스터, 개봉일, 러닝타임, 장르와 예매 진입점을 한 눈에 확인할 수 있는 카탈로그 화면입니다.</p>
+                    <h1>영화 탐색</h1>
+                    <p>TMDB 공개 영화 메타데이터를 기준으로 영화 정보를 보여주는 카탈로그 화면입니다. 예매 가능 표시는 CineFlow에 상영시간표가 연결된 작품에만 표시됩니다.</p>
                 </div>
                 <div class="catalog-hero__actions">
                     <a th:href="@{/booking}" class="hero-btn primary">빠른예매</a>
@@ -47,11 +47,11 @@
                 </div>
                 <div>
                     <span>데이터 원천</span>
-                    <strong>TMDB 실시간 공개 메타데이터</strong>
+                    <strong>TMDB 공개 영화 정보 + CineFlow 예매 데이터</strong>
                 </div>
                 <div>
                     <span>예매 연결</span>
-                    <strong>예매 가능한 작품만 CineFlow 흐름 연결</strong>
+                    <strong>상영시간표 연결 작품만 예매 가능</strong>
                 </div>
             </div>
         </div>
@@ -61,13 +61,13 @@
         <div class="container">
             <div class="catalog-toolbar">
                 <div class="catalog-chip-row">
-                    <span class="movie-filter-chip is-active">현재 노출 중인 공개 영화</span>
-                    <span class="movie-filter-chip">포스터 · 개요 · 장르 자동 반영</span>
-                    <span class="movie-filter-chip subtle">예매 가능한 작품은 바로 예매 CTA 노출</span>
+                    <span class="movie-filter-chip is-active">TMDB 공개 영화 카탈로그</span>
+                    <span class="movie-filter-chip">포스터 · 개요 · 장르 정보</span>
+                    <span class="movie-filter-chip subtle">상영시간표 연결 작품만 예매 표시</span>
                 </div>
                 <div class="catalog-toolbar__meta">
                     <i class="ion-ios-film-outline"></i>
-                    <span th:text="|총 ${#lists.size(movies)}편의 공개 영화가 표시 중입니다.|">총 0편의 공개 영화가 표시 중입니다.</span>
+                    <span th:text="|총 ${#lists.size(movies)}편의 영화 정보를 표시 중입니다.|">총 0편의 영화 정보를 표시 중입니다.</span>
                 </div>
             </div>
 
@@ -106,7 +106,7 @@
                             <a th:if="${movie.bookable}"
                                th:href="@{/booking(movieId=${movie.bookingMovieId})}"
                                class="book-btn">예매하기</a>
-                            <span th:if="${!movie.bookable}" class="book-btn">예매 준비 중</span>
+                            <span th:if="${!movie.bookable}" class="book-btn">상영시간표 미등록</span>
                             <a th:href="@{/movies/{id}(id=${movie.detailRouteId})}" class="detail-link">상세보기</a>
                         </div>
                     </div>
@@ -114,7 +114,7 @@
             </div>
 
             <div class="empty-state-card movie-list-empty" th:if="${#lists.isEmpty(movies)}">
-                지금 표시할 공개 영화 목록을 준비 중입니다. 잠시 후 다시 시도해주세요.
+                지금 표시할 영화 카탈로그를 준비 중입니다. 잠시 후 다시 시도해주세요.
             </div>
         </div>
     </section>
