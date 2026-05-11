@@ -7,6 +7,9 @@ import com.cineflow.dto.TmdbGenreDto;
 import com.cineflow.dto.TmdbMovieDetailDto;
 import com.cineflow.dto.TmdbMovieSearchResponseDto;
 import com.cineflow.dto.TmdbMovieSummaryDto;
+import com.cineflow.dto.TmdbReleaseDateCountryDto;
+import com.cineflow.dto.TmdbReleaseDateItemDto;
+import com.cineflow.dto.TmdbReleaseDatesDto;
 import com.cineflow.repository.MovieRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -423,6 +426,202 @@ class PublicMovieMetadataServiceTest {
         assertThat(result.get(0).getAgeRatingText()).isEqualTo("전체관람가");
         assertThat(result.get(0).getAgeBadgeText()).isEqualTo("ALL");
         assertThat(result.get(0).getRunningTimeText()).isEqualTo("101분");
+    }
+
+
+    @Test
+    void getPopularMoviesEnrichesRuntimeFromTmdbDetail() {
+        TmdbMovieSummaryDto summary = new TmdbMovieSummaryDto();
+        summary.setId(303L);
+        summary.setTitle("Runtime Enriched Movie");
+
+        TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
+        response.setResults(List.of(summary));
+
+        TmdbMovieDetailDto detail = new TmdbMovieDetailDto();
+        detail.setId(303L);
+        detail.setTitle("Runtime Enriched Movie");
+        detail.setRuntime(123);
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getPopularMovies()).thenReturn(response);
+        when(tmdbClient.getMovieDetailWithMedia(303L)).thenReturn(detail);
+        when(movieRepository.findAllByActiveTrueAndTmdbIdIn(anyCollection())).thenReturn(List.of());
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getPopularMovies(1);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getRuntimeMinutes()).isEqualTo(123);
+        assertThat(result.get(0).getRunningTimeText()).isEqualTo("123분");
+    }
+
+    @Test
+    void getPopularMoviesNormalizesKoreanCertificationFromTmdbReleaseDates() {
+        TmdbMovieSummaryDto summary = new TmdbMovieSummaryDto();
+        summary.setId(304L);
+        summary.setTitle("Certified Movie");
+
+        TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
+        response.setResults(List.of(summary));
+
+        TmdbMovieDetailDto detail = new TmdbMovieDetailDto();
+        detail.setId(304L);
+        detail.setTitle("Certified Movie");
+        detail.setReleaseDates(releaseDates("KR", "15"));
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getPopularMovies()).thenReturn(response);
+        when(tmdbClient.getMovieDetailWithMedia(304L)).thenReturn(detail);
+        when(movieRepository.findAllByActiveTrueAndTmdbIdIn(anyCollection())).thenReturn(List.of());
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getPopularMovies(1);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getAgeRating()).isEqualTo("15");
+        assertThat(result.get(0).getAgeRatingText()).isEqualTo("15세 이상 관람가");
+    }
+
+    @Test
+    void getPopularMoviesKeepsLocalAgeRatingBeforeTmdbCertification() {
+        Movie linkedMovie = Movie.builder()
+                .id(305L)
+                .tmdbId(3050L)
+                .title("Local Rated Movie")
+                .ageRating("12")
+                .active(true)
+                .build();
+
+        TmdbMovieSummaryDto summary = new TmdbMovieSummaryDto();
+        summary.setId(3050L);
+        summary.setTitle("Local Rated Movie");
+
+        TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
+        response.setResults(List.of(summary));
+
+        TmdbMovieDetailDto detail = new TmdbMovieDetailDto();
+        detail.setId(3050L);
+        detail.setTitle("Local Rated Movie");
+        detail.setReleaseDates(releaseDates("KR", "청소년관람불가"));
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getPopularMovies()).thenReturn(response);
+        when(tmdbClient.getMovieDetailWithMedia(3050L)).thenReturn(detail);
+        when(movieRepository.findAllByActiveTrueAndTmdbIdIn(anyCollection())).thenReturn(List.of(linkedMovie));
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getPopularMovies(1);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getLocalMovieId()).isEqualTo(305L);
+        assertThat(result.get(0).getAgeRating()).isEqualTo("12");
+    }
+
+    @Test
+    void getPopularMoviesKeepsLocalRuntimeBeforeTmdbRuntime() {
+        Movie linkedMovie = Movie.builder()
+                .id(306L)
+                .tmdbId(3060L)
+                .title("Local Runtime Movie")
+                .runtimeMinutes(95)
+                .runningTime(105)
+                .active(true)
+                .build();
+
+        TmdbMovieSummaryDto summary = new TmdbMovieSummaryDto();
+        summary.setId(3060L);
+        summary.setTitle("Local Runtime Movie");
+
+        TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
+        response.setResults(List.of(summary));
+
+        TmdbMovieDetailDto detail = new TmdbMovieDetailDto();
+        detail.setId(3060L);
+        detail.setTitle("Local Runtime Movie");
+        detail.setRuntime(140);
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getPopularMovies()).thenReturn(response);
+        when(tmdbClient.getMovieDetailWithMedia(3060L)).thenReturn(detail);
+        when(movieRepository.findAllByActiveTrueAndTmdbIdIn(anyCollection())).thenReturn(List.of(linkedMovie));
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getPopularMovies(1);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getRuntimeMinutes()).isEqualTo(95);
+    }
+
+    @Test
+    void getPopularMoviesFallsBackToSummaryWhenTmdbDetailFails() {
+        TmdbMovieSummaryDto summary = new TmdbMovieSummaryDto();
+        summary.setId(307L);
+        summary.setTitle("Summary Fallback Movie");
+        summary.setGenreIds(List.of(28));
+
+        TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
+        response.setResults(List.of(summary));
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getPopularMovies()).thenReturn(response);
+        when(tmdbClient.getMovieDetailWithMedia(307L)).thenThrow(TmdbClientException.network(
+                "TMDB request failed because the TMDB server could not be reached. Please try again later.",
+                new RuntimeException("timeout")
+        ));
+        when(movieRepository.findAllByActiveTrueAndTmdbIdIn(anyCollection())).thenReturn(List.of());
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getPopularMovies(1);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getTitle()).isEqualTo("Summary Fallback Movie");
+        assertThat(result.get(0).getGenreText()).isEqualTo("액션");
+        assertThat(result.get(0).getRunningTimeText()).isEqualTo("시간 미정");
+    }
+
+    @Test
+    void getMovieListReusesCachedDetailForDuplicateTmdbIdsAcrossSections() {
+        TmdbMovieSummaryDto nowPlayingSummary = new TmdbMovieSummaryDto();
+        nowPlayingSummary.setId(308L);
+        nowPlayingSummary.setTitle("Duplicate Section Movie");
+
+        TmdbMovieSearchResponseDto nowPlayingResponse = new TmdbMovieSearchResponseDto();
+        nowPlayingResponse.setResults(List.of(nowPlayingSummary));
+
+        TmdbMovieSearchResponseDto popularResponse = new TmdbMovieSearchResponseDto();
+        popularResponse.setResults(List.of(nowPlayingSummary));
+
+        TmdbMovieSearchResponseDto upcomingResponse = new TmdbMovieSearchResponseDto();
+        upcomingResponse.setResults(List.of(nowPlayingSummary));
+
+        TmdbMovieDetailDto detail = new TmdbMovieDetailDto();
+        detail.setId(308L);
+        detail.setTitle("Duplicate Section Movie");
+        detail.setRuntime(111);
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(movieRepository.findAllByActiveTrueOrderByReleaseDateDescTitleAsc()).thenReturn(List.of());
+        when(movieRepository.findAllByActiveTrueAndTmdbIdIn(anyCollection())).thenReturn(List.of());
+        when(tmdbClient.getNowPlayingMovies()).thenReturn(nowPlayingResponse);
+        when(tmdbClient.getPopularMovies()).thenReturn(popularResponse);
+        when(tmdbClient.getUpcomingMovies()).thenReturn(upcomingResponse);
+        when(tmdbClient.getMovieDetailWithMedia(308L)).thenReturn(detail);
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getMovieList(3);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getRuntimeMinutes()).isEqualTo(111);
+        verify(tmdbClient, times(1)).getMovieDetailWithMedia(308L);
+    }
+
+    private TmdbReleaseDatesDto releaseDates(String countryCode, String certification) {
+        TmdbReleaseDateItemDto item = new TmdbReleaseDateItemDto();
+        item.setCertification(certification);
+        item.setType(3);
+
+        TmdbReleaseDateCountryDto country = new TmdbReleaseDateCountryDto();
+        country.setIso31661(countryCode);
+        country.setReleaseDates(List.of(item));
+
+        TmdbReleaseDatesDto releaseDates = new TmdbReleaseDatesDto();
+        releaseDates.setResults(List.of(country));
+        return releaseDates;
     }
 
     private static final class MutableClock extends Clock {

@@ -6,6 +6,8 @@ import com.cineflow.dto.PublicMovieMetadataDto;
 import com.cineflow.dto.TmdbGenreDto;
 import com.cineflow.dto.TmdbMovieDetailDto;
 import com.cineflow.dto.TmdbMovieSearchResponseDto;
+import com.cineflow.dto.TmdbReleaseDateCountryDto;
+import com.cineflow.dto.TmdbReleaseDateItemDto;
 import com.cineflow.dto.TmdbMovieSummaryDto;
 import com.cineflow.repository.MovieRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +45,8 @@ public class PublicMovieMetadataService {
     private static final String DEFAULT_OVERVIEW = "현재 영화 소개를 불러오는 중입니다. 잠시 후 다시 확인해 주세요.";
     private static final String DEFAULT_SHORT_DESCRIPTION = "영화 소개를 준비 중이지만 상영 정보와 예매 연결은 계속 확인하실 수 있습니다.";
     private static final int SHORT_DESCRIPTION_LIMIT = 120;
+    private static final int HERO_DETAIL_ENRICHMENT_LIMIT = 3;
+    private static final int SECTION_DETAIL_ENRICHMENT_LIMIT = 8;
     private static final Duration LIVE_METADATA_CACHE_TTL = Duration.ofMinutes(5);
     private static final Duration FALLBACK_METADATA_CACHE_TTL = Duration.ofSeconds(30);
     private static final Map<Integer, String> TMDB_GENRE_NAMES = Map.ofEntries(
@@ -85,19 +89,19 @@ public class PublicMovieMetadataService {
     }
 
     public List<PublicMovieMetadataDto> getHeroMovies(int limit) {
-        return getPopularMovies(limit);
+        return getSectionMovies(tmdbClient::getPopularMovies, Math.min(limit, HERO_DETAIL_ENRICHMENT_LIMIT), null);
     }
 
     public List<PublicMovieMetadataDto> getPopularMovies(int limit) {
-        return getSectionMovies(tmdbClient::getPopularMovies, limit, null);
+        return getSectionMovies(tmdbClient::getPopularMovies, Math.min(limit, SECTION_DETAIL_ENRICHMENT_LIMIT), null);
     }
 
     public List<PublicMovieMetadataDto> getNowShowingMovies(int limit) {
-        return getSectionMovies(tmdbClient::getNowPlayingMovies, limit, MovieStatus.NOW_SHOWING);
+        return getSectionMovies(tmdbClient::getNowPlayingMovies, Math.min(limit, SECTION_DETAIL_ENRICHMENT_LIMIT), MovieStatus.NOW_SHOWING);
     }
 
     public List<PublicMovieMetadataDto> getComingSoonMovies(int limit) {
-        return getSectionMovies(tmdbClient::getUpcomingMovies, limit, MovieStatus.COMING_SOON);
+        return getSectionMovies(tmdbClient::getUpcomingMovies, Math.min(limit, SECTION_DETAIL_ENRICHMENT_LIMIT), MovieStatus.COMING_SOON);
     }
 
     public List<PublicMovieMetadataDto> getLocalHeroMovies(int limit) {
@@ -296,9 +300,10 @@ public class PublicMovieMetadataService {
                 continue;
             }
 
+            PublicMovieMetadataDto summaryMetadata = toSummaryMetadata(summary, linkedMoviesByTmdbId.get(summary.getId()), statusHint);
             publicMovies.putIfAbsent(
                     summary.getId(),
-                    toSummaryMetadata(summary, linkedMoviesByTmdbId.get(summary.getId()), statusHint)
+                    enrichSummaryMetadata(summaryMetadata, linkedMoviesByTmdbId.get(summary.getId()))
             );
 
             if (publicMovies.size() >= limit) {
@@ -318,15 +323,36 @@ public class PublicMovieMetadataService {
                 ? movieRepository.findByIdAndActiveTrue(summaryMetadata.getLocalMovieId()).orElse(null)
                 : movieRepository.findByTmdbIdAndActiveTrue(summaryMetadata.getTmdbId()).orElse(null);
 
-        return resolveMetadataByTmdbId(summaryMetadata.getTmdbId(), linkedMovie, summaryMetadata.getStatus());
+        return resolveMetadataByTmdbId(summaryMetadata.getTmdbId(), linkedMovie, summaryMetadata.getStatus(), summaryMetadata);
+    }
+
+    private PublicMovieMetadataDto enrichSummaryMetadata(PublicMovieMetadataDto summaryMetadata, Movie linkedMovie) {
+        if (summaryMetadata == null || summaryMetadata.getTmdbId() == null) {
+            return summaryMetadata;
+        }
+
+        return resolveMetadataByTmdbId(
+                summaryMetadata.getTmdbId(),
+                linkedMovie,
+                summaryMetadata.getStatus(),
+                summaryMetadata
+        );
     }
 
     private PublicMovieMetadataDto resolveMetadataByTmdbId(Long tmdbId, Movie linkedMovie, MovieStatus statusHint) {
+        return resolveMetadataByTmdbId(tmdbId, linkedMovie, statusHint, buildFallbackMetadata(linkedMovie, tmdbId, statusHint));
+    }
+
+    private PublicMovieMetadataDto resolveMetadataByTmdbId(
+            Long tmdbId,
+            Movie linkedMovie,
+            MovieStatus statusHint,
+            PublicMovieMetadataDto fallback
+    ) {
         Movie cacheReference = linkedMovie != null
                 ? linkedMovie
                 : Movie.builder().tmdbId(tmdbId).status(statusHint).build();
 
-        PublicMovieMetadataDto fallback = buildFallbackMetadata(linkedMovie, tmdbId, statusHint);
         if (!tmdbClient.isConfigured()) {
             return fallback;
         }
@@ -340,18 +366,19 @@ public class PublicMovieMetadataService {
             PublicMovieMetadataDto resolvedMetadata = toLiveMetadata(
                     linkedMovie,
                     tmdbClient.getMovieDetailWithMedia(tmdbId),
-                    statusHint
+                    statusHint,
+                    fallback
             );
             cacheResolvedMetadata(cacheReference, resolvedMetadata);
             return resolvedMetadata;
         } catch (TmdbClientException exception) {
             log.warn("TMDB movie detail lookup failed. Falling back to a neutral placeholder. tmdbId={}, reason={}",
                     tmdbId, exception.getMessage());
-            cacheResolvedMetadata(cacheReference, fallback);
+            cacheResolvedMetadata(cacheReference, fallbackForShortCache(fallback));
             return fallback;
         } catch (RuntimeException exception) {
             log.warn("Unexpected TMDB movie detail error. Falling back to a neutral placeholder. tmdbId={}", tmdbId, exception);
-            cacheResolvedMetadata(cacheReference, fallback);
+            cacheResolvedMetadata(cacheReference, fallbackForShortCache(fallback));
             return fallback;
         }
     }
@@ -453,6 +480,34 @@ public class PublicMovieMetadataService {
                 ));
     }
 
+
+    private PublicMovieMetadataDto fallbackForShortCache(PublicMovieMetadataDto fallback) {
+        if (fallback == null || !fallback.isLiveMetadata()) {
+            return fallback;
+        }
+
+        return PublicMovieMetadataDto.builder()
+                .localMovieId(fallback.getLocalMovieId())
+                .tmdbId(fallback.getTmdbId())
+                .title(fallback.getTitle())
+                .originalTitle(fallback.getOriginalTitle())
+                .overview(fallback.getOverview())
+                .releaseDate(fallback.getReleaseDate())
+                .runtimeMinutes(fallback.getRuntimeMinutes())
+                .genres(fallback.getGenres())
+                .posterUrl(fallback.getPosterUrl())
+                .backdropUrl(fallback.getBackdropUrl())
+                .ageRating(fallback.getAgeRating())
+                .bookingOpen(fallback.isBookingOpen())
+                .active(fallback.isActive())
+                .status(fallback.getStatus())
+                .bookingRate(fallback.getBookingRate())
+                .score(fallback.getScore())
+                .shortDescription(fallback.getShortDescription())
+                .liveMetadata(false)
+                .build();
+    }
+
     private void cacheResolvedMetadata(Movie movie, PublicMovieMetadataDto resolvedMetadata) {
         Instant now = clock.instant();
         Duration ttl = resolvedMetadata.isLiveMetadata() ? LIVE_METADATA_CACHE_TTL : FALLBACK_METADATA_CACHE_TTL;
@@ -501,28 +556,37 @@ public class PublicMovieMetadataService {
     private PublicMovieMetadataDto toLiveMetadata(
             Movie linkedMovie,
             TmdbMovieDetailDto detail,
-            MovieStatus statusHint
+            MovieStatus statusHint,
+            PublicMovieMetadataDto fallback
     ) {
-        String overview = resolveOverview(detail.getOverview());
+        String overview = resolveOverview(detail.getOverview(), fallback != null ? fallback.getOverview() : null);
+        LocalDate releaseDate = firstNonNull(
+                linkedMovie != null ? linkedMovie.getReleaseDate() : null,
+                detail.getReleaseDate(),
+                fallback != null ? fallback.getReleaseDate() : null
+        );
 
         return PublicMovieMetadataDto.builder()
-                .localMovieId(linkedMovie != null ? linkedMovie.getId() : null)
-                .tmdbId(detail.getId())
-                .title(resolveTitle(detail.getTitle()))
-                .originalTitle(resolveOriginalTitle(detail.getOriginalTitle(), detail.getTitle()))
+                .localMovieId(linkedMovie != null ? linkedMovie.getId() : fallback != null ? fallback.getLocalMovieId() : null)
+                .tmdbId(firstNonNull(detail.getId(), fallback != null ? fallback.getTmdbId() : null))
+                .title(resolveTitle(firstNonBlank(detail.getTitle(), fallback != null ? fallback.getTitle() : null)))
+                .originalTitle(resolveOriginalTitle(
+                        firstNonBlank(detail.getOriginalTitle(), fallback != null ? fallback.getOriginalTitle() : null),
+                        firstNonBlank(detail.getTitle(), fallback != null ? fallback.getTitle() : null)
+                ))
                 .overview(overview)
-                .releaseDate(firstNonNull(linkedMovie != null ? linkedMovie.getReleaseDate() : null, detail.getReleaseDate()))
+                .releaseDate(releaseDate)
                 .runtimeMinutes(firstNonNull(resolveLocalRuntime(linkedMovie), detail.getRuntime()))
-                .genres(resolveLiveGenres(linkedMovie, detail.getGenres()))
+                .genres(resolveLiveGenres(linkedMovie, detail.getGenres(), fallback != null ? fallback.getGenres() : null))
                 .posterUrl(resolvePosterUrl(detail.getPosterPath()))
                 .backdropUrl(resolveBackdropUrl(detail.getBackdropPath(), detail.getPosterPath()))
-                .ageRating(resolveAgeRating(linkedMovie))
+                .ageRating(firstNonNull(resolveAgeRating(linkedMovie), resolveKoreanAgeRating(detail), fallback != null ? fallback.getAgeRating() : null))
                 .bookingOpen(resolveBookingOpen(linkedMovie))
                 .active(resolveActive(linkedMovie))
-                .status(resolveStatus(linkedMovie, statusHint, detail.getReleaseDate()))
+                .status(resolveStatus(linkedMovie, statusHint, releaseDate))
                 .bookingRate(null)
                 .score(null)
-                .shortDescription(resolveShortDescription(overview))
+                .shortDescription(resolveShortDescription(overview, fallback != null ? fallback.getShortDescription() : null))
                 .liveMetadata(true)
                 .build();
     }
@@ -632,6 +696,9 @@ public class PublicMovieMetadataService {
 
     private PublicMovieMetadataDto adaptCachedMetadata(Movie movie, PublicMovieMetadataDto cachedMetadata) {
         if (!cachedMetadata.isLiveMetadata()) {
+            if (movie.getId() == null) {
+                return cachedMetadata;
+            }
             return buildFallbackMetadata(movie, firstNonNull(cachedMetadata.getTmdbId(), movie.getTmdbId()), cachedMetadata.getStatus());
         }
 
@@ -646,7 +713,7 @@ public class PublicMovieMetadataService {
                 .genres(firstNonEmpty(resolveLocalGenres(movie), cachedMetadata.getGenres()))
                 .posterUrl(firstNonBlank(trimToNull(cachedMetadata.getPosterUrl()), DEFAULT_POSTER_URL))
                 .backdropUrl(firstNonBlank(trimToNull(cachedMetadata.getBackdropUrl()), DEFAULT_BACKDROP_URL))
-                .ageRating(resolveAgeRating(movie))
+                .ageRating(firstNonNull(resolveAgeRating(movie), cachedMetadata.getAgeRating()))
                 .bookingOpen(resolveBookingOpen(movie))
                 .active(resolveActive(movie))
                 .status(resolveStatus(movie, cachedMetadata.getStatus(), cachedMetadata.getReleaseDate()))
@@ -677,7 +744,11 @@ public class PublicMovieMetadataService {
     }
 
     private List<String> resolveLiveGenres(Movie linkedMovie, List<TmdbGenreDto> tmdbGenres) {
-        return firstNonEmpty(resolveLocalGenres(linkedMovie), resolveGenres(tmdbGenres));
+        return resolveLiveGenres(linkedMovie, tmdbGenres, null);
+    }
+
+    private List<String> resolveLiveGenres(Movie linkedMovie, List<TmdbGenreDto> tmdbGenres, List<String> fallbackGenres) {
+        return firstNonEmpty(resolveLocalGenres(linkedMovie), resolveGenres(tmdbGenres), fallbackGenres);
     }
 
     private List<String> resolveGenreIds(List<Integer> genreIds) {
@@ -811,10 +882,30 @@ public class PublicMovieMetadataService {
         if (compact.startsWith("15")) {
             return "15";
         }
-        if (compact.startsWith("19") || compact.contains("청소년관람불가")) {
+        if (compact.startsWith("18") || compact.startsWith("19") || compact.contains("청소년관람불가")) {
             return "19";
         }
         return null;
+    }
+
+
+    private String resolveKoreanAgeRating(TmdbMovieDetailDto detail) {
+        if (detail == null || detail.getReleaseDates() == null || detail.getReleaseDates().getResults() == null) {
+            return null;
+        }
+
+        return detail.getReleaseDates().getResults().stream()
+                .filter(Objects::nonNull)
+                .filter(country -> "KR".equalsIgnoreCase(trimToNull(country.getIso31661())))
+                .map(TmdbReleaseDateCountryDto::getReleaseDates)
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .map(TmdbReleaseDateItemDto::getCertification)
+                .map(this::normalizeAgeRating)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
     }
 
     private boolean resolveBookingOpen(Movie linkedMovie) {
