@@ -47,6 +47,12 @@ public class HomeController {
             List<PublicMovieMetadataDto> tmdbMovies,
             Supplier<List<PublicMovieMetadataDto>> localFallbackMovies
     ) {
-        return tmdbMovies == null || tmdbMovies.isEmpty() ? localFallbackMovies.get() : tmdbMovies;
+        if (tmdbMovies == null || tmdbMovies.isEmpty()) {
+            return localFallbackMovies.get();
+        }
+
+        List<PublicMovieMetadataDto> localMovies = localFallbackMovies.get();
+        boolean hasLinkedTmdbMovie = tmdbMovies.stream().anyMatch(PublicMovieMetadataDto::hasLocalMovieLink);
+        return hasLinkedTmdbMovie || localMovies.isEmpty() ? tmdbMovies : localMovies;
     }
 }

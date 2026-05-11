@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,4 +23,5 @@ public class TmdbMovieSummaryDto {
     private LocalDate releaseDate;
     private String posterPath;
     private String backdropPath;
+    private List<Integer> genreIds = new ArrayList<>();
 }

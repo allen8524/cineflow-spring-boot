@@ -15,10 +15,10 @@ import java.util.Locale;
 public class MovieViewDto {
 
     private static final DateTimeFormatter RELEASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-    private static final String DEFAULT_GENRE_TEXT = "\uC7A5\uB974 \uC815\uBCF4 \uC5C5\uB370\uC774\uD2B8 \uC608\uC815";
-    private static final String DEFAULT_RELEASE_DATE_TEXT = "\uAC1C\uBD09\uC77C \uC5C5\uB370\uC774\uD2B8 \uC608\uC815";
-    private static final String DEFAULT_RUNNING_TIME_TEXT = "\uC0C1\uC601\uC2DC\uAC04 \uC5C5\uB370\uC774\uD2B8 \uC608\uC815";
-    private static final String DEFAULT_AGE_RATING_TEXT = "\uAD00\uB78C\uB4F1\uAE09 \uC815\uBCF4 \uC5C5\uB370\uC774\uD2B8 \uC608\uC815";
+    private static final String DEFAULT_GENRE_TEXT = "장르 미정";
+    private static final String DEFAULT_RELEASE_DATE_TEXT = "개봉일 미정";
+    private static final String DEFAULT_RUNNING_TIME_TEXT = "시간 미정";
+    private static final String DEFAULT_AGE_RATING_TEXT = "등급 미정";
     private static final String DEFAULT_METRIC_TEXT = "\uC9D1\uACC4\uC911";
     private static final String DEFAULT_TITLE_TEXT = "\uC601\uD654 \uC815\uBCF4 \uC900\uBE44 \uC911";
     private static final String DEFAULT_POSTER_URL = "/images/uploads/movie-single.jpg";
@@ -53,11 +53,12 @@ public class MovieViewDto {
     }
 
     public String getAgeBadgeCssClass() {
-        if (ageRating == null) {
+        String normalized = normalizedAgeRating();
+        if (normalized == null) {
             return "age-badge";
         }
 
-        return switch (ageRating) {
+        return switch (normalized) {
             case "15" -> "age-badge age-15";
             case "19" -> "age-badge age-19";
             case "ALL" -> "age-badge all";
@@ -67,7 +68,11 @@ public class MovieViewDto {
     }
 
     public String getAgeBadgeText() {
-        return ageRating != null ? ageRating : "?";
+        String normalized = normalizedAgeRating();
+        if (normalized == null) {
+            return "미정";
+        }
+        return "ALL".equals(normalized) ? "ALL" : normalized;
     }
 
     public String getStatusLabel() {
@@ -91,7 +96,7 @@ public class MovieViewDto {
     }
 
     public String getGenreText() {
-        return genre != null ? genre : DEFAULT_GENRE_TEXT;
+        return genre != null && !genre.isBlank() ? genre : DEFAULT_GENRE_TEXT;
     }
 
     public String getReleaseDateText() {
@@ -103,11 +108,21 @@ public class MovieViewDto {
     }
 
     public String getRunningTimeText() {
-        return runningTime != null ? runningTime + "\uBD84" : DEFAULT_RUNNING_TIME_TEXT;
+        return runningTime != null && runningTime > 0 ? runningTime + "분" : DEFAULT_RUNNING_TIME_TEXT;
     }
 
     public String getAgeRatingText() {
-        return ageRating != null ? ageRating + "\uC138 \uC774\uC0C1 \uAD00\uB78C\uAC00" : DEFAULT_AGE_RATING_TEXT;
+        String normalized = normalizedAgeRating();
+        if (normalized == null) {
+            return DEFAULT_AGE_RATING_TEXT;
+        }
+        return switch (normalized) {
+            case "ALL" -> "전체관람가";
+            case "12" -> "12세 이상 관람가";
+            case "15" -> "15세 이상 관람가";
+            case "19" -> "청소년 관람불가";
+            default -> DEFAULT_AGE_RATING_TEXT;
+        };
     }
 
     public String getBookingRateText() {
@@ -124,6 +139,26 @@ public class MovieViewDto {
 
     public boolean isNowShowing() {
         return status == MovieStatus.NOW_SHOWING;
+    }
+
+    private String normalizedAgeRating() {
+        if (ageRating == null || ageRating.isBlank()) {
+            return null;
+        }
+        String compact = ageRating.trim().replaceAll("\\s+", "").toUpperCase(Locale.ROOT);
+        if (compact.equals("ALL") || compact.equals("전체") || compact.equals("전체관람가")) {
+            return "ALL";
+        }
+        if (compact.startsWith("12")) {
+            return "12";
+        }
+        if (compact.startsWith("15")) {
+            return "15";
+        }
+        if (compact.startsWith("19") || compact.contains("청소년관람불가")) {
+            return "19";
+        }
+        return null;
     }
 
     private String formatMetric(Double value, boolean percent) {

@@ -35,9 +35,9 @@
                             <p class="hero-copy" th:text="${movie.heroCopyText}">지금 가장 주목받는 영화를 만나보세요.</p>
                             <ul class="hero-meta">
                                 <li th:text="${movie.releaseDateText}">개봉 2026.04.10</li>
-                                <li th:text="${movie.genreText}">장르 정보 준비 중</li>
-                                <li th:text="${movie.runningTimeText}">상영시간 추후 안내</li>
-                                <li th:text="${movie.ageRatingText}">관람등급 추후 안내</li>
+                                <li th:text="${movie.genreText}">장르 미정</li>
+                                <li th:text="${movie.runningTimeText}">시간 미정</li>
+                                <li th:text="${movie.ageRatingText}">등급 미정</li>
                             </ul>
                             <div class="hero-actions">
                                 <a th:if="${movie.bookable}"
@@ -88,7 +88,7 @@
                             <ul class="home-booking-feature__meta">
                                 <li th:text="${featuredMovie.releaseDateText}">개봉 2026.04.10</li>
                                 <li th:text="${featuredMovie.runningTimeText}">132분</li>
-                                <li th:text="${featuredMovie.genreText}">장르 정보 준비 중</li>
+                                <li th:text="${featuredMovie.genreText}">장르 미정</li>
                                 <li th:text="${featuredMovie.bookingOpenLabel}">예매 오픈</li>
                             </ul>
                         </div>
@@ -168,7 +168,7 @@
                             <ul class="home-showcase-card__meta">
                                 <li th:text="${movie.releaseDateText}">개봉 2026.04.10</li>
                                 <li th:text="${movie.runningTimeText}">132분</li>
-                                <li th:text="${movie.genreText}">장르 정보 준비 중</li>
+                                <li th:text="${movie.genreText}">장르 미정</li>
                             </ul>
                             <p th:text="${movie.overviewSnippetText}">영화 요약</p>
                             <div class="home-showcase-card__actions">
@@ -233,7 +233,7 @@
                         <p th:text="${movie.overviewSnippetText}">개봉 전 소개 문구</p>
                         <ul>
                             <li th:text="${movie.releaseDateText}">개봉 2026.04.18</li>
-                            <li th:text="${movie.genreText}">장르 정보 준비 중</li>
+                            <li th:text="${movie.genreText}">장르 미정</li>
                         </ul>
                     </div>
                 </article>

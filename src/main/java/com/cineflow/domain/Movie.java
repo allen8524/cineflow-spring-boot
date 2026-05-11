@@ -99,6 +99,9 @@ public class Movie {
 
     @Transient
     public String getAgeBadgeCssClass() {
+        if (ageRating == null || ageRating.isBlank()) {
+            return "age-badge";
+        }
         return switch (ageRating) {
             case "15" -> "age-badge age-15";
             case "19" -> "age-badge age-19";
