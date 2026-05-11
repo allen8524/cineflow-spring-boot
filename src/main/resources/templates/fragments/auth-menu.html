@@ -17,7 +17,7 @@
 </ul>
 
 <ul th:fragment="headerLinks" class="nav navbar-nav flex-child-menu menu-right">
-    <li sec:authorize="isAnonymous()"><a th:href="@{/booking/history}" class="menu-link">비회원 예매조회</a></li>
+    <li sec:authorize="isAnonymous()"><a th:href="@{/booking/history}" class="menu-link menu-link--guest-lookup">비회원 예매조회</a></li>
     <li sec:authorize="isAnonymous()"><a th:href="@{/login}" class="menu-link">로그인</a></li>
     <li sec:authorize="isAnonymous()"><a th:href="@{/signup}" class="menu-link">회원가입</a></li>
     <li sec:authorize="isAuthenticated()"><a th:href="@{/mypage/bookings}" class="menu-link">내 예매내역</a></li>
