@@ -17,6 +17,8 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -75,6 +77,34 @@ public class PublicMovieMetadataService {
 
     public List<PublicMovieMetadataDto> getComingSoonMovies(int limit) {
         return getSectionMovies(tmdbClient::getUpcomingMovies, limit, MovieStatus.COMING_SOON);
+    }
+
+    public List<PublicMovieMetadataDto> getLocalHeroMovies(int limit) {
+        return resolveLocalMetadata(localActiveMovies().stream()
+                .sorted(Comparator
+                        .comparing((Movie movie) -> !(movie.isBookingOpen() || movie.getStatus() == MovieStatus.NOW_SHOWING))
+                        .thenComparing(this::releaseDateForSort, Comparator.reverseOrder())
+                        .thenComparing(Movie::getTitle, Comparator.nullsLast(String::compareToIgnoreCase)))
+                .limit(Math.max(limit, 0))
+                .toList());
+    }
+
+    public List<PublicMovieMetadataDto> getLocalNowShowingMovies(int limit) {
+        return resolveLocalMetadata(localMoviesByPreferredStatus(MovieStatus.NOW_SHOWING, limit));
+    }
+
+    public List<PublicMovieMetadataDto> getLocalComingSoonMovies(int limit) {
+        return resolveLocalMetadata(localMoviesByPreferredStatus(MovieStatus.COMING_SOON, limit));
+    }
+
+    public List<PublicMovieMetadataDto> getLocalActiveMovies(int limit) {
+        if (limit <= 0) {
+            return List.of();
+        }
+
+        return resolveLocalMetadata(localActiveMovies().stream()
+                .limit(limit)
+                .toList());
     }
 
     public List<PublicMovieMetadataDto> getMovieList(int limit) {
@@ -189,6 +219,30 @@ public class PublicMovieMetadataService {
                 .filter(Objects::nonNull)
                 .map(this::resolveLocalMetadata)
                 .toList();
+    }
+
+    private List<Movie> localMoviesByPreferredStatus(MovieStatus preferredStatus, int limit) {
+        if (limit <= 0) {
+            return List.of();
+        }
+
+        List<Movie> activeMovies = localActiveMovies();
+        List<Movie> preferredMovies = activeMovies.stream()
+                .filter(movie -> movie.getStatus() == preferredStatus)
+                .limit(limit)
+                .toList();
+
+        return preferredMovies.isEmpty()
+                ? activeMovies.stream().limit(limit).toList()
+                : preferredMovies;
+    }
+
+    private List<Movie> localActiveMovies() {
+        return movieRepository.findAllByActiveTrueOrderByReleaseDateDescTitleAsc();
+    }
+
+    private LocalDate releaseDateForSort(Movie movie) {
+        return movie.getReleaseDate() != null ? movie.getReleaseDate() : LocalDate.MIN;
     }
 
     private List<PublicMovieMetadataDto> getSectionMovies(
@@ -446,24 +500,28 @@ public class PublicMovieMetadataService {
     }
 
     private PublicMovieMetadataDto buildFallbackMetadata(Movie linkedMovie, Long tmdbId, MovieStatus statusHint) {
+        String overview = linkedMovie != null
+                ? resolveOverview(linkedMovie.getOverview(), linkedMovie.getDescription(), linkedMovie.getShortDescription())
+                : DEFAULT_OVERVIEW;
+
         return PublicMovieMetadataDto.builder()
                 .localMovieId(linkedMovie != null ? linkedMovie.getId() : null)
                 .tmdbId(tmdbId)
-                .title(DEFAULT_TITLE)
+                .title(linkedMovie != null ? resolveTitle(linkedMovie.getTitle()) : DEFAULT_TITLE)
                 .originalTitle(null)
-                .overview(DEFAULT_OVERVIEW)
-                .releaseDate(null)
-                .runtimeMinutes(null)
-                .genres(List.of())
-                .posterUrl(DEFAULT_POSTER_URL)
-                .backdropUrl(DEFAULT_BACKDROP_URL)
+                .overview(overview)
+                .releaseDate(linkedMovie != null ? linkedMovie.getReleaseDate() : null)
+                .runtimeMinutes(resolveLocalRuntime(linkedMovie))
+                .genres(resolveLocalGenres(linkedMovie))
+                .posterUrl(resolveLocalPosterUrl(linkedMovie))
+                .backdropUrl(resolveLocalBackdropUrl(linkedMovie))
                 .ageRating(resolveAgeRating(linkedMovie))
                 .bookingOpen(resolveBookingOpen(linkedMovie))
                 .active(resolveActive(linkedMovie))
-                .status(resolveStatus(linkedMovie, statusHint, null))
-                .bookingRate(null)
-                .score(null)
-                .shortDescription(DEFAULT_SHORT_DESCRIPTION)
+                .status(resolveStatus(linkedMovie, statusHint, linkedMovie != null ? linkedMovie.getReleaseDate() : null))
+                .bookingRate(linkedMovie != null ? linkedMovie.getBookingRate() : null)
+                .score(linkedMovie != null ? linkedMovie.getScore() : null)
+                .shortDescription(resolveShortDescription(linkedMovie != null ? linkedMovie.getShortDescription() : null, overview))
                 .liveMetadata(false)
                 .build();
     }
@@ -624,6 +682,55 @@ public class PublicMovieMetadataService {
 
     private String resolveOverview(String overview) {
         return firstNonBlank(overview, DEFAULT_OVERVIEW);
+    }
+
+    private String resolveOverview(String... candidates) {
+        String overview = firstNonBlank(candidates);
+        return overview != null ? overview : DEFAULT_OVERVIEW;
+    }
+
+    private Integer resolveLocalRuntime(Movie linkedMovie) {
+        if (linkedMovie == null) {
+            return null;
+        }
+        return firstNonNull(linkedMovie.getRuntimeMinutes(), linkedMovie.getRunningTime());
+    }
+
+    private List<String> resolveLocalGenres(Movie linkedMovie) {
+        if (linkedMovie == null || !StringUtils.hasText(linkedMovie.getGenre())) {
+            return List.of();
+        }
+
+        return Arrays.stream(linkedMovie.getGenre().split("[,/·|]"))
+                .map(this::trimToNull)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+    }
+
+    private String resolveLocalPosterUrl(Movie linkedMovie) {
+        if (linkedMovie == null) {
+            return DEFAULT_POSTER_URL;
+        }
+
+        return firstNonBlank(
+                linkedMovie.getPosterUrl(),
+                tmdbClient.buildPosterUrl(linkedMovie.getPosterPath()),
+                DEFAULT_POSTER_URL
+        );
+    }
+
+    private String resolveLocalBackdropUrl(Movie linkedMovie) {
+        if (linkedMovie == null) {
+            return DEFAULT_BACKDROP_URL;
+        }
+
+        return firstNonBlank(
+                tmdbClient.buildBackdropUrl(linkedMovie.getBackdropPath()),
+                tmdbClient.buildPosterUrl(linkedMovie.getPosterPath()),
+                linkedMovie.getPosterUrl(),
+                DEFAULT_BACKDROP_URL
+        );
     }
 
     private String resolveShortDescription(String... candidates) {

@@ -9,7 +9,7 @@
                     <p class="storefront-header__utility-copy">영화 탐색부터 예매 완료까지 한 흐름으로 이어지는 CineFlow 시네마 서비스</p>
                     <div class="storefront-header__utility-links">
                         <a th:href="@{/movies}">현재 상영작</a>
-                        <a th:href="@{/booking}">상영시간표</a>
+                        <a th:href="@{/booking}">빠른예매</a>
                         <a th:href="@{/support}">고객센터</a>
                     </div>
                 </div>
@@ -25,7 +25,7 @@
                     </div>
                     <a th:href="@{/}" class="cinema-brand-mark storefront-brand">
                         <img class="logo" th:src="@{/images/logo1.png}" alt="CineFlow" width="119" height="58">
-                        <span class="cinema-brand-copy">BOOKING FIRST CINEMA SERVICE</span>
+                        <span class="cinema-brand-copy">영화 예매 흐름을 한눈에</span>
                     </a>
                 </div>
 
@@ -40,16 +40,12 @@
                             <li>
                                 <a class="btn btn-default lv1"
                                    th:classappend="${activeMenu == 'booking'} ? ' active' : ''"
-                                   th:href="@{/booking}">예매</a>
+                                   th:href="@{/booking}">빠른예매</a>
                             </li>
                             <li>
                                 <a class="btn btn-default lv1"
-                                   th:classappend="${activeMenu == 'booking'} ? ' active' : ''"
-                                   th:href="@{/booking}">상영시간표</a>
-                            </li>
-                            <li>
-                                <a class="btn btn-default lv1"
-                                   th:href="@{/support#faq}">혜택안내</a>
+                                   th:classappend="${activeMenu == 'bookingHistory'} ? ' active' : ''"
+                                   th:href="@{/booking/history}">예매내역</a>
                             </li>
                             <li>
                                 <a class="btn btn-default lv1"
@@ -125,7 +121,7 @@
                 <div class="storefront-footer__menu">
                     <h4>바로가기</h4>
                     <ul>
-                        <li><a th:href="@{/booking}">상영시간표</a></li>
+                        <li><a th:href="@{/booking}">빠른예매</a></li>
                         <li><a th:href="@{/movies}">현재 상영작</a></li>
                         <li><a th:href="@{/support#lost}">분실물 문의</a></li>
                         <li><a th:href="@{/support}">고객지원</a></li>
