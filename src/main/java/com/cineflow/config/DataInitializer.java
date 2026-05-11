@@ -39,6 +39,21 @@ import java.util.Locale;
 @Configuration
 public class DataInitializer {
 
+    private static final String JURASSIC_PARK_TITLE = "쥬라기 공원";
+    private static final String GODFATHER_TITLE = "대부";
+    private static final String IT_TITLE = "그것";
+    private static final String SKYFALL_TITLE = "007 스카이폴";
+    private static final String INTERSTELLAR_TITLE = "인터스텔라";
+    private static final String INCEPTION_TITLE = "인셉션";
+    private static final String DARK_KNIGHT_TITLE = "다크 나이트";
+    private static final String JURASSIC_PARK_POSTER_URL = "https://image.tmdb.org/t/p/w500/b1xCNnyrPebIc7EWNZIa6jhb1Ww.jpg";
+    private static final String GODFATHER_POSTER_URL = "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg";
+    private static final String IT_POSTER_URL = "https://image.tmdb.org/t/p/w500/9E2y5Q7WlCVNEhP5GiVTjhEhx1o.jpg";
+    private static final String SKYFALL_POSTER_URL = "https://image.tmdb.org/t/p/w500/d0IVecFQvsGdSbnMAHqiYsNYaJT.jpg";
+    private static final String INTERSTELLAR_POSTER_URL = "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg";
+    private static final String INCEPTION_POSTER_URL = "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg";
+    private static final String DARK_KNIGHT_POSTER_URL = "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg";
+
     @Bean
     @ConditionalOnProperty(prefix = "app.seed", name = "enabled", havingValue = "true")
     CommandLineRunner initData(
@@ -70,7 +85,7 @@ public class DataInitializer {
         movieRepository.saveAll(List.of(
                 Movie.builder()
                         .tmdbId(329L)
-                        .title("쥬라기 공원")
+                        .title(JURASSIC_PARK_TITLE)
                         .shortDescription("공룡이 되살아난 테마파크에서 펼쳐지는 스티븐 스필버그의 모험 블록버스터.")
                         .description("최첨단 유전공학으로 공룡을 복원한 외딴 섬의 테마파크. 정식 개장을 앞둔 검증 투어 도중 보안 시스템이 무너지며 방문객들은 살아 움직이는 공룡들 사이에서 탈출해야 한다.")
                         .overview("A wealthy entrepreneur secretly creates a theme park featuring living dinosaurs drawn from prehistoric DNA. Before opening day, he invites experts and family members to preview the park, but a security breakdown turns wonder into survival.")
@@ -80,7 +95,7 @@ public class DataInitializer {
                         .runtimeMinutes(127)
                         .posterPath("/b1xCNnyrPebIc7EWNZIa6jhb1Ww.jpg")
                         .backdropPath("/fQ8n091t3P6pYqkWZt4IARz5t2c.jpg")
-                        .posterUrl("https://image.tmdb.org/t/p/w500/b1xCNnyrPebIc7EWNZIa6jhb1Ww.jpg")
+                        .posterUrl(JURASSIC_PARK_POSTER_URL)
                         .bookingRate(31.2)
                         .score(9.1)
                         .releaseDate(LocalDate.of(1993, 6, 11))
@@ -89,7 +104,7 @@ public class DataInitializer {
                         .build(),
                 Movie.builder()
                         .tmdbId(238L)
-                        .title("대부")
+                        .title(GODFATHER_TITLE)
                         .shortDescription("코를레오네 패밀리의 권력과 가족, 배신을 그린 범죄 영화의 고전.")
                         .description("뉴욕 마피아 가문 코를레오네 패밀리의 수장 비토와 전쟁 영웅으로 돌아온 막내아들 마이클. 가족을 둘러싼 폭력과 거래가 깊어질수록 마이클은 피하려 했던 세계의 중심으로 들어선다.")
                         .overview("Spanning the years 1945 to 1955, the story follows the Corleone crime family and Michael Corleone's transformation from reluctant outsider to ruthless family leader.")
@@ -99,7 +114,7 @@ public class DataInitializer {
                         .runtimeMinutes(175)
                         .posterPath("/3bhkrj58Vtu7enYsRolD1fZdja1.jpg")
                         .backdropPath("/tmU7GeKVybMWFButWEGl2M4GeiP.jpg")
-                        .posterUrl("https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg")
+                        .posterUrl(GODFATHER_POSTER_URL)
                         .bookingRate(24.8)
                         .score(9.2)
                         .releaseDate(LocalDate.of(1972, 3, 14))
@@ -108,7 +123,7 @@ public class DataInitializer {
                         .build(),
                 Movie.builder()
                         .tmdbId(346364L)
-                        .title("그것")
+                        .title(IT_TITLE)
                         .shortDescription("데리 마을의 아이들이 공포의 존재 페니와이즈에 맞서는 호러 드라마.")
                         .description("아이들이 하나둘 사라지는 마을 데리. 루저 클럽이라 불리는 아이들은 각자의 두려움을 먹고 자라는 광대 페니와이즈의 실체를 마주하고, 함께 맞서기로 결심한다.")
                         .overview("In a small town in Maine, seven children known as The Losers Club face life problems, bullies and a monster that takes the shape of a clown called Pennywise.")
@@ -118,7 +133,7 @@ public class DataInitializer {
                         .runtimeMinutes(135)
                         .posterPath("/9E2y5Q7WlCVNEhP5GiVTjhEhx1o.jpg")
                         .backdropPath("/tcheoA2nPATCm2vvXw2hVQoaEFD.jpg")
-                        .posterUrl("https://image.tmdb.org/t/p/w500/9E2y5Q7WlCVNEhP5GiVTjhEhx1o.jpg")
+                        .posterUrl(IT_POSTER_URL)
                         .bookingRate(19.7)
                         .score(8.5)
                         .releaseDate(LocalDate.of(2017, 9, 6))
@@ -127,7 +142,7 @@ public class DataInitializer {
                         .build(),
                 Movie.builder()
                         .tmdbId(37724L)
-                        .title("007 스카이폴")
+                        .title(SKYFALL_TITLE)
                         .shortDescription("본드의 과거와 MI6의 현재가 충돌하는 샘 멘데스 연출의 첩보 액션.")
                         .description("작전 실패 이후 MI6가 공격받고 M의 과거가 조직 전체를 위협한다. 제임스 본드는 몸과 신뢰를 회복하며 정체를 드러낸 적과 마지막 대결을 준비한다.")
                         .overview("When Bond's latest assignment goes wrong and agents around the world are exposed, MI6 comes under attack. Bond must track down and destroy the threat, no matter how personal the cost.")
@@ -137,7 +152,7 @@ public class DataInitializer {
                         .runtimeMinutes(143)
                         .posterPath("/d0IVecFQvsGdSbnMAHqiYsNYaJT.jpg")
                         .backdropPath("/mMZRKb3NVo5ZeSPEIaNW9buLWQ0.jpg")
-                        .posterUrl("https://image.tmdb.org/t/p/w500/d0IVecFQvsGdSbnMAHqiYsNYaJT.jpg")
+                        .posterUrl(SKYFALL_POSTER_URL)
                         .bookingRate(14.2)
                         .score(8.2)
                         .releaseDate(LocalDate.of(2012, 10, 24))
@@ -146,7 +161,7 @@ public class DataInitializer {
                         .build(),
                 Movie.builder()
                         .tmdbId(157336L)
-                        .title("인터스텔라")
+                        .title(INTERSTELLAR_TITLE)
                         .shortDescription("인류의 미래를 위해 웜홀 너머로 향하는 우주 탐사와 가족의 이야기.")
                         .description("황폐해진 지구에서 인류의 생존 가능성을 찾기 위해 전직 조종사 쿠퍼는 미지의 은하로 떠난다. 시간과 중력, 가족에 대한 약속이 거대한 선택의 무게가 된다.")
                         .overview("The adventures of a group of explorers who use a newly discovered wormhole to surpass the limitations on human space travel and seek a future for humankind.")
@@ -156,7 +171,7 @@ public class DataInitializer {
                         .runtimeMinutes(169)
                         .posterPath("/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg")
                         .backdropPath("/xJHokMbljvjADYdit5fK5VQsXEG.jpg")
-                        .posterUrl("https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg")
+                        .posterUrl(INTERSTELLAR_POSTER_URL)
                         .bookingRate(12.4)
                         .score(9.0)
                         .releaseDate(LocalDate.of(2014, 11, 5))
@@ -165,7 +180,7 @@ public class DataInitializer {
                         .build(),
                 Movie.builder()
                         .tmdbId(27205L)
-                        .title("인셉션")
+                        .title(INCEPTION_TITLE)
                         .shortDescription("꿈속에 침투해 생각을 훔치는 전문가가 불가능한 임무에 도전한다.")
                         .description("타인의 꿈에 들어가 비밀을 빼내는 코브는 모든 것을 되돌릴 수 있는 마지막 기회를 얻는다. 이번 임무는 정보를 훔치는 것이 아니라 한 사람의 마음에 생각을 심는 것이다.")
                         .overview("A skilled thief who steals corporate secrets through dream-sharing technology is given a chance to have his past erased if he can plant an idea into a target's subconscious.")
@@ -175,7 +190,7 @@ public class DataInitializer {
                         .runtimeMinutes(148)
                         .posterPath("/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg")
                         .backdropPath("/s3TBrRGB1iav7gFOCNx3H31MoES.jpg")
-                        .posterUrl("https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg")
+                        .posterUrl(INCEPTION_POSTER_URL)
                         .bookingRate(8.1)
                         .score(8.9)
                         .releaseDate(LocalDate.of(2010, 7, 15))
@@ -184,7 +199,7 @@ public class DataInitializer {
                         .build(),
                 Movie.builder()
                         .tmdbId(155L)
-                        .title("다크 나이트")
+                        .title(DARK_KNIGHT_TITLE)
                         .shortDescription("고담을 뒤흔드는 조커와 배트맨의 충돌을 그린 슈퍼히어로 범죄 드라마.")
                         .description("범죄와 부패를 몰아내려는 배트맨, 고든, 하비 덴트 앞에 예측 불가능한 조커가 나타난다. 고담의 질서와 신념은 혼돈 속에서 가장 어려운 시험을 맞는다.")
                         .overview("Batman raises the stakes in his war on crime with the help of Lieutenant Jim Gordon and District Attorney Harvey Dent, until the Joker unleashes chaos across Gotham City.")
@@ -194,7 +209,7 @@ public class DataInitializer {
                         .runtimeMinutes(152)
                         .posterPath("/qJ2tW6WMUDux911r6m7haRef0WH.jpg")
                         .backdropPath("/hkBaDkMWbLaf8B1lsWsKX7Ew3Xq.jpg")
-                        .posterUrl("https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg")
+                        .posterUrl(DARK_KNIGHT_POSTER_URL)
                         .bookingRate(7.5)
                         .score(9.0)
                         .releaseDate(LocalDate.of(2008, 7, 16))
@@ -374,9 +389,9 @@ public class DataInitializer {
 
         List<Schedule> schedules = scheduleRepository.findByActiveTrueOrderByStartTimeAsc();
 
-        Schedule jurassicParkGangnam = findSchedule(schedules, "쥬라기 공원", LocalDateTime.of(2026, 4, 3, 10, 20));
-        Schedule jurassicParkJamsil = findSchedule(schedules, "쥬라기 공원", LocalDateTime.of(2026, 4, 5, 19, 40));
-        Schedule godfatherGangnam = findSchedule(schedules, "대부", LocalDateTime.of(2026, 4, 4, 19, 40));
+        Schedule jurassicParkGangnam = findSchedule(schedules, JURASSIC_PARK_TITLE, LocalDateTime.of(2026, 4, 3, 10, 20));
+        Schedule jurassicParkJamsil = findSchedule(schedules, JURASSIC_PARK_TITLE, LocalDateTime.of(2026, 4, 5, 19, 40));
+        Schedule godfatherGangnam = findSchedule(schedules, GODFATHER_TITLE, LocalDateTime.of(2026, 4, 4, 19, 40));
 
         createBookingWithSeats(
                 bookingRepository,
@@ -428,8 +443,8 @@ public class DataInitializer {
                 bookingSeatRepository,
                 paymentRepository,
                 "CF20260320-2100-F5F6",
-                "그것",
-                "https://image.tmdb.org/t/p/w500/9E2y5Q7WlCVNEhP5GiVTjhEhx1o.jpg",
+                IT_TITLE,
+                IT_POSTER_URL,
                 "15",
                 "CineFlow 잠실",
                 "6관",
@@ -448,8 +463,8 @@ public class DataInitializer {
                 bookingSeatRepository,
                 paymentRepository,
                 "CF20260309-1830-G8",
-                "007 스카이폴",
-                "https://image.tmdb.org/t/p/w500/d0IVecFQvsGdSbnMAHqiYsNYaJT.jpg",
+                SKYFALL_TITLE,
+                SKYFALL_POSTER_URL,
                 "15",
                 "CineFlow 홍대",
                 "5관",
@@ -468,8 +483,8 @@ public class DataInitializer {
                 bookingSeatRepository,
                 paymentRepository,
                 "CF20260402-1810-CN01",
-                "쥬라기 공원",
-                "https://image.tmdb.org/t/p/w500/b1xCNnyrPebIc7EWNZIa6jhb1Ww.jpg",
+                JURASSIC_PARK_TITLE,
+                JURASSIC_PARK_POSTER_URL,
                 "12",
                 "CineFlow 강남",
                 "2관",
