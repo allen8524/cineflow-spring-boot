@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="description" content="TMDB 영화 상세 정보를 기준으로 보여주는 CineFlow 영화 상세 페이지">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="format-detection" content="telephone-no">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
     <link rel="stylesheet" th:href="@{/css/plugins.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
@@ -37,11 +37,13 @@
                 </div>
 
                 <div class="detail-info-col detail-copy-panel">
-                    <p class="hero-kicker" th:text="${movie.statusLabel}">현재 상영중</p>
-                    <h1 th:text="${movie.titleText}">영화 제목</h1>
-                    <p class="detail-original-title"
-                       th:if="${movie.originalTitleVisible}"
-                       th:text="${movie.originalTitle}">Original Title</p>
+                    <div class="detail-title-group">
+                        <p class="hero-kicker" th:text="${movie.statusLabel}">현재 상영중</p>
+                        <h1 th:text="${movie.titleText}">영화 제목</h1>
+                        <p class="detail-original-title"
+                           th:if="${movie.originalTitleVisible}"
+                           th:text="${movie.originalTitle}">Original Title</p>
+                    </div>
                     <p class="detail-tagline" th:text="${movie.shortDescriptionText}">영화 핵심 소개 문구</p>
 
                     <ul class="detail-meta-list">
@@ -75,31 +77,36 @@
                     </div>
 
                     <div class="detail-actions">
-                        <a th:if="${movie.bookable}"
-                           th:href="@{/booking(movieId=${movie.bookingMovieId})}"
-                           class="hero-btn primary">예매하기</a>
-                        <span th:if="${!movie.bookable}" class="hero-btn primary">예매 정보 준비 중</span>
-                        <a th:if="${movie.hasBookingLink()}"
-                           th:href="@{/booking(movieId=${movie.bookingMovieId})}"
-                           class="hero-btn secondary">상영시간표 보기</a>
-                        <a th:if="${!movie.hasBookingLink()}"
-                           th:href="@{/movies}"
-                           class="hero-btn secondary">다른 영화 보기</a>
-                        <a th:href="@{/booking/history}" class="icon-action">예매내역</a>
-                        <a th:href="@{/support}" class="icon-action">고객센터</a>
+                        <div class="detail-action-main">
+                            <a th:if="${movie.bookable}"
+                               th:href="@{/booking(movieId=${movie.bookingMovieId})}"
+                               class="hero-btn primary">예매하기</a>
+                            <span th:if="${!movie.bookable}" class="hero-btn detail-btn-disabled">상영시간표 준비 중</span>
+                            <a th:if="${movie.hasBookingLink()}"
+                               th:href="@{/booking(movieId=${movie.bookingMovieId})}"
+                               class="hero-btn secondary">상영시간표 보기</a>
+                            <a th:if="${!movie.hasBookingLink()}"
+                               th:href="@{/movies}"
+                               class="hero-btn secondary">다른 영화 보기</a>
+                        </div>
+                        <div class="detail-action-secondary">
+                            <a th:href="@{/booking/history}" class="icon-action">예매내역</a>
+                            <a th:href="@{/support}" class="icon-action">고객센터</a>
+                        </div>
                     </div>
                 </div>
 
-                <aside class="detail-booking-sticky detail-hero-booking">
+                <aside class="detail-booking-sticky detail-hero-booking"
+                       th:classappend="${nextSchedule == null} ? ' is-pending' : ''">
                     <h3>예매 요약</h3>
-                    <ul>
+                    <ul class="detail-booking-list">
                         <li>
                             <span>선택 작품</span>
                             <strong th:text="${movie.titleText}">영화 제목</strong>
                         </li>
                         <li>
                             <span>추천 극장</span>
-                            <strong th:text="${nextSchedule != null ? nextSchedule.theaterName : '예매 정보 준비 중'}">CineFlow 강남</strong>
+                            <strong th:text="${nextSchedule != null ? nextSchedule.theaterName : '일정 준비 중'}">CineFlow 강남</strong>
                         </li>
                         <li>
                             <span>추천 날짜</span>
@@ -107,7 +114,7 @@
                         </li>
                         <li>
                             <span>추천 시간</span>
-                            <strong th:text="${nextSchedule != null ? #temporals.format(nextSchedule.startTime, 'HH:mm') + ' ~ ' + #temporals.format(nextSchedule.endTime, 'HH:mm') : '시간대 준비 중'}">19:40 ~ 21:52</strong>
+                            <strong th:text="${nextSchedule != null ? #temporals.format(nextSchedule.startTime, 'HH:mm') + ' ~ ' + #temporals.format(nextSchedule.endTime, 'HH:mm') : '시간표 미등록'}">19:40 ~ 21:52</strong>
                         </li>
                     </ul>
 
@@ -117,7 +124,7 @@
                     <a th:if="${movie.bookable and nextSchedule == null}"
                        th:href="@{/booking(movieId=${movie.bookingMovieId})}"
                        class="book-btn">예매하기</a>
-                    <span th:if="${!movie.bookable}" class="book-btn">예매 정보 준비 중</span>
+                    <span th:if="${!movie.bookable}" class="book-btn book-btn--disabled">상영시간표 준비 중</span>
                 </aside>
             </div>
         </div>
@@ -135,7 +142,7 @@
                         <p class="detail-copy" th:text="${movie.descriptionText}">영화 줄거리</p>
                     </article>
 
-                    <article class="detail-block">
+                    <article class="detail-block detail-block--info">
                         <div class="section-header-inline detail-section-header">
                             <h2>기본 정보</h2>
                             <span class="section-chip">INFO</span>
@@ -168,7 +175,7 @@
                         </div>
                     </article>
 
-                    <article class="detail-block">
+                    <article class="detail-block detail-block--theaters">
                         <div class="section-header-inline detail-section-header">
                             <h2>상영 극장</h2>
                             <a th:if="${movie.hasBookingLink()}"
@@ -187,8 +194,8 @@
 
                         <div class="empty-state-card"
                              th:if="${#lists.isEmpty(theaters)}"
-                             th:text="${movie.hasBookingLink()} ? '현재 예매 가능한 상영 극장을 준비 중입니다. 조금만 기다려주세요.' : '이 영화는 아직 CineFlow 예매와 연결되지 않았습니다. 공개 메타데이터만 먼저 제공하고 있습니다.'">
-                            현재 예매 가능한 상영 극장을 준비 중입니다.
+                             th:text="${movie.hasBookingLink()} ? '아직 등록된 상영 극장이 없습니다. 일정이 추가되면 이곳에 표시됩니다.' : '아직 등록된 상영 극장이 없습니다. 영화 정보는 먼저 확인할 수 있습니다.'">
+                            아직 등록된 상영 극장이 없습니다.
                         </div>
                     </article>
 
@@ -230,8 +237,8 @@
 
                         <div class="empty-state-card"
                              th:if="${#lists.isEmpty(theaterScheduleGroups)}"
-                             th:text="${movie.hasBookingLink()} ? '등록된 상영시간표가 아직 없습니다. 다른 극장이나 날짜를 조금 뒤에 다시 확인해주세요.' : '이 영화는 아직 CineFlow 상영시간표와 연결되지 않았습니다.'">
-                            등록된 상영시간표가 아직 없습니다.
+                             th:text="${movie.hasBookingLink()} ? '등록된 상영시간표가 아직 없습니다. 일정이 추가되면 이곳에 표시됩니다.' : '상영시간표가 아직 등록되지 않았습니다.'">
+                            상영시간표가 아직 등록되지 않았습니다.
                         </div>
                     </article>
                 </div>

@@ -520,6 +520,42 @@ class PublicMovieMetadataServiceTest {
         assertThat(result.get(0).getRunningTimeText()).isEqualTo("101분");
     }
 
+    @Test
+    void getLocalComingSoonMoviesDoesNotFallbackToNowShowingMoviesWhenPreferredStatusIsMissing() {
+        Movie nowShowingMovie = Movie.builder()
+                .id(88L)
+                .title("현재 상영작")
+                .releaseDate(LocalDate.of(2026, 4, 1))
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(true)
+                .active(true)
+                .build();
+
+        when(movieRepository.findAllByActiveTrueOrderByReleaseDateDescTitleAsc()).thenReturn(List.of(nowShowingMovie));
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getLocalComingSoonMovies(6);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void getLocalNowShowingMoviesDoesNotFallbackToComingSoonMoviesWhenPreferredStatusIsMissing() {
+        Movie comingSoonMovie = Movie.builder()
+                .id(89L)
+                .title("개봉 예정작")
+                .releaseDate(LocalDate.of(2026, 5, 1))
+                .status(MovieStatus.COMING_SOON)
+                .bookingOpen(false)
+                .active(true)
+                .build();
+
+        when(movieRepository.findAllByActiveTrueOrderByReleaseDateDescTitleAsc()).thenReturn(List.of(comingSoonMovie));
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getLocalNowShowingMovies(6);
+
+        assertThat(result).isEmpty();
+    }
+
 
     @Test
     void getPopularMoviesEnrichesRuntimeFromTmdbDetail() {

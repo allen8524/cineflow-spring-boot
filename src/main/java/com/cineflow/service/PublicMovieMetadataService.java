@@ -258,9 +258,7 @@ public class PublicMovieMetadataService {
                 .limit(limit)
                 .toList();
 
-        return preferredMovies.isEmpty()
-                ? activeMovies.stream().limit(limit).toList()
-                : preferredMovies;
+        return preferredMovies;
     }
 
     private List<Movie> localActiveMovies() {

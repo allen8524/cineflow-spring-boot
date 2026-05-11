@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="description" content="TMDB 공개 영화 정보와 CineFlow 예매 데이터를 함께 안내하는 영화 탐색 화면">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="format-detection" content="telephone-no">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600" />
     <link rel="stylesheet" th:href="@{/css/plugins.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/home-cinema.css}">
@@ -29,10 +29,10 @@
             </ul>
 
             <div class="catalog-hero__content">
-                <div>
+                <div class="catalog-hero__copy">
                     <span class="section-chip">MOVIES</span>
                     <h1>영화 탐색</h1>
-                    <p>TMDB 공개 영화 메타데이터를 기준으로 영화 정보를 보여주는 카탈로그 화면입니다. 예매 가능 표시는 CineFlow에 상영시간표가 연결된 작품에만 표시됩니다.</p>
+                    <p>상영작과 개봉 예정작을 한눈에 확인하고, 상영시간표가 연결된 작품은 바로 예매할 수 있습니다.</p>
                 </div>
                 <div class="catalog-hero__actions">
                     <a th:href="@{/booking}" class="hero-btn primary">빠른예매</a>
@@ -42,16 +42,16 @@
 
             <div class="catalog-summary-strip">
                 <div>
-                    <span>노출 작품 수</span>
+                    <span>등록 영화</span>
                     <strong th:text="${#lists.size(movies)} + '편'">0편</strong>
                 </div>
                 <div>
-                    <span>데이터 원천</span>
-                    <strong>TMDB 공개 영화 정보 + CineFlow 예매 데이터</strong>
+                    <span>영화 정보</span>
+                    <strong>TMDB + CineFlow</strong>
                 </div>
                 <div>
-                    <span>예매 연결</span>
-                    <strong>상영시간표 연결 작품만 예매 가능</strong>
+                    <span>예매 가능</span>
+                    <strong>시간표 연결 작품</strong>
                 </div>
             </div>
         </div>
