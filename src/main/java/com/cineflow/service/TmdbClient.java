@@ -25,7 +25,7 @@ public class TmdbClient {
     private static final String TMDB_SEARCH_FAILURE = "TMDB movie search request failed. Please try again later.";
     private static final String TMDB_DETAIL_FAILURE = "TMDB movie detail request failed. Please try again later.";
     private static final String TMDB_LIST_FAILURE = "TMDB movie list request failed. Please try again later.";
-    private static final String DETAIL_APPEND_TO_RESPONSE = "images,videos";
+    private static final String DETAIL_APPEND_TO_RESPONSE = "images,videos,release_dates";
     private static final int DEFAULT_LIST_PAGE = 1;
 
     private final RestClient tmdbRestClient;
