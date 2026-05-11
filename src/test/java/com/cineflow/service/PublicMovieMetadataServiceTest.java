@@ -56,7 +56,7 @@ class PublicMovieMetadataServiceTest {
         Movie movie = Movie.builder()
                 .id(1L)
                 .tmdbId(550L)
-                .title("시간의 궤도")
+                .title("로컬 테스트 영화")
                 .description("로컬 시드 설명")
                 .genre("SF")
                 .ageRating("12")
@@ -111,9 +111,9 @@ class PublicMovieMetadataServiceTest {
         assertThat(result.getPosterUrl()).isEqualTo("https://image.tmdb.org/t/p/w500/fight-club-poster.jpg");
         assertThat(result.getBackdropUrl()).isEqualTo("https://image.tmdb.org/t/p/w1280/fight-club-backdrop.jpg");
         assertThat(result.isLiveMetadata()).isTrue();
-        assertThat(result.getTitle()).isNotEqualTo("시간의 궤도");
+        assertThat(result.getTitle()).isNotEqualTo("로컬 테스트 영화");
         assertThat(result.getOverview()).isNotEqualTo("로컬 시드 설명");
-        verify(tmdbClient, never()).searchMovies("시간의 궤도");
+        verify(tmdbClient, never()).searchMovies("로컬 테스트 영화");
     }
 
     @Test
@@ -158,7 +158,7 @@ class PublicMovieMetadataServiceTest {
     void resolveMetadataDoesNotForceFirstTmdbSearchResultWhenTitleDoesNotMatch() {
         Movie movie = Movie.builder()
                 .id(20L)
-                .title("시간의 궤도")
+                .title("로컬 테스트 영화")
                 .description("로컬 더미 설명")
                 .releaseDate(LocalDate.of(2026, 4, 1))
                 .status(MovieStatus.NOW_SHOWING)
@@ -175,13 +175,13 @@ class PublicMovieMetadataServiceTest {
         response.setResults(List.of(unrelatedResult));
 
         when(tmdbClient.isConfigured()).thenReturn(true);
-        when(tmdbClient.searchMovies("시간의 궤도")).thenReturn(response);
+        when(tmdbClient.searchMovies("로컬 테스트 영화")).thenReturn(response);
 
         PublicMovieMetadataDto result = publicMovieMetadataService.resolveMetadata(movie);
 
         assertThat(result.getLocalMovieId()).isEqualTo(20L);
         assertThat(result.getTmdbId()).isNull();
-        assertThat(result.getTitle()).isEqualTo("시간의 궤도");
+        assertThat(result.getTitle()).isEqualTo("로컬 테스트 영화");
         assertThat(result.getOverview()).isEqualTo("로컬 더미 설명");
         assertThat(result.isLiveMetadata()).isFalse();
         verify(tmdbClient, never()).getMovieDetailWithMedia(99L);
@@ -192,7 +192,7 @@ class PublicMovieMetadataServiceTest {
         Movie linkedMovie = Movie.builder()
                 .id(55L)
                 .tmdbId(101L)
-                .title("보이스 노이즈")
+                .title("로컬 연결 영화")
                 .genre("스릴러 · 미스터리")
                 .ageRating("15")
                 .runningTime(118)
@@ -438,7 +438,7 @@ class PublicMovieMetadataServiceTest {
     void getMovieListPrioritizesTmdbSectionsBeforeLocalMovies() {
         Movie localMovie = Movie.builder()
                 .id(78L)
-                .title("시간의 궤도")
+                .title("로컬 테스트 영화")
                 .genre("SF")
                 .releaseDate(LocalDate.of(2026, 5, 1))
                 .status(MovieStatus.NOW_SHOWING)
@@ -490,7 +490,7 @@ class PublicMovieMetadataServiceTest {
         assertThat(result).extracting(PublicMovieMetadataDto::getTitle)
                 .containsExactly("TMDB Now Playing", "TMDB Popular", "TMDB Upcoming");
         assertThat(result).extracting(PublicMovieMetadataDto::getTitle)
-                .doesNotContain("시간의 궤도");
+                .doesNotContain("로컬 테스트 영화");
     }
 
     @Test

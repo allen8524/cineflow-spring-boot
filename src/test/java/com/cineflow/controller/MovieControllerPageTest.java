@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -52,20 +53,32 @@ class MovieControllerPageTest {
 
     @Test
     void listRendersSuccessfullyWithTmdbPublicMovies() throws Exception {
-        PublicMovieMetadataDto publicMovie = PublicMovieMetadataDto.builder()
+        PublicMovieMetadataDto tmdbMovie = PublicMovieMetadataDto.builder()
                 .tmdbId(100L)
                 .title("TMDB Public Movie")
                 .status(MovieStatus.NOW_SHOWING)
                 .bookingOpen(false)
                 .active(false)
+                .liveMetadata(true)
+                .build();
+        PublicMovieMetadataDto localFallbackMovie = PublicMovieMetadataDto.builder()
+                .localMovieId(200L)
+                .title("Local Schedule Movie")
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(true)
+                .active(true)
+                .liveMetadata(false)
                 .build();
 
-        when(publicMovieMetadataService.getMovieList(24)).thenReturn(List.of(publicMovie));
+        List<PublicMovieMetadataDto> movies = List.of(tmdbMovie, localFallbackMovie);
+        when(publicMovieMetadataService.getMovieList(24)).thenReturn(movies);
 
         mockMvc.perform(get("/movies"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("movies/list"))
-                .andExpect(model().attributeExists("movies"));
+                .andExpect(model().attribute("movies", movies));
+
+        verify(publicMovieMetadataService).getMovieList(24);
     }
 
     @Test
