@@ -6301,3 +6301,106 @@ a {
     border-radius: 6px;
     display: block;
 }
+
+/* Compact storefront header tuning */
+@media (min-width: 992px) {
+    .cinema-header .navbar {
+        min-height: 64px;
+    }
+
+    .storefront-brand-shell {
+        min-height: 64px;
+        margin-right: 10px;
+        flex: 0 0 auto;
+    }
+
+    .cinema-brand-mark {
+        gap: 10px;
+    }
+
+    .cinema-brand-mark img.logo {
+        max-height: 50px;
+        width: auto;
+    }
+
+    .cinema-brand-copy {
+        max-width: 112px;
+        font-size: 11px;
+        line-height: 1.2;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+        text-transform: none;
+    }
+
+    .storefront-navbar__content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .storefront-primary-nav,
+    .menu-left {
+        flex: 0 1 auto;
+        flex-wrap: nowrap;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    .storefront-primary-nav > li > a,
+    .menu-left .lv1 {
+        padding: 9px 11px;
+        font-size: 14px;
+        line-height: 1.1;
+        white-space: nowrap;
+    }
+
+    .storefront-navbar .menu-right,
+    .menu-right {
+        flex: 0 0 auto;
+        flex-wrap: nowrap;
+        gap: 6px;
+        margin-left: auto;
+    }
+
+    .storefront-navbar .menu-right .menu-link,
+    .storefront-navbar .menu-right .auth-inline-button,
+    .menu-link {
+        min-height: 34px;
+        padding: 0 8px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .storefront-navbar .menu-right .menu-link--guest-lookup {
+        padding: 0 7px;
+        font-size: 12px;
+        color: #aebcde !important;
+        font-weight: 500;
+    }
+
+    .storefront-navbar .menu-right .menu-cta,
+    .menu-cta {
+        min-height: 36px;
+        padding: 0 13px !important;
+        border-radius: 999px;
+        font-size: 13px;
+        white-space: nowrap;
+        box-shadow: 0 8px 16px rgba(246, 63, 99, 0.24);
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1280px) {
+    .storefront-primary-nav > li > a,
+    .menu-left .lv1 {
+        padding-right: 9px;
+        padding-left: 9px;
+    }
+}
+
+@media (max-width: 1199px) {
+    .cinema-brand-copy {
+        display: none;
+    }
+}
