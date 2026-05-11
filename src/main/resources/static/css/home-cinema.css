@@ -6404,3 +6404,42 @@ a {
         display: none;
     }
 }
+
+/* Quick booking CTA size alignment */
+.menu-cta,
+.storefront-navbar .menu-right .menu-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: auto;
+    height: 42px;
+    min-height: 42px;
+    padding: 0 20px !important;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #f63f63 0%, #e41f5a 100%);
+    color: #fff !important;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 8px 18px rgba(247, 62, 99, 0.25);
+}
+
+.menu-cta:hover,
+.menu-cta:focus,
+.storefront-navbar .menu-right .menu-cta:hover,
+.storefront-navbar .menu-right .menu-cta:focus {
+    color: #fff !important;
+    box-shadow: 0 10px 22px rgba(247, 62, 99, 0.32);
+    text-decoration: none;
+}
+
+@media (max-width: 1199px) {
+    .menu-cta,
+    .storefront-navbar .menu-right .menu-cta {
+        height: 38px;
+        min-height: 38px;
+        padding: 0 16px !important;
+        font-size: 14px;
+    }
+}
