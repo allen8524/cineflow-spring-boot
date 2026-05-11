@@ -91,7 +91,7 @@ public class BookingSummaryDto {
     }
 
     public String getAgeBadgeText() {
-        return ageRating != null && !ageRating.isBlank() ? ageRating : "?";
+        return ageRating != null && !ageRating.isBlank() ? ageRating : "미정";
     }
 
     private int safeCount(Integer count) {

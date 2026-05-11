@@ -124,6 +124,6 @@ public class ScheduleViewDto {
     }
 
     public String getAgeBadgeText() {
-        return ageRating != null && !ageRating.isBlank() ? ageRating : "?";
+        return ageRating != null && !ageRating.isBlank() ? ageRating : "미정";
     }
 }

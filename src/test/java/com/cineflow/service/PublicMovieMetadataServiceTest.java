@@ -49,7 +49,7 @@ class PublicMovieMetadataServiceTest {
     }
 
     @Test
-    void resolveMetadataUsesTmdbIdFirstAndIgnoresLocalSeedMetadata() {
+    void resolveMetadataUsesTmdbDetailWithLocalDisplayMetadataFirst() {
         Movie movie = Movie.builder()
                 .id(1L)
                 .tmdbId(550L)
@@ -98,8 +98,13 @@ class PublicMovieMetadataServiceTest {
         assertThat(result.getTmdbId()).isEqualTo(550L);
         assertThat(result.getTitle()).isEqualTo("Fight Club");
         assertThat(result.getOverview()).isEqualTo("TMDB live overview");
-        assertThat(result.getRuntimeMinutes()).isEqualTo(139);
-        assertThat(result.getGenres()).containsExactly("Drama");
+        assertThat(result.getReleaseDate()).isEqualTo(LocalDate.of(1999, 10, 15));
+        assertThat(result.getRuntimeMinutes()).isEqualTo(132);
+        assertThat(result.getGenres()).containsExactly("SF");
+        assertThat(result.getAgeRating()).isEqualTo("12");
+        assertThat(result.getRunningTimeText()).isEqualTo("132분");
+        assertThat(result.getAgeRatingText()).isEqualTo("12세 이상 관람가");
+        assertThat(result.getAgeBadgeText()).isEqualTo("12");
         assertThat(result.getPosterUrl()).isEqualTo("https://image.tmdb.org/t/p/w500/fight-club-poster.jpg");
         assertThat(result.getBackdropUrl()).isEqualTo("https://image.tmdb.org/t/p/w1280/fight-club-backdrop.jpg");
         assertThat(result.isLiveMetadata()).isTrue();
@@ -152,6 +157,10 @@ class PublicMovieMetadataServiceTest {
                 .id(55L)
                 .tmdbId(101L)
                 .title("보이스 노이즈")
+                .genre("스릴러 · 미스터리")
+                .ageRating("15")
+                .runningTime(118)
+                .releaseDate(LocalDate.of(2026, 4, 3))
                 .status(MovieStatus.NOW_SHOWING)
                 .bookingOpen(true)
                 .active(true)
@@ -165,6 +174,7 @@ class PublicMovieMetadataServiceTest {
         summary.setReleaseDate(LocalDate.of(2026, 4, 5));
         summary.setPosterPath("/popular-poster.jpg");
         summary.setBackdropPath("/popular-backdrop.jpg");
+        summary.setGenreIds(List.of(28, 12));
 
         TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
         response.setResults(List.of(summary));
@@ -180,6 +190,9 @@ class PublicMovieMetadataServiceTest {
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getLocalMovieId()).isEqualTo(55L);
         assertThat(result.get(0).getTitle()).isEqualTo("Real Popular Movie");
+        assertThat(result.get(0).getReleaseDate()).isEqualTo(LocalDate.of(2026, 4, 3));
+        assertThat(result.get(0).getRuntimeMinutes()).isEqualTo(118);
+        assertThat(result.get(0).getGenres()).containsExactly("스릴러", "미스터리");
         assertThat(result.get(0).isBookable()).isTrue();
     }
 
@@ -222,8 +235,8 @@ class PublicMovieMetadataServiceTest {
 
         assertThat(result.getLocalMovieId()).isEqualTo(3L);
         assertThat(result.getTmdbId()).isEqualTo(999L);
-        assertThat(result.getTitle()).isEqualTo("영화 정보 준비 중");
-        assertThat(result.getOverview()).isEqualTo("현재 영화 소개를 불러오는 중입니다. 잠시 후 다시 확인해 주세요.");
+        assertThat(result.getTitle()).isEqualTo("Local Only Movie");
+        assertThat(result.getOverview()).isEqualTo("Local description");
         assertThat(result.getPosterUrl()).isEqualTo("/images/uploads/movie-single.jpg");
         assertThat(result.isLiveMetadata()).isFalse();
     }
@@ -362,6 +375,54 @@ class PublicMovieMetadataServiceTest {
         assertThat(results.get(0).isLiveMetadata()).isTrue();
         assertThat(results.get(1).isLiveMetadata()).isTrue();
         verify(tmdbClient, times(1)).getMovieDetailWithMedia(9999L);
+    }
+
+    @Test
+    void summaryMetadataUsesTmdbGenreIdsWhenNoLocalGenreExists() {
+        TmdbMovieSummaryDto summary = new TmdbMovieSummaryDto();
+        summary.setId(202L);
+        summary.setTitle("Mapped Genre Movie");
+        summary.setGenreIds(List.of(28, 12, 878));
+
+        TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
+        response.setResults(List.of(summary));
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getPopularMovies()).thenReturn(response);
+        when(movieRepository.findAllByActiveTrueAndTmdbIdIn(anyCollection())).thenReturn(List.of());
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getPopularMovies(1);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getGenres()).containsExactly("액션", "모험", "SF");
+        assertThat(result.get(0).getGenreText()).isEqualTo("액션 · 모험");
+    }
+
+    @Test
+    void getMovieListFallsBackToLocalMoviesWhenTmdbIsNotConfigured() {
+        Movie localMovie = Movie.builder()
+                .id(77L)
+                .title("로컬 상영작")
+                .genre("드라마")
+                .ageRating("ALL")
+                .runningTime(101)
+                .releaseDate(LocalDate.of(2026, 5, 1))
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(true)
+                .active(true)
+                .build();
+
+        when(tmdbClient.isConfigured()).thenReturn(false);
+        when(movieRepository.findAllByActiveTrueOrderByReleaseDateDescTitleAsc()).thenReturn(List.of(localMovie));
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getMovieList(24);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getLocalMovieId()).isEqualTo(77L);
+        assertThat(result.get(0).getGenreText()).isEqualTo("드라마");
+        assertThat(result.get(0).getAgeRatingText()).isEqualTo("전체관람가");
+        assertThat(result.get(0).getAgeBadgeText()).isEqualTo("ALL");
+        assertThat(result.get(0).getRunningTimeText()).isEqualTo("101분");
     }
 
     private static final class MutableClock extends Clock {

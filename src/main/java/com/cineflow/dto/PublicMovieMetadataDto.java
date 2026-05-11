@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 public class PublicMovieMetadataDto {
 
     private static final DateTimeFormatter RELEASE_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-    private static final String DEFAULT_GENRE_TEXT = "\uC7A5\uB974 \uC815\uBCF4 \uC900\uBE44 \uC911";
-    private static final String DEFAULT_RELEASE_DATE_TEXT = "\uAC1C\uBD09\uC77C \uCD94\uD6C4 \uC548\uB0B4";
-    private static final String DEFAULT_RUNNING_TIME_TEXT = "\uC0C1\uC601\uC2DC\uAC04 \uCD94\uD6C4 \uC548\uB0B4";
-    private static final String DEFAULT_AGE_RATING_TEXT = "\uAD00\uB78C\uB4F1\uAE09 \uCD94\uD6C4 \uC548\uB0B4";
+    private static final String DEFAULT_GENRE_TEXT = "장르 미정";
+    private static final String DEFAULT_RELEASE_DATE_TEXT = "개봉일 미정";
+    private static final String DEFAULT_RUNNING_TIME_TEXT = "시간 미정";
+    private static final String DEFAULT_AGE_RATING_TEXT = "등급 미정";
     private static final String DEFAULT_METRIC_TEXT = "\uC9D1\uACC4\uC911";
     private static final String DEFAULT_TITLE_TEXT = "\uC601\uD654 \uC815\uBCF4 \uC900\uBE44 \uC911";
     private static final String DEFAULT_DESCRIPTION_TEXT = "\uD604\uC7AC \uC601\uD654 \uC18C\uAC1C\uB97C \uBD88\uB7EC\uC624\uB294 \uC911\uC785\uB2C8\uB2E4. \uC7A0\uC2DC \uD6C4 \uB2E4\uC2DC \uD655\uC778\uD574 \uC8FC\uC138\uC694.";
@@ -141,7 +141,8 @@ public class PublicMovieMetadataDto {
                 .map(this::trimToNull)
                 .filter(Objects::nonNull)
                 .distinct()
-                .collect(Collectors.joining(" \u00B7 "));
+                .limit(2)
+                .collect(Collectors.joining(" · "));
 
         return joinedGenres.isBlank() ? DEFAULT_GENRE_TEXT : joinedGenres;
     }
@@ -155,19 +156,31 @@ public class PublicMovieMetadataDto {
     }
 
     public String getRunningTimeText() {
-        return runtimeMinutes != null ? runtimeMinutes + "\uBD84" : DEFAULT_RUNNING_TIME_TEXT;
+        return runtimeMinutes != null && runtimeMinutes > 0 ? runtimeMinutes + "분" : DEFAULT_RUNNING_TIME_TEXT;
     }
 
     public String getAgeRatingText() {
-        return ageRating != null ? ageRating + "\uC138 \uC774\uC0C1 \uAD00\uB78C\uAC00" : DEFAULT_AGE_RATING_TEXT;
+        String normalized = normalizedAgeRating();
+        if (normalized == null) {
+            return DEFAULT_AGE_RATING_TEXT;
+        }
+
+        return switch (normalized) {
+            case "ALL" -> "전체관람가";
+            case "12" -> "12세 이상 관람가";
+            case "15" -> "15세 이상 관람가";
+            case "19" -> "청소년 관람불가";
+            default -> DEFAULT_AGE_RATING_TEXT;
+        };
     }
 
     public String getAgeBadgeCssClass() {
-        if (ageRating == null) {
+        String normalized = normalizedAgeRating();
+        if (normalized == null) {
             return "age-badge";
         }
 
-        return switch (ageRating) {
+        return switch (normalized) {
             case "15" -> "age-badge age-15";
             case "19" -> "age-badge age-19";
             case "ALL" -> "age-badge all";
@@ -177,7 +190,16 @@ public class PublicMovieMetadataDto {
     }
 
     public String getAgeBadgeText() {
-        return ageRating != null ? ageRating : "?";
+        String normalized = normalizedAgeRating();
+        if (normalized == null) {
+            return "미정";
+        }
+
+        return switch (normalized) {
+            case "ALL" -> "ALL";
+            case "12", "15", "19" -> normalized;
+            default -> "미정";
+        };
     }
 
     public String getStatusLabel() {
@@ -223,6 +245,28 @@ public class PublicMovieMetadataDto {
 
     public boolean isNowShowing() {
         return status == MovieStatus.NOW_SHOWING;
+    }
+
+    private String normalizedAgeRating() {
+        String normalized = trimToNull(ageRating);
+        if (normalized == null) {
+            return null;
+        }
+
+        String compact = normalized.replaceAll("\\s+", "").toUpperCase(Locale.ROOT);
+        if (compact.equals("ALL") || compact.equals("전체") || compact.equals("전체관람가")) {
+            return "ALL";
+        }
+        if (compact.startsWith("12")) {
+            return "12";
+        }
+        if (compact.startsWith("15")) {
+            return "15";
+        }
+        if (compact.startsWith("19") || compact.contains("청소년관람불가")) {
+            return "19";
+        }
+        return null;
     }
 
     private String formatMetric(Double value, boolean percent) {

@@ -45,6 +45,27 @@ public class PublicMovieMetadataService {
     private static final int SHORT_DESCRIPTION_LIMIT = 120;
     private static final Duration LIVE_METADATA_CACHE_TTL = Duration.ofMinutes(5);
     private static final Duration FALLBACK_METADATA_CACHE_TTL = Duration.ofSeconds(30);
+    private static final Map<Integer, String> TMDB_GENRE_NAMES = Map.ofEntries(
+            Map.entry(28, "액션"),
+            Map.entry(12, "모험"),
+            Map.entry(16, "애니메이션"),
+            Map.entry(35, "코미디"),
+            Map.entry(80, "범죄"),
+            Map.entry(99, "다큐멘터리"),
+            Map.entry(18, "드라마"),
+            Map.entry(10751, "가족"),
+            Map.entry(14, "판타지"),
+            Map.entry(36, "역사"),
+            Map.entry(27, "공포"),
+            Map.entry(10402, "음악"),
+            Map.entry(9648, "미스터리"),
+            Map.entry(10749, "로맨스"),
+            Map.entry(878, "SF"),
+            Map.entry(10770, "TV 영화"),
+            Map.entry(53, "스릴러"),
+            Map.entry(10752, "전쟁"),
+            Map.entry(37, "서부")
+    );
 
     private final TmdbClient tmdbClient;
     private final MovieRepository movieRepository;
@@ -113,6 +134,7 @@ public class PublicMovieMetadataService {
         }
 
         LinkedHashMap<Long, PublicMovieMetadataDto> mergedMovies = new LinkedHashMap<>();
+        appendDistinctByTmdbId(mergedMovies, getLocalActiveMovies(limit));
         appendDistinctByTmdbId(mergedMovies, getNowShowingMovies(limit));
         appendDistinctByTmdbId(mergedMovies, getPopularMovies(limit));
         appendDistinctByTmdbId(mergedMovies, getComingSoonMovies(limit));
@@ -238,7 +260,7 @@ public class PublicMovieMetadataService {
     }
 
     private List<Movie> localActiveMovies() {
-        return movieRepository.findAllByActiveTrueOrderByReleaseDateDescTitleAsc();
+        return Objects.requireNonNullElse(movieRepository.findAllByActiveTrueOrderByReleaseDateDescTitleAsc(), List.of());
     }
 
     private LocalDate releaseDateForSort(Movie movie) {
@@ -396,10 +418,16 @@ public class PublicMovieMetadataService {
             List<PublicMovieMetadataDto> source
     ) {
         for (PublicMovieMetadataDto movie : source) {
-            if (movie == null || movie.getTmdbId() == null) {
+            if (movie == null) {
                 continue;
             }
-            target.putIfAbsent(movie.getTmdbId(), movie);
+            Long mergeKey = movie.getTmdbId() != null
+                    ? movie.getTmdbId()
+                    : movie.getLocalMovieId() != null ? -movie.getLocalMovieId() : null;
+            if (mergeKey == null) {
+                continue;
+            }
+            target.putIfAbsent(mergeKey, movie);
         }
     }
 
@@ -454,9 +482,9 @@ public class PublicMovieMetadataService {
                 .title(resolveTitle(summary.getTitle()))
                 .originalTitle(resolveOriginalTitle(summary.getOriginalTitle(), summary.getTitle()))
                 .overview(overview)
-                .releaseDate(summary.getReleaseDate())
-                .runtimeMinutes(null)
-                .genres(List.of())
+                .releaseDate(firstNonNull(linkedMovie != null ? linkedMovie.getReleaseDate() : null, summary.getReleaseDate()))
+                .runtimeMinutes(resolveLocalRuntime(linkedMovie))
+                .genres(resolveSummaryGenres(linkedMovie, summary))
                 .posterUrl(resolvePosterUrl(summary.getPosterPath()))
                 .backdropUrl(resolveBackdropUrl(summary.getBackdropPath(), summary.getPosterPath()))
                 .ageRating(resolveAgeRating(linkedMovie))
@@ -483,9 +511,9 @@ public class PublicMovieMetadataService {
                 .title(resolveTitle(detail.getTitle()))
                 .originalTitle(resolveOriginalTitle(detail.getOriginalTitle(), detail.getTitle()))
                 .overview(overview)
-                .releaseDate(detail.getReleaseDate())
-                .runtimeMinutes(detail.getRuntime())
-                .genres(resolveGenres(detail.getGenres()))
+                .releaseDate(firstNonNull(linkedMovie != null ? linkedMovie.getReleaseDate() : null, detail.getReleaseDate()))
+                .runtimeMinutes(firstNonNull(resolveLocalRuntime(linkedMovie), detail.getRuntime()))
+                .genres(resolveLiveGenres(linkedMovie, detail.getGenres()))
                 .posterUrl(resolvePosterUrl(detail.getPosterPath()))
                 .backdropUrl(resolveBackdropUrl(detail.getBackdropPath(), detail.getPosterPath()))
                 .ageRating(resolveAgeRating(linkedMovie))
@@ -613,9 +641,9 @@ public class PublicMovieMetadataService {
                 .title(resolveTitle(cachedMetadata.getTitle()))
                 .originalTitle(resolveOriginalTitle(cachedMetadata.getOriginalTitle(), cachedMetadata.getTitle()))
                 .overview(resolveOverview(cachedMetadata.getOverview()))
-                .releaseDate(cachedMetadata.getReleaseDate())
-                .runtimeMinutes(cachedMetadata.getRuntimeMinutes())
-                .genres(cachedMetadata.getGenres() == null ? List.of() : cachedMetadata.getGenres())
+                .releaseDate(firstNonNull(movie.getReleaseDate(), cachedMetadata.getReleaseDate()))
+                .runtimeMinutes(firstNonNull(resolveLocalRuntime(movie), cachedMetadata.getRuntimeMinutes()))
+                .genres(firstNonEmpty(resolveLocalGenres(movie), cachedMetadata.getGenres()))
                 .posterUrl(firstNonBlank(trimToNull(cachedMetadata.getPosterUrl()), DEFAULT_POSTER_URL))
                 .backdropUrl(firstNonBlank(trimToNull(cachedMetadata.getBackdropUrl()), DEFAULT_BACKDROP_URL))
                 .ageRating(resolveAgeRating(movie))
@@ -642,6 +670,27 @@ public class PublicMovieMetadataService {
         return releaseYear != null
                 && result.getReleaseDate() != null
                 && result.getReleaseDate().getYear() == releaseYear;
+    }
+
+    private List<String> resolveSummaryGenres(Movie linkedMovie, TmdbMovieSummaryDto summary) {
+        return firstNonEmpty(resolveLocalGenres(linkedMovie), resolveGenreIds(summary != null ? summary.getGenreIds() : null));
+    }
+
+    private List<String> resolveLiveGenres(Movie linkedMovie, List<TmdbGenreDto> tmdbGenres) {
+        return firstNonEmpty(resolveLocalGenres(linkedMovie), resolveGenres(tmdbGenres));
+    }
+
+    private List<String> resolveGenreIds(List<Integer> genreIds) {
+        if (genreIds == null || genreIds.isEmpty()) {
+            return List.of();
+        }
+
+        return genreIds.stream()
+                .map(TMDB_GENRE_NAMES::get)
+                .map(this::trimToNull)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
     }
 
     private List<String> resolveGenres(List<TmdbGenreDto> tmdbGenres) {
@@ -743,7 +792,29 @@ public class PublicMovieMetadataService {
     }
 
     private String resolveAgeRating(Movie linkedMovie) {
-        return linkedMovie != null ? trimToNull(linkedMovie.getAgeRating()) : null;
+        return linkedMovie != null ? normalizeAgeRating(linkedMovie.getAgeRating()) : null;
+    }
+
+    private String normalizeAgeRating(String ageRating) {
+        String normalized = trimToNull(ageRating);
+        if (normalized == null) {
+            return null;
+        }
+
+        String compact = normalized.replaceAll("\\s+", "").toUpperCase(Locale.ROOT);
+        if (compact.equals("ALL") || compact.equals("전체") || compact.equals("전체관람가")) {
+            return "ALL";
+        }
+        if (compact.startsWith("12")) {
+            return "12";
+        }
+        if (compact.startsWith("15")) {
+            return "15";
+        }
+        if (compact.startsWith("19") || compact.contains("청소년관람불가")) {
+            return "19";
+        }
+        return null;
     }
 
     private boolean resolveBookingOpen(Movie linkedMovie) {
@@ -755,11 +826,11 @@ public class PublicMovieMetadataService {
     }
 
     private MovieStatus resolveStatus(Movie linkedMovie, MovieStatus statusHint, LocalDate releaseDate) {
-        if (statusHint != null) {
-            return statusHint;
-        }
         if (linkedMovie != null && linkedMovie.getStatus() != null) {
             return linkedMovie.getStatus();
+        }
+        if (statusHint != null) {
+            return statusHint;
         }
         if (releaseDate == null) {
             return MovieStatus.NOW_SHOWING;
@@ -775,6 +846,16 @@ public class PublicMovieMetadataService {
             }
         }
         return null;
+    }
+
+    @SafeVarargs
+    private List<String> firstNonEmpty(List<String>... candidates) {
+        for (List<String> candidate : candidates) {
+            if (candidate != null && !candidate.isEmpty()) {
+                return candidate;
+            }
+        }
+        return List.of();
     }
 
     @SafeVarargs
