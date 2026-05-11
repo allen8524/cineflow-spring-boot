@@ -56,7 +56,7 @@ class PublicMovieMetadataServiceTest {
         Movie movie = Movie.builder()
                 .id(1L)
                 .tmdbId(550L)
-                .title("시간의 궤도")
+                .title("로컬 테스트 영화")
                 .description("로컬 시드 설명")
                 .genre("SF")
                 .ageRating("12")
@@ -111,9 +111,9 @@ class PublicMovieMetadataServiceTest {
         assertThat(result.getPosterUrl()).isEqualTo("https://image.tmdb.org/t/p/w500/fight-club-poster.jpg");
         assertThat(result.getBackdropUrl()).isEqualTo("https://image.tmdb.org/t/p/w1280/fight-club-backdrop.jpg");
         assertThat(result.isLiveMetadata()).isTrue();
-        assertThat(result.getTitle()).isNotEqualTo("시간의 궤도");
+        assertThat(result.getTitle()).isNotEqualTo("로컬 테스트 영화");
         assertThat(result.getOverview()).isNotEqualTo("로컬 시드 설명");
-        verify(tmdbClient, never()).searchMovies("시간의 궤도");
+        verify(tmdbClient, never()).searchMovies("로컬 테스트 영화");
     }
 
     @Test
@@ -155,11 +155,44 @@ class PublicMovieMetadataServiceTest {
     }
 
     @Test
+    void resolveMetadataDoesNotForceFirstTmdbSearchResultWhenTitleDoesNotMatch() {
+        Movie movie = Movie.builder()
+                .id(20L)
+                .title("로컬 테스트 영화")
+                .description("로컬 더미 설명")
+                .releaseDate(LocalDate.of(2026, 4, 1))
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(true)
+                .active(true)
+                .build();
+
+        TmdbMovieSummaryDto unrelatedResult = new TmdbMovieSummaryDto();
+        unrelatedResult.setId(99L);
+        unrelatedResult.setTitle("Unrelated TMDB Movie");
+        unrelatedResult.setReleaseDate(LocalDate.of(2026, 4, 1));
+
+        TmdbMovieSearchResponseDto response = new TmdbMovieSearchResponseDto();
+        response.setResults(List.of(unrelatedResult));
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.searchMovies("로컬 테스트 영화")).thenReturn(response);
+
+        PublicMovieMetadataDto result = publicMovieMetadataService.resolveMetadata(movie);
+
+        assertThat(result.getLocalMovieId()).isEqualTo(20L);
+        assertThat(result.getTmdbId()).isNull();
+        assertThat(result.getTitle()).isEqualTo("로컬 테스트 영화");
+        assertThat(result.getOverview()).isEqualTo("로컬 더미 설명");
+        assertThat(result.isLiveMetadata()).isFalse();
+        verify(tmdbClient, never()).getMovieDetailWithMedia(99L);
+    }
+
+    @Test
     void getPopularMoviesUsesTmdbSummaryAndLinksMatchingLocalMovie() {
         Movie linkedMovie = Movie.builder()
                 .id(55L)
                 .tmdbId(101L)
-                .title("보이스 노이즈")
+                .title("로컬 연결 영화")
                 .genre("스릴러 · 미스터리")
                 .ageRating("15")
                 .runningTime(118)
@@ -399,6 +432,65 @@ class PublicMovieMetadataServiceTest {
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getGenres()).containsExactly("액션", "모험", "SF");
         assertThat(result.get(0).getGenreText()).isEqualTo("액션 · 모험");
+    }
+
+    @Test
+    void getMovieListPrioritizesTmdbSectionsBeforeLocalMovies() {
+        Movie localMovie = Movie.builder()
+                .id(78L)
+                .title("로컬 테스트 영화")
+                .genre("SF")
+                .releaseDate(LocalDate.of(2026, 5, 1))
+                .status(MovieStatus.NOW_SHOWING)
+                .bookingOpen(true)
+                .active(true)
+                .build();
+
+        TmdbMovieSummaryDto nowPlaying = new TmdbMovieSummaryDto();
+        nowPlaying.setId(401L);
+        nowPlaying.setTitle("TMDB Now Playing");
+
+        TmdbMovieSummaryDto popular = new TmdbMovieSummaryDto();
+        popular.setId(402L);
+        popular.setTitle("TMDB Popular");
+
+        TmdbMovieSummaryDto upcoming = new TmdbMovieSummaryDto();
+        upcoming.setId(403L);
+        upcoming.setTitle("TMDB Upcoming");
+
+        TmdbMovieSearchResponseDto nowPlayingResponse = new TmdbMovieSearchResponseDto();
+        nowPlayingResponse.setResults(List.of(nowPlaying));
+        TmdbMovieSearchResponseDto popularResponse = new TmdbMovieSearchResponseDto();
+        popularResponse.setResults(List.of(popular));
+        TmdbMovieSearchResponseDto upcomingResponse = new TmdbMovieSearchResponseDto();
+        upcomingResponse.setResults(List.of(upcoming));
+
+        TmdbMovieDetailDto nowPlayingDetail = new TmdbMovieDetailDto();
+        nowPlayingDetail.setId(401L);
+        nowPlayingDetail.setTitle("TMDB Now Playing");
+        TmdbMovieDetailDto popularDetail = new TmdbMovieDetailDto();
+        popularDetail.setId(402L);
+        popularDetail.setTitle("TMDB Popular");
+        TmdbMovieDetailDto upcomingDetail = new TmdbMovieDetailDto();
+        upcomingDetail.setId(403L);
+        upcomingDetail.setTitle("TMDB Upcoming");
+
+        when(tmdbClient.isConfigured()).thenReturn(true);
+        when(tmdbClient.getNowPlayingMovies()).thenReturn(nowPlayingResponse);
+        when(tmdbClient.getPopularMovies()).thenReturn(popularResponse);
+        when(tmdbClient.getUpcomingMovies()).thenReturn(upcomingResponse);
+        when(tmdbClient.getMovieDetailWithMedia(401L)).thenReturn(nowPlayingDetail);
+        when(tmdbClient.getMovieDetailWithMedia(402L)).thenReturn(popularDetail);
+        when(tmdbClient.getMovieDetailWithMedia(403L)).thenReturn(upcomingDetail);
+        when(movieRepository.findAllByActiveTrueAndTmdbIdIn(anyCollection())).thenReturn(List.of());
+        when(movieRepository.findAllByActiveTrueOrderByReleaseDateDescTitleAsc()).thenReturn(List.of(localMovie));
+
+        List<PublicMovieMetadataDto> result = publicMovieMetadataService.getMovieList(3);
+
+        assertThat(result).extracting(PublicMovieMetadataDto::getTitle)
+                .containsExactly("TMDB Now Playing", "TMDB Popular", "TMDB Upcoming");
+        assertThat(result).extracting(PublicMovieMetadataDto::getTitle)
+                .doesNotContain("로컬 테스트 영화");
     }
 
     @Test

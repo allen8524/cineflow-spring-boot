@@ -69,17 +69,35 @@ class BookingControllerPageTest {
                 .bookingOpen(true)
                 .active(true)
                 .build();
+        LocalDate availableDate = LocalDate.of(2026, 4, 29);
+        ScheduleViewDto schedule = ScheduleViewDto.builder()
+                .scheduleId(77L)
+                .movieId(1L)
+                .movieTitle("Booking Movie")
+                .theaterId(3L)
+                .theaterName("CineFlow 강남")
+                .screenName("1관")
+                .screenType("IMAX")
+                .startTime(LocalDateTime.of(2026, 4, 29, 19, 40))
+                .endTime(LocalDateTime.of(2026, 4, 29, 21, 40))
+                .price(22000)
+                .availableSeats(100)
+                .totalSeats(120)
+                .build();
 
         when(movieService.getBookableMovieViews()).thenReturn(List.of(movie));
         when(theaterService.getTheatersForMovie(1L)).thenReturn(List.of());
-        when(scheduleService.getAvailableDates(1L, null)).thenReturn(List.of());
+        when(scheduleService.getAvailableDates(1L, null)).thenReturn(List.of(availableDate));
+        when(scheduleService.getSchedulesForMovieAndTheaterAndDate(1L, null, availableDate)).thenReturn(List.of(schedule));
 
         mockMvc.perform(get("/booking"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("booking/quick"))
-                .andExpect(model().attributeExists("movies"))
-                .andExpect(model().attributeExists("selectedMovie"))
-                .andExpect(model().attributeExists("schedules"));
+                .andExpect(model().attribute("movies", List.of(movie)))
+                .andExpect(model().attribute("selectedMovie", hasProperty("id", is(1L))))
+                .andExpect(model().attribute("availableDates", List.of(availableDate)))
+                .andExpect(model().attribute("schedules", List.of(schedule)))
+                .andExpect(model().attribute("selectedSchedule", hasProperty("scheduleId", is(77L))));
     }
 
     @Test

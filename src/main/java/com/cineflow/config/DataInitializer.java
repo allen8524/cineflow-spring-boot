@@ -39,6 +39,21 @@ import java.util.Locale;
 @Configuration
 public class DataInitializer {
 
+    private static final String JURASSIC_PARK_TITLE = "쥬라기 공원";
+    private static final String GODFATHER_TITLE = "대부";
+    private static final String IT_TITLE = "그것";
+    private static final String SKYFALL_TITLE = "007 스카이폴";
+    private static final String INTERSTELLAR_TITLE = "인터스텔라";
+    private static final String INCEPTION_TITLE = "인셉션";
+    private static final String DARK_KNIGHT_TITLE = "다크 나이트";
+    private static final String JURASSIC_PARK_POSTER_URL = "https://image.tmdb.org/t/p/w500/b1xCNnyrPebIc7EWNZIa6jhb1Ww.jpg";
+    private static final String GODFATHER_POSTER_URL = "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg";
+    private static final String IT_POSTER_URL = "https://image.tmdb.org/t/p/w500/9E2y5Q7WlCVNEhP5GiVTjhEhx1o.jpg";
+    private static final String SKYFALL_POSTER_URL = "https://image.tmdb.org/t/p/w500/d0IVecFQvsGdSbnMAHqiYsNYaJT.jpg";
+    private static final String INTERSTELLAR_POSTER_URL = "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg";
+    private static final String INCEPTION_POSTER_URL = "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg";
+    private static final String DARK_KNIGHT_POSTER_URL = "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg";
+
     @Bean
     @ConditionalOnProperty(prefix = "app.seed", name = "enabled", havingValue = "true")
     CommandLineRunner initData(
@@ -69,107 +84,135 @@ public class DataInitializer {
 
         movieRepository.saveAll(List.of(
                 Movie.builder()
-                        .title("시간의 궤도")
-                        .shortDescription("우주 관측소에서 감지된 미확인 신호, 그리고 남겨진 72시간.")
-                        .description("지구 저궤도 관측소에서 발견된 정체불명의 신호. 임무 종료를 앞둔 탐사팀은 그 신호가 인류의 생존과 연결되어 있다는 사실을 알게 되고, 제한된 시간 안에 선택을 내려야 한다.")
-                        .genre("SF · 스릴러")
+                        .tmdbId(329L)
+                        .title(JURASSIC_PARK_TITLE)
+                        .shortDescription("공룡이 되살아난 테마파크에서 펼쳐지는 스티븐 스필버그의 모험 블록버스터.")
+                        .description("최첨단 유전공학으로 공룡을 복원한 외딴 섬의 테마파크. 정식 개장을 앞둔 검증 투어 도중 보안 시스템이 무너지며 방문객들은 살아 움직이는 공룡들 사이에서 탈출해야 한다.")
+                        .overview("A wealthy entrepreneur secretly creates a theme park featuring living dinosaurs drawn from prehistoric DNA. Before opening day, he invites experts and family members to preview the park, but a security breakdown turns wonder into survival.")
+                        .genre("모험 · SF")
                         .ageRating("12")
-                        .runningTime(132)
-                        .runtimeMinutes(132)
-                        .posterUrl("/images/uploads/movie-single.jpg")
-                        .bookingRate(31.2)
-                        .score(9.1)
-                        .releaseDate(LocalDate.of(2026, 4, 10))
-                        .status(MovieStatus.NOW_SHOWING)
-                        .bookingOpen(true)
-                        .build(),
-                Movie.builder()
-                        .title("보이스 노이즈")
-                        .shortDescription("도시를 뒤덮은 정체불명의 소음, 단서를 좇는 추적 스릴러.")
-                        .description("정체를 알 수 없는 소음이 도시 전체를 마비시킨 밤. 사건 현장을 취재하던 기자가 감춰진 기록과 연결된 비밀을 추적하기 시작한다.")
-                        .genre("스릴러 · 미스터리")
-                        .ageRating("15")
-                        .runningTime(118)
-                        .runtimeMinutes(118)
-                        .posterUrl("/images/uploads/mv-it2.jpg")
-                        .bookingRate(24.8)
-                        .score(8.7)
-                        .releaseDate(LocalDate.of(2026, 4, 3))
-                        .status(MovieStatus.NOW_SHOWING)
-                        .bookingOpen(true)
-                        .build(),
-                Movie.builder()
-                        .title("블랙아웃 시티")
-                        .shortDescription("정전된 도시에서 벌어지는 하룻밤의 생존 액션.")
-                        .description("도시 전체가 정전된 밤, 서로 다른 목적을 가진 인물들이 한 건물에 모이면서 예상치 못한 사건이 시작된다.")
-                        .genre("액션 · 범죄")
-                        .ageRating("15")
-                        .runningTime(124)
-                        .runtimeMinutes(124)
-                        .posterUrl("/images/uploads/mv-it5.jpg")
-                        .bookingRate(19.7)
-                        .score(8.5)
-                        .releaseDate(LocalDate.of(2026, 3, 28))
-                        .status(MovieStatus.NOW_SHOWING)
-                        .bookingOpen(true)
-                        .build(),
-                Movie.builder()
-                        .title("심해 항로")
-                        .shortDescription("심해 기지에서 시작되는 미스터리 재난 드라마.")
-                        .description("심해 연구기지에서 구조 신호를 포착한 탐사팀이 현장에 도착하면서 예상치 못한 비밀과 마주하게 된다.")
-                        .genre("미스터리 · 드라마")
-                        .ageRating("12")
-                        .runningTime(121)
-                        .runtimeMinutes(121)
-                        .posterUrl("/images/uploads/mv-it6.jpg")
-                        .bookingRate(14.2)
-                        .score(8.2)
-                        .releaseDate(LocalDate.of(2026, 3, 22))
-                        .status(MovieStatus.NOW_SHOWING)
-                        .bookingOpen(true)
-                        .build(),
-                Movie.builder()
-                        .title("리버스 코드")
-                        .shortDescription("시간과 기억의 단서를 조합해 진실을 쫓는 SF 미스터리.")
-                        .description("사라진 기억 조각을 되짚는 개발자가 의문의 코드와 연결된 사건의 진실과 마주하게 되는 이야기.")
-                        .genre("SF · 미스터리")
-                        .ageRating("12")
-                        .runningTime(116)
-                        .runtimeMinutes(116)
-                        .posterUrl("/images/uploads/mv-it7.jpg")
-                        .bookingRate(12.4)
-                        .score(8.8)
-                        .releaseDate(LocalDate.of(2026, 4, 18))
-                        .status(MovieStatus.COMING_SOON)
-                        .bookingOpen(false)
-                        .build(),
-                Movie.builder()
-                        .title("극야의 기록")
-                        .shortDescription("끝나지 않는 밤 속에 숨겨진 진실.")
-                        .description("극지 연구기지에서 사라진 기록을 둘러싸고 벌어지는 심리 스릴러.")
-                        .genre("스릴러")
-                        .ageRating("19")
                         .runningTime(127)
                         .runtimeMinutes(127)
-                        .posterUrl("/images/uploads/mv-it8.jpg")
-                        .bookingRate(8.1)
-                        .score(8.1)
-                        .releaseDate(LocalDate.of(2026, 4, 25))
+                        .posterPath("/b1xCNnyrPebIc7EWNZIa6jhb1Ww.jpg")
+                        .backdropPath("/fQ8n091t3P6pYqkWZt4IARz5t2c.jpg")
+                        .posterUrl(JURASSIC_PARK_POSTER_URL)
+                        .bookingRate(31.2)
+                        .score(9.1)
+                        .releaseDate(LocalDate.of(1993, 6, 11))
+                        .status(MovieStatus.NOW_SHOWING)
+                        .bookingOpen(true)
+                        .build(),
+                Movie.builder()
+                        .tmdbId(238L)
+                        .title(GODFATHER_TITLE)
+                        .shortDescription("코를레오네 패밀리의 권력과 가족, 배신을 그린 범죄 영화의 고전.")
+                        .description("뉴욕 마피아 가문 코를레오네 패밀리의 수장 비토와 전쟁 영웅으로 돌아온 막내아들 마이클. 가족을 둘러싼 폭력과 거래가 깊어질수록 마이클은 피하려 했던 세계의 중심으로 들어선다.")
+                        .overview("Spanning the years 1945 to 1955, the story follows the Corleone crime family and Michael Corleone's transformation from reluctant outsider to ruthless family leader.")
+                        .genre("범죄 · 드라마")
+                        .ageRating("19")
+                        .runningTime(175)
+                        .runtimeMinutes(175)
+                        .posterPath("/3bhkrj58Vtu7enYsRolD1fZdja1.jpg")
+                        .backdropPath("/tmU7GeKVybMWFButWEGl2M4GeiP.jpg")
+                        .posterUrl(GODFATHER_POSTER_URL)
+                        .bookingRate(24.8)
+                        .score(9.2)
+                        .releaseDate(LocalDate.of(1972, 3, 14))
+                        .status(MovieStatus.NOW_SHOWING)
+                        .bookingOpen(true)
+                        .build(),
+                Movie.builder()
+                        .tmdbId(346364L)
+                        .title(IT_TITLE)
+                        .shortDescription("데리 마을의 아이들이 공포의 존재 페니와이즈에 맞서는 호러 드라마.")
+                        .description("아이들이 하나둘 사라지는 마을 데리. 루저 클럽이라 불리는 아이들은 각자의 두려움을 먹고 자라는 광대 페니와이즈의 실체를 마주하고, 함께 맞서기로 결심한다.")
+                        .overview("In a small town in Maine, seven children known as The Losers Club face life problems, bullies and a monster that takes the shape of a clown called Pennywise.")
+                        .genre("공포 · 드라마")
+                        .ageRating("15")
+                        .runningTime(135)
+                        .runtimeMinutes(135)
+                        .posterPath("/9E2y5Q7WlCVNEhP5GiVTjhEhx1o.jpg")
+                        .backdropPath("/tcheoA2nPATCm2vvXw2hVQoaEFD.jpg")
+                        .posterUrl(IT_POSTER_URL)
+                        .bookingRate(19.7)
+                        .score(8.5)
+                        .releaseDate(LocalDate.of(2017, 9, 6))
+                        .status(MovieStatus.NOW_SHOWING)
+                        .bookingOpen(true)
+                        .build(),
+                Movie.builder()
+                        .tmdbId(37724L)
+                        .title(SKYFALL_TITLE)
+                        .shortDescription("본드의 과거와 MI6의 현재가 충돌하는 샘 멘데스 연출의 첩보 액션.")
+                        .description("작전 실패 이후 MI6가 공격받고 M의 과거가 조직 전체를 위협한다. 제임스 본드는 몸과 신뢰를 회복하며 정체를 드러낸 적과 마지막 대결을 준비한다.")
+                        .overview("When Bond's latest assignment goes wrong and agents around the world are exposed, MI6 comes under attack. Bond must track down and destroy the threat, no matter how personal the cost.")
+                        .genre("액션 · 스릴러")
+                        .ageRating("15")
+                        .runningTime(143)
+                        .runtimeMinutes(143)
+                        .posterPath("/d0IVecFQvsGdSbnMAHqiYsNYaJT.jpg")
+                        .backdropPath("/mMZRKb3NVo5ZeSPEIaNW9buLWQ0.jpg")
+                        .posterUrl(SKYFALL_POSTER_URL)
+                        .bookingRate(14.2)
+                        .score(8.2)
+                        .releaseDate(LocalDate.of(2012, 10, 24))
+                        .status(MovieStatus.NOW_SHOWING)
+                        .bookingOpen(true)
+                        .build(),
+                Movie.builder()
+                        .tmdbId(157336L)
+                        .title(INTERSTELLAR_TITLE)
+                        .shortDescription("인류의 미래를 위해 웜홀 너머로 향하는 우주 탐사와 가족의 이야기.")
+                        .description("황폐해진 지구에서 인류의 생존 가능성을 찾기 위해 전직 조종사 쿠퍼는 미지의 은하로 떠난다. 시간과 중력, 가족에 대한 약속이 거대한 선택의 무게가 된다.")
+                        .overview("The adventures of a group of explorers who use a newly discovered wormhole to surpass the limitations on human space travel and seek a future for humankind.")
+                        .genre("SF · 드라마")
+                        .ageRating("12")
+                        .runningTime(169)
+                        .runtimeMinutes(169)
+                        .posterPath("/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg")
+                        .backdropPath("/xJHokMbljvjADYdit5fK5VQsXEG.jpg")
+                        .posterUrl(INTERSTELLAR_POSTER_URL)
+                        .bookingRate(12.4)
+                        .score(9.0)
+                        .releaseDate(LocalDate.of(2014, 11, 5))
                         .status(MovieStatus.COMING_SOON)
                         .bookingOpen(false)
                         .build(),
                 Movie.builder()
-                        .title("일리시스")
-                        .shortDescription("잃어버린 좌표를 따라 떠나는 감성 로드무비.")
-                        .description("오래된 무전기에서 흘러나온 메시지를 따라 두 사람이 길 위에서 새로운 여정을 시작하는 감성 로드무비.")
-                        .genre("드라마 · 모험")
-                        .ageRating("ALL")
-                        .runningTime(111)
-                        .runtimeMinutes(111)
-                        .posterUrl("/images/uploads/mv-it9.jpg")
+                        .tmdbId(27205L)
+                        .title(INCEPTION_TITLE)
+                        .shortDescription("꿈속에 침투해 생각을 훔치는 전문가가 불가능한 임무에 도전한다.")
+                        .description("타인의 꿈에 들어가 비밀을 빼내는 코브는 모든 것을 되돌릴 수 있는 마지막 기회를 얻는다. 이번 임무는 정보를 훔치는 것이 아니라 한 사람의 마음에 생각을 심는 것이다.")
+                        .overview("A skilled thief who steals corporate secrets through dream-sharing technology is given a chance to have his past erased if he can plant an idea into a target's subconscious.")
+                        .genre("액션 · SF")
+                        .ageRating("12")
+                        .runningTime(148)
+                        .runtimeMinutes(148)
+                        .posterPath("/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg")
+                        .backdropPath("/s3TBrRGB1iav7gFOCNx3H31MoES.jpg")
+                        .posterUrl(INCEPTION_POSTER_URL)
+                        .bookingRate(8.1)
+                        .score(8.9)
+                        .releaseDate(LocalDate.of(2010, 7, 15))
+                        .status(MovieStatus.COMING_SOON)
+                        .bookingOpen(false)
+                        .build(),
+                Movie.builder()
+                        .tmdbId(155L)
+                        .title(DARK_KNIGHT_TITLE)
+                        .shortDescription("고담을 뒤흔드는 조커와 배트맨의 충돌을 그린 슈퍼히어로 범죄 드라마.")
+                        .description("범죄와 부패를 몰아내려는 배트맨, 고든, 하비 덴트 앞에 예측 불가능한 조커가 나타난다. 고담의 질서와 신념은 혼돈 속에서 가장 어려운 시험을 맞는다.")
+                        .overview("Batman raises the stakes in his war on crime with the help of Lieutenant Jim Gordon and District Attorney Harvey Dent, until the Joker unleashes chaos across Gotham City.")
+                        .genre("액션 · 범죄")
+                        .ageRating("15")
+                        .runningTime(152)
+                        .runtimeMinutes(152)
+                        .posterPath("/qJ2tW6WMUDux911r6m7haRef0WH.jpg")
+                        .backdropPath("/hkBaDkMWbLaf8B1lsWsKX7Ew3Xq.jpg")
+                        .posterUrl(DARK_KNIGHT_POSTER_URL)
                         .bookingRate(7.5)
-                        .score(8.0)
-                        .releaseDate(LocalDate.of(2026, 5, 1))
+                        .score(9.0)
+                        .releaseDate(LocalDate.of(2008, 7, 16))
                         .status(MovieStatus.COMING_SOON)
                         .bookingOpen(false)
                         .build()
@@ -191,11 +234,11 @@ public class DataInitializer {
             throw new IllegalStateException("상영시간표를 만들기 위한 영화 데이터가 충분하지 않습니다.");
         }
 
-        Movie timeOrbit = movies.get(0);
-        Movie voiceNoise = movies.get(1);
-        Movie blackoutCity = movies.get(2);
-        Movie deepSeaRoute = movies.get(3);
-        Movie reverseCode = movies.get(4);
+        Movie jurassicPark = movies.get(0);
+        Movie godfather = movies.get(1);
+        Movie it = movies.get(2);
+        Movie skyfall = movies.get(3);
+        Movie interstellar = movies.get(4);
 
         Theater gangnam = theaterRepository.save(Theater.builder()
                 .name("CineFlow 강남")
@@ -261,22 +304,22 @@ public class DataInitializer {
                 .build());
 
         scheduleRepository.saveAll(List.of(
-                createSchedule(timeOrbit, gangnamImax, LocalDateTime.of(2026, 4, 3, 10, 20), 22000, 58),
-                createSchedule(timeOrbit, hongdaeLaser, LocalDateTime.of(2026, 4, 4, 14, 5), 18000, 73),
-                createSchedule(timeOrbit, jamsilDolby, LocalDateTime.of(2026, 4, 5, 19, 40), 19000, 44),
+                createSchedule(jurassicPark, gangnamImax, LocalDateTime.of(2026, 4, 3, 10, 20), 22000, 58),
+                createSchedule(jurassicPark, hongdaeLaser, LocalDateTime.of(2026, 4, 4, 14, 5), 18000, 73),
+                createSchedule(jurassicPark, jamsilDolby, LocalDateTime.of(2026, 4, 5, 19, 40), 19000, 44),
 
-                createSchedule(voiceNoise, hongdaeStandard, LocalDateTime.of(2026, 4, 3, 12, 45), 15000, 81),
-                createSchedule(voiceNoise, gangnamStandard, LocalDateTime.of(2026, 4, 4, 19, 40), 15000, 67),
-                createSchedule(voiceNoise, jamsilDolby, LocalDateTime.of(2026, 4, 6, 17, 20), 19000, 35),
+                createSchedule(godfather, hongdaeStandard, LocalDateTime.of(2026, 4, 3, 12, 45), 15000, 81),
+                createSchedule(godfather, gangnamStandard, LocalDateTime.of(2026, 4, 4, 19, 40), 15000, 67),
+                createSchedule(godfather, jamsilDolby, LocalDateTime.of(2026, 4, 6, 17, 20), 19000, 35),
 
-                createSchedule(blackoutCity, jamsil4dx, LocalDateTime.of(2026, 4, 3, 15, 30), 23000, 29),
-                createSchedule(blackoutCity, hongdaeLaser, LocalDateTime.of(2026, 4, 5, 20, 10), 18000, 51),
+                createSchedule(it, jamsil4dx, LocalDateTime.of(2026, 4, 3, 15, 30), 23000, 29),
+                createSchedule(it, hongdaeLaser, LocalDateTime.of(2026, 4, 5, 20, 10), 18000, 51),
 
-                createSchedule(deepSeaRoute, gangnamStandard, LocalDateTime.of(2026, 4, 4, 9, 30), 15000, 92),
-                createSchedule(deepSeaRoute, hongdaeStandard, LocalDateTime.of(2026, 4, 6, 13, 5), 15000, 63),
+                createSchedule(skyfall, gangnamStandard, LocalDateTime.of(2026, 4, 4, 9, 30), 15000, 92),
+                createSchedule(skyfall, hongdaeStandard, LocalDateTime.of(2026, 4, 6, 13, 5), 15000, 63),
 
-                createSchedule(reverseCode, jamsilDolby, LocalDateTime.of(2026, 4, 18, 18, 30), 19000, 120),
-                createSchedule(reverseCode, gangnamImax, LocalDateTime.of(2026, 4, 19, 11, 0), 22000, 101)
+                createSchedule(interstellar, jamsilDolby, LocalDateTime.of(2026, 4, 18, 18, 30), 19000, 120),
+                createSchedule(interstellar, gangnamImax, LocalDateTime.of(2026, 4, 19, 11, 0), 22000, 101)
         ));
     }
 
@@ -346,16 +389,16 @@ public class DataInitializer {
 
         List<Schedule> schedules = scheduleRepository.findByActiveTrueOrderByStartTimeAsc();
 
-        Schedule timeOrbitGangnam = findSchedule(schedules, "시간의 궤도", LocalDateTime.of(2026, 4, 3, 10, 20));
-        Schedule timeOrbitJamsil = findSchedule(schedules, "시간의 궤도", LocalDateTime.of(2026, 4, 5, 19, 40));
-        Schedule voiceNoiseGangnam = findSchedule(schedules, "보이스 노이즈", LocalDateTime.of(2026, 4, 4, 19, 40));
+        Schedule jurassicParkGangnam = findSchedule(schedules, JURASSIC_PARK_TITLE, LocalDateTime.of(2026, 4, 3, 10, 20));
+        Schedule jurassicParkJamsil = findSchedule(schedules, JURASSIC_PARK_TITLE, LocalDateTime.of(2026, 4, 5, 19, 40));
+        Schedule godfatherGangnam = findSchedule(schedules, GODFATHER_TITLE, LocalDateTime.of(2026, 4, 4, 19, 40));
 
         createBookingWithSeats(
                 bookingRepository,
                 bookingSeatRepository,
                 paymentRepository,
                 scheduleSeatRepository,
-                timeOrbitGangnam,
+                jurassicParkGangnam,
                 "CF20260403-1020-4H8K",
                 "김민서",
                 "010-1234-5678",
@@ -370,7 +413,7 @@ public class DataInitializer {
                 bookingSeatRepository,
                 paymentRepository,
                 scheduleSeatRepository,
-                voiceNoiseGangnam,
+                godfatherGangnam,
                 "CF20260404-1940-T8M2",
                 "김민서",
                 "010-1234-5678",
@@ -385,7 +428,7 @@ public class DataInitializer {
                 bookingSeatRepository,
                 paymentRepository,
                 scheduleSeatRepository,
-                timeOrbitJamsil,
+                jurassicParkJamsil,
                 "CF20260405-1940-A1Q9",
                 "김민서",
                 "010-1234-5678",
@@ -400,8 +443,8 @@ public class DataInitializer {
                 bookingSeatRepository,
                 paymentRepository,
                 "CF20260320-2100-F5F6",
-                "블랙아웃 시티",
-                "/images/uploads/mv-it5.jpg",
+                IT_TITLE,
+                IT_POSTER_URL,
                 "15",
                 "CineFlow 잠실",
                 "6관",
@@ -420,9 +463,9 @@ public class DataInitializer {
                 bookingSeatRepository,
                 paymentRepository,
                 "CF20260309-1830-G8",
-                "심해 항로",
-                "/images/uploads/mv-it6.jpg",
-                "12",
+                SKYFALL_TITLE,
+                SKYFALL_POSTER_URL,
+                "15",
                 "CineFlow 홍대",
                 "5관",
                 "2D",
@@ -440,8 +483,8 @@ public class DataInitializer {
                 bookingSeatRepository,
                 paymentRepository,
                 "CF20260402-1810-CN01",
-                "취소된 예매 샘플",
-                "/images/uploads/movie-single.jpg",
+                JURASSIC_PARK_TITLE,
+                JURASSIC_PARK_POSTER_URL,
                 "12",
                 "CineFlow 강남",
                 "2관",

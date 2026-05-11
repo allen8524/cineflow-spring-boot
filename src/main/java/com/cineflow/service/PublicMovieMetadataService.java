@@ -138,10 +138,10 @@ public class PublicMovieMetadataService {
         }
 
         LinkedHashMap<Long, PublicMovieMetadataDto> mergedMovies = new LinkedHashMap<>();
-        appendDistinctByTmdbId(mergedMovies, getLocalActiveMovies(limit));
         appendDistinctByTmdbId(mergedMovies, getNowShowingMovies(limit));
         appendDistinctByTmdbId(mergedMovies, getPopularMovies(limit));
         appendDistinctByTmdbId(mergedMovies, getComingSoonMovies(limit));
+        appendDistinctByTmdbId(mergedMovies, getLocalActiveMovies(limit));
 
         return mergedMovies.values().stream()
                 .limit(limit)
@@ -436,8 +436,7 @@ public class PublicMovieMetadataService {
                 .findFirst()
                 .or(() -> results.stream()
                         .filter(result -> titleMatches(result, normalizedTitle))
-                        .findFirst())
-                .or(() -> Optional.of(results.get(0)));
+                        .findFirst());
     }
 
     private void appendDistinctByTmdbId(
