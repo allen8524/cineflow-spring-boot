@@ -82,22 +82,38 @@
 
                     <div class="home-booking-feature__content" th:if="${featuredMovie != null}">
                         <div class="home-booking-feature__copy">
-                            <span class="home-booking-feature__label">추천 작품</span>
+                            <div class="home-booking-feature__eyebrow-row">
+                                <span class="home-booking-feature__label">추천 작품</span>
+                                <span class="home-booking-feature__status" th:text="${featuredMovie.bookingOpenLabel}">예매 오픈</span>
+                            </div>
                             <h3 th:text="${featuredMovie.titleText}">영화 제목</h3>
                             <p th:text="${featuredMovie.shortDescriptionText}">상영과 예매를 함께 살펴보기 좋은 대표 작품입니다.</p>
                             <ul class="home-booking-feature__meta">
-                                <li th:text="${featuredMovie.releaseDateText}">개봉 2026.04.10</li>
-                                <li th:text="${featuredMovie.runningTimeText}">132분</li>
-                                <li th:text="${featuredMovie.genreText}">장르 미정</li>
-                                <li th:text="${featuredMovie.bookingOpenLabel}">예매 오픈</li>
+                                <li>
+                                    <span>개봉일</span>
+                                    <strong th:text="${featuredMovie.releaseDateText}">개봉 2026.04.10</strong>
+                                </li>
+                                <li>
+                                    <span>상영시간</span>
+                                    <strong th:text="${featuredMovie.runningTimeText}">132분</strong>
+                                </li>
+                                <li>
+                                    <span>장르</span>
+                                    <strong th:text="${featuredMovie.genreText}">장르 미정</strong>
+                                </li>
                             </ul>
                         </div>
-                        <div class="hero-actions">
-                            <a th:if="${featuredMovie.bookable}"
-                               th:href="@{/booking(movieId=${featuredMovie.bookingMovieId})}"
-                               class="hero-btn primary">바로 예매</a>
-                            <span th:if="${!featuredMovie.bookable}" class="hero-btn primary">예매 정보 준비 중</span>
-                            <a th:href="@{/movies/{id}(id=${featuredMovie.detailRouteId})}" class="hero-btn secondary">영화 상세</a>
+                        <div class="home-booking-feature__action-panel">
+                            <span>예매 안내</span>
+                            <strong th:text="${featuredMovie.bookable ? '바로 예매 가능' : '예매 준비 중'}">예매 준비 중</strong>
+                            <p th:text="${featuredMovie.bookable ? '상영관과 시간을 선택해 좌석 단계로 이동하세요.' : '상영시간표가 열리면 바로 예매할 수 있습니다.'}">상영시간표가 열리면 바로 예매할 수 있습니다.</p>
+                            <div class="home-booking-feature__actions">
+                                <a th:if="${featuredMovie.bookable}"
+                                   th:href="@{/booking(movieId=${featuredMovie.bookingMovieId})}"
+                                   class="hero-btn primary">바로 예매</a>
+                                <span th:if="${!featuredMovie.bookable}" class="hero-btn primary">예매 정보 준비 중</span>
+                                <a th:href="@{/movies/{id}(id=${featuredMovie.detailRouteId})}" class="hero-btn secondary">영화 상세</a>
+                            </div>
                         </div>
                     </div>
 
@@ -247,37 +263,43 @@
 
     <section class="home-section home-promo-section">
         <div class="container">
-            <div class="home-promo-grid">
-                <article class="home-info-banner home-info-banner--wide">
+            <div class="home-guide-panel">
+                <div class="home-guide-intro">
                     <span class="section-chip">이용 안내</span>
-                    <h2>예매 전 확인하면 좋은 이용 안내</h2>
-                    <p>예매 전 자주 확인하는 취소·환불 안내와 고객센터 메뉴를 모았습니다.</p>
-                    <div class="hero-actions">
+                    <h2>예매 전에 확인하면 더 편해요</h2>
+                    <p>예매내역, 취소·환불 기준, 상영관 정보를 자주 찾는 순서대로 정리했습니다.</p>
+                    <div class="home-guide-actions">
                         <a th:href="@{/support#faq}" class="hero-btn secondary">자주 묻는 질문</a>
                         <a th:href="@{/support#cancel-policy}" class="hero-btn secondary">취소 · 환불 안내</a>
                     </div>
-                </article>
+                </div>
 
-                <article class="home-info-banner">
-                    <span>예매내역 안내</span>
-                    <strong>예매내역과 관람 일정 확인</strong>
-                    <p>회원과 비회원 모두 예매번호 또는 계정 기준으로 예매내역을 확인할 수 있습니다.</p>
-                    <a th:href="@{/booking/history}" class="detail-link">예매내역 보기</a>
-                </article>
-
-                <article class="home-info-banner">
-                    <span>좌석·상영관 안내</span>
-                    <strong>상영관과 좌석 정보를 예매 단계에서 확인</strong>
-                    <p>상영관과 좌석 정보를 예매 단계에서 확인할 수 있도록 구성했습니다.</p>
-                    <a th:href="@{/booking}" class="detail-link">예매 시작 보기</a>
-                </article>
-
-                <article class="home-info-banner">
-                    <span>고객센터</span>
-                    <strong>취소·환불 안내와 문의 메뉴 확인</strong>
-                    <p>필요한 안내를 고객센터에서 확인할 수 있습니다.</p>
-                    <a th:href="@{/support}" class="detail-link">고객센터 바로가기</a>
-                </article>
+                <div class="home-guide-list" aria-label="예매 이용 안내 바로가기">
+                    <a th:href="@{/booking/history}" class="home-guide-card">
+                        <span class="home-guide-card__number">01</span>
+                        <div>
+                            <strong>예매내역 확인</strong>
+                            <p>회원과 비회원 모두 예매번호 또는 계정 기준으로 관람 일정을 확인할 수 있습니다.</p>
+                        </div>
+                        <em>내역 보기</em>
+                    </a>
+                    <a th:href="@{/booking}" class="home-guide-card">
+                        <span class="home-guide-card__number">02</span>
+                        <div>
+                            <strong>상영관·좌석 확인</strong>
+                            <p>영화, 극장, 날짜를 선택한 뒤 상영관과 좌석 정보를 이어서 확인합니다.</p>
+                        </div>
+                        <em>예매 시작</em>
+                    </a>
+                    <a th:href="@{/support}" class="home-guide-card">
+                        <span class="home-guide-card__number">03</span>
+                        <div>
+                            <strong>취소·환불 문의</strong>
+                            <p>취소 가능 시간, 환불 안내, 고객센터 문의 메뉴를 한곳에서 확인할 수 있습니다.</p>
+                        </div>
+                        <em>고객센터</em>
+                    </a>
+                </div>
             </div>
         </div>
     </section>

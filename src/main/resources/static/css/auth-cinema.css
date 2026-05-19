@@ -1,6 +1,9 @@
 .auth-page {
     padding: 70px 0 90px;
-    background: linear-gradient(180deg, #0f172d 0%, #0c1325 100%);
+    background:
+        radial-gradient(circle at 12% 4%, rgba(255, 216, 228, 0.62), transparent 28%),
+        radial-gradient(circle at 88% 10%, rgba(211, 205, 255, 0.68), transparent 30%),
+        linear-gradient(180deg, #fff8fb 0%, #f5f7ff 52%, #f1f3ff 100%);
     min-height: calc(100vh - 140px);
 }
 
@@ -22,25 +25,27 @@
 }
 
 .auth-intro-card {
-    background: linear-gradient(160deg, rgba(220, 248, 54, 0.14), rgba(26, 48, 86, 0.92));
-    border: 1px solid rgba(220, 248, 54, 0.18);
+    background:
+        radial-gradient(circle at top left, rgba(255, 216, 228, 0.66), transparent 36%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(244, 241, 255, 0.9));
+    border: 1px solid rgba(104, 114, 156, 0.14);
     border-radius: 18px;
     padding: 32px;
-    color: #eff6ff;
+    color: #26324d;
     display: grid;
     gap: 18px;
-    box-shadow: 0 20px 45px rgba(3, 9, 23, 0.28);
+    box-shadow: 0 20px 45px rgba(125, 134, 179, 0.14);
     min-width: 0;
 }
 
 .auth-intro-card h1 {
-    color: #fff;
+    color: #202a43;
     margin: 0;
     font-size: 42px;
 }
 
 .auth-intro-card p {
-    color: #d3ddf1;
+    color: #4f5d76;
     margin: 0;
     line-height: 1.8;
 }
@@ -48,7 +53,7 @@
 .auth-feature-list {
     margin: 0;
     padding-left: 18px;
-    color: #d8e4f5;
+    color: #526078;
     display: grid;
     gap: 10px;
 }
@@ -78,7 +83,7 @@
 }
 
 .auth-field label {
-    color: #f5f9ff;
+    color: #26324d;
     font-size: 14px;
     font-weight: 700;
 }
@@ -87,12 +92,16 @@
     width: 100%;
     min-width: 0;
     border-radius: 12px;
-    border: 1px solid rgba(148, 163, 184, 0.24);
-    background: #0c1428;
-    color: #f8fbff;
+    border: 1px solid rgba(104, 114, 156, 0.18);
+    background: rgba(255, 255, 255, 0.78);
+    color: #25304a;
     min-height: 54px;
     padding: 0 16px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-field input::placeholder {
+    color: #7b879e;
 }
 
 .auth-field input.is-invalid {
@@ -102,8 +111,8 @@
 
 .auth-field input:focus {
     outline: 0;
-    border-color: rgba(220, 248, 54, 0.68);
-    box-shadow: 0 0 0 4px rgba(220, 248, 54, 0.12);
+    border-color: rgba(199, 184, 255, 0.68);
+    box-shadow: 0 0 0 4px rgba(199, 184, 255, 0.15);
 }
 
 .field-error {
@@ -130,13 +139,13 @@
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    color: #a8bad9;
+    color: #526078;
     font-size: 14px;
     min-width: 0;
 }
 
 .auth-helper-links a {
-    color: #dcf836;
+    color: #6655a8;
     font-weight: 700;
     overflow-wrap: anywhere;
 }
@@ -151,7 +160,7 @@
 }
 
 .auth-access-copy {
-    color: #c6d4ef;
+    color: #4f5d76;
     line-height: 1.8;
 }
 
