@@ -82,6 +82,13 @@ body {
     text-transform: uppercase;
 }
 
+.storefront-header .cinema-brand-mark img.logo {
+    display: block;
+    width: 190px;
+    max-width: 34vw;
+    height: auto;
+}
+
 .menu-left {
     display: flex;
     gap: 4px;
@@ -6577,6 +6584,11 @@ a {
         padding-bottom: 10px;
     }
 
+    .storefront-header .cinema-brand-mark img.logo {
+        width: 150px;
+        max-width: 56vw;
+    }
+
     .storefront-shortcut-grid,
     .home-quick-card,
     .home-showcase-grid,
@@ -6949,8 +6961,8 @@ a {
     }
 
     .cinema-brand-mark img.logo {
-        max-height: 50px;
-        width: auto;
+        width: 190px;
+        max-height: none;
     }
 
     .cinema-brand-copy {
