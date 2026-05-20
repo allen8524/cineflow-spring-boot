@@ -11136,3 +11136,140 @@ a {
         width: 100%;
     }
 }
+
+/* Admin pastel readability */
+.admin-page {
+    color: #202a43;
+}
+
+.admin-page .admin-stat-card,
+.admin-page .admin-quick-card,
+.admin-page .admin-mini-item,
+.admin-page .admin-mini-item--empty,
+.admin-page .admin-form-check,
+.admin-page .admin-form-note,
+.admin-page .admin-tmdb-result,
+.admin-page .admin-tmdb-empty,
+.admin-page .admin-tmdb-preview-card,
+.admin-page .admin-tmdb-preview-meta li,
+.admin-page .admin-tmdb-status {
+    background: rgba(255, 255, 255, 0.78);
+    border-color: rgba(104, 114, 156, 0.16);
+}
+
+.admin-page .admin-subnav a {
+    background: rgba(255, 255, 255, 0.64);
+    border-color: rgba(104, 114, 156, 0.18);
+    color: #34405e;
+}
+
+.admin-page .admin-subnav a.is-active {
+    background: rgba(199, 184, 255, 0.24);
+    border-color: rgba(199, 184, 255, 0.52);
+    color: #31265f;
+}
+
+.admin-page .admin-stat-card strong,
+.admin-page .admin-stat-card .stat-value,
+.admin-page .admin-stat-card--revenue .stat-value,
+.admin-page .admin-quick-card strong,
+.admin-page .admin-section .panel-head h2,
+.admin-page .admin-mini-item strong,
+.admin-page .admin-form-field label,
+.admin-page .admin-form-check label,
+.admin-page .admin-form-note strong,
+.admin-page .admin-tmdb-search-field span,
+.admin-page .admin-tmdb-result-head h4,
+.admin-page .admin-tmdb-current-head strong,
+.admin-page .admin-tmdb-preview-copy h3,
+.admin-page .admin-tmdb-preview-meta strong {
+    color: #202a43;
+}
+
+.admin-page .admin-stat-card span,
+.admin-page .admin-stat-card .stat-label,
+.admin-page .admin-table th,
+.admin-page .admin-dashboard-table th,
+.admin-page .admin-tmdb-preview-meta span {
+    color: #405069;
+}
+
+.admin-page .admin-stat-card .stat-caption,
+.admin-page .admin-quick-card span,
+.admin-page .admin-mini-item span,
+.admin-page .admin-form-check p,
+.admin-page .admin-form-note p,
+.admin-page .admin-tmdb-panel-head p,
+.admin-page .admin-tmdb-current-head p,
+.admin-page .admin-tmdb-input-hint,
+.admin-page .admin-tmdb-result-head p,
+.admin-page .admin-tmdb-result-overview,
+.admin-page .admin-tmdb-preview-copy p,
+.admin-page .admin-table-empty-row td {
+    color: #526078;
+}
+
+.admin-page .admin-section .panel-head {
+    border-bottom-color: rgba(104, 114, 156, 0.14);
+}
+
+.admin-page .admin-section .panel-head a,
+.admin-page .admin-table a,
+.admin-page .admin-dashboard-table a,
+.admin-page .admin-mini-item em,
+.admin-page .admin-mini-item--empty::before,
+.admin-page .admin-mini-item--empty a,
+.admin-page .admin-filter-form button {
+    color: #6655a8;
+}
+
+.admin-page .admin-table th,
+.admin-page .admin-table td,
+.admin-page .admin-dashboard-table th,
+.admin-page .admin-dashboard-table td {
+    border-bottom-color: rgba(104, 114, 156, 0.14);
+}
+
+.admin-page .admin-table td,
+.admin-page .admin-dashboard-table td {
+    color: #25304a;
+}
+
+.admin-page .admin-dashboard-table th {
+    background: rgba(104, 114, 156, 0.07);
+}
+
+.admin-page .admin-dashboard-table tbody tr:hover {
+    background: rgba(199, 184, 255, 0.12);
+}
+
+.admin-page .admin-filter-form input,
+.admin-page .admin-filter-form select,
+.admin-page .admin-filter-form button,
+.admin-page .admin-form-field input,
+.admin-page .admin-form-field select,
+.admin-page .admin-form-field textarea {
+    background: rgba(255, 255, 255, 0.72);
+    border-color: rgba(104, 114, 156, 0.18);
+    color: #25304a;
+}
+
+.admin-page .admin-filter-form input::placeholder,
+.admin-page .admin-form-field input::placeholder,
+.admin-page .admin-form-field textarea::placeholder {
+    color: #6d7891;
+}
+
+.admin-page .admin-tmdb-status.is-loading {
+    color: #315fa6;
+}
+
+.admin-page .admin-tmdb-status.is-success {
+    color: #33704f;
+}
+
+.admin-page .admin-tmdb-status.is-error,
+.admin-page .admin-tmdb-empty.is-error,
+.admin-page .field-error {
+    color: #9c385d;
+}
