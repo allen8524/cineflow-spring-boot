@@ -84,8 +84,8 @@ class MovieServiceTest {
         assertThat(result.getBackdropUrl()).isEqualTo("/images/uploads/existing-poster.jpg");
         assertThat(result.getDescription()).isEqualTo("상세 설명을 준비 중입니다.");
         assertThat(result.getShortDescription()).isEqualTo("영화 소개를 준비 중입니다.");
-        assertThat(result.getRunningTimeText()).isEqualTo("상영시간 업데이트 예정");
-        assertThat(result.getReleaseDateText()).isEqualTo("개봉일 업데이트 예정");
-        assertThat(result.getGenreText()).isEqualTo("장르 정보 업데이트 예정");
+        assertThat(result.getRunningTimeText()).isEqualTo("시간 미정");
+        assertThat(result.getReleaseDateText()).isEqualTo("개봉일 미정");
+        assertThat(result.getGenreText()).isEqualTo("장르 미정");
     }
 }

@@ -257,7 +257,7 @@ public class BookingController {
         try {
             Booking booking = bookingService.cancelBooking(bookingCode, cancelReason, currentUser);
             redirectAttributes.addFlashAttribute("successMessage", booking.getBookingCode() + " 예매가 취소되었습니다.");
-            if (redirectTo != null && !redirectTo.isBlank()) {
+            if (isSafeRedirectPath(redirectTo)) {
                 return "redirect:" + redirectTo;
             }
             redirectAttributes.addAttribute("bookingCode", booking.getBookingCode());
@@ -268,7 +268,7 @@ public class BookingController {
                 redirectAttributes.addAttribute("bookingCode", bookingCode);
                 return "redirect:/booking/complete";
             }
-            if (redirectTo != null && !redirectTo.isBlank()) {
+            if (isSafeRedirectPath(redirectTo)) {
                 return "redirect:" + redirectTo;
             }
             return currentUser != null ? "redirect:/mypage/bookings" : "redirect:/booking/history";
@@ -487,6 +487,14 @@ public class BookingController {
             return "";
         }
         return phone.replaceAll("[^0-9]", "");
+    }
+
+    private boolean isSafeRedirectPath(String redirectTo) {
+        return StringUtils.hasText(redirectTo)
+                && redirectTo.startsWith("/")
+                && !redirectTo.startsWith("//")
+                && !redirectTo.contains("\r")
+                && !redirectTo.contains("\n");
     }
 
     private String redirectWithQuery(String path, HttpServletRequest request) {

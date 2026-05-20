@@ -33,10 +33,9 @@ public class AuthSeedInitializer {
     @ConditionalOnProperty(prefix = "app.seed", name = "enabled", havingValue = "true")
     CommandLineRunner initAuthSeed(UserService userService) {
         return args -> {
-            boolean usingDefaultPassword = "admin1234!".equals(adminPassword);
             if (userService.findByLoginId(adminUsername).isEmpty()) {
                 userService.createAdminIfAbsent(adminUsername, adminEmail, adminPassword, adminName, adminPhone);
-                log.info("Seed ADMIN account is ready. loginId={}, password={}", adminUsername, usingDefaultPassword ? adminPassword : "[CUSTOM]");
+                log.info("Seed ADMIN account is ready. loginId={}", adminUsername);
             }
         };
     }

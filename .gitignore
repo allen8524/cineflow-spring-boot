@@ -11,3 +11,10 @@ out/
 Thumbs.db
 
 *.log
+
+.env
+*.env
+application-secret.yml
+application-private.yml
+src/main/resources/application-secret.yml
+src/main/resources/application-private.yml
